@@ -1,4 +1,4 @@
-package com.ascendmoney.devops
+package com.ascendmoney.vulcan
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner
 
 @RunWith(SpringRunner)
 @SpringBootTest
-class DevopsApplicationTests {
+class VulcanApplicationTests {
 
 	@Test
 	void contextLoads() {
