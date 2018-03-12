@@ -1,12 +1,9 @@
-/*package com.ascendmoney.vulcan
+package com.ascendmoney.vulcan
 
+import com.cloudbees.groovy.cps.NonCPS
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
-@SpringBootApplication
-class VulcanApplication {
-
-	static void main(String[] args) {
-		SpringApplication.run VulcanApplication, args
-	}
-}*/
+def sayHello() {
+    return "Hi, I am vulcan"
+}
