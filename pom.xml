@@ -6,10 +6,10 @@
 	<groupId>com.ascendmoney</groupId>
 	<artifactId>vulcan</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>vulcan</name>
-	<description>Demo project for Spring Boot</description>
+	<description>vulcan platfom pipeline</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -65,6 +65,22 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+                    <sources>
+                        <source>
+                            <directory>${project.basedir}/src</directory>
+                                <includes>
+                                    <include>**/*.groovy</include>
+                                </includes>
+                        </source>
+                        <source>
+                            <directory>${project.basedir}/vars</directory>
+                                <includes>
+                                    <include>**/*.groovy</include>
+                                </includes>
+                        </source>
+                    </sources>
+                </configuration>
 			</plugin>
 		</plugins>
 	</build>
