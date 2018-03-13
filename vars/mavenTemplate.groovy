@@ -23,10 +23,7 @@ def call(Map parameters = [:], body) {
             [
                 name: 'maven', image: "${mavenImage}", command: '/bin/sh -c', args: 'cat', ttyEnabled: true,
                 envVars: [
-                    [
-                        key: 'MAVEN_OPTS', 
-                        value: '-Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn'
-                    ]
+                    envVar(key: 'MAVEN_OPTS', value: '-Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn')
                 ],
                 resourceLimitMemory: '1024Mi'
             ]
