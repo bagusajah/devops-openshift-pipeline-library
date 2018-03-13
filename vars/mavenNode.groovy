@@ -14,7 +14,6 @@ def call(Map parameters = [:], body) {
 
 def buildId (prefix){
     def repo = getRepoName()
-    sh "echo repo ${repo}"
     return "${prefix}${repo}_${env.BUILD_NUMBER}".replaceAll('-', '_').replaceAll('/', '_').replaceAll(' ', '_')
 }
 
