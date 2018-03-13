@@ -9,7 +9,7 @@ def call(Map parameters = [:], body) {
     def robotImage = parameters.get('robotImage', 'ascendcorphub/robot:v1.1.0')
     def jnlpImage = 'docker.io/openshift/jenkins-agent-maven-35-centos7:v3.10'
 
-    echo "=========================== Image building using the docker socket on openshift ==========================="
+    echo "=========================== Image building using buildconfig on openshift ==========================="
     podTemplate(
         cloud: 'openshift',
         label: label, 
