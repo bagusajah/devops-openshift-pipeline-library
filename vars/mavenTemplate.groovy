@@ -19,9 +19,9 @@ def call(Map parameters = [:], body) {
         restartPolicy: 'OnFailure', 
         nodeSelector: 'deployment-nodegroup=vulcan',
         containers: [
-            [
-                name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/tmp', resourceLimitMemory: '512Mi'
-            ],
+            // [
+            //     name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/', resourceLimitMemory: '512Mi'
+            // ],
             [
                 name: 'maven', image: "${mavenImage}", command: '/bin/sh -c', args: 'cat', ttyEnabled: true,
                 envVars: [
