@@ -8,11 +8,13 @@ def call(Map parameters = [:], body) {
     def mavenImage = parameters.get('mavenImage', 'vulcanhub/maven-builder:v1.0.0')
     def robotImage = parameters.get('robotImage', 'ascendcorphub/robot:v1.1.0')
     def jnlpImage = 'docker.io/openshift/jenkins-agent-maven-35-centos7:v3.10'
+    def inheritFrom = parameters.get('inheritFrom', 'base')
 
     echo "=========================== Image building using buildconfig on openshift ==========================="
     podTemplate(
         cloud: 'openshift',
         label: label, 
+        inheritFrom: "${inheritFrom}",
         serviceAccount: 'jenkins', 
         restartPolicy: 'OnFailure', 
         nodeSelector: 'deployment-nodegroup=vulcan',
