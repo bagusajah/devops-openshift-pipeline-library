@@ -21,8 +21,3 @@ def getRepoName(){
   // normal job name
   return jobName
 }
-
-def getCloudConfig() {
-    def openshiftCloudConfig = Jenkins.getInstance().getCloud('openshift')
-    return (openshiftCloudConfig) ? 'openshift' : 'kubernetes'
-}
