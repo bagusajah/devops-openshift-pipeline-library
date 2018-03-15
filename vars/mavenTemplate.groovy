@@ -10,9 +10,11 @@ def call(Map parameters = [:], body) {
     def jnlpImage = 'docker.io/openshift/jenkins-agent-maven-35-centos7:v3.10'
     def inheritFrom = parameters.get('inheritFrom', 'base')
 
+    def cloud = flow.getCloudConfig()
+
     echo "=========================== Image building using buildconfig on openshift ==========================="
     podTemplate(
-        cloud: 'openshift',
+        cloud: cloud,
         label: label, 
         inheritFrom: "${inheritFrom}",
         serviceAccount: 'jenkins', 
