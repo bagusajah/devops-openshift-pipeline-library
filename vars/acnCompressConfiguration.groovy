@@ -17,7 +17,7 @@ def call(body){
   def GIT_HASH_FABRIC8_CONFIGURATION = ""
 
   def test_pwd = pwd()
-  echo "TEST_PWD ${TEST_PWD}"
+  echo "TEST_PWD ${test_pwd}"
 
   // dir("${directory}/update-config") {
   //   git credentialsId: 'bitbucket-credential', url: GLOBAL_VARS['GIT_FABRIC8_CONFIGURATION']
