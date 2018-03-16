@@ -19,7 +19,7 @@ def call(body){
   def test_pwd = pwd()
   echo "TEST_PWD ${test_pwd}"
 
-  git credentialsId: 'bitbucket-credential', url: GLOBAL_VARS['GIT_FABRIC8_CONFIGURATION']  
+  git credentialsId: 'bitbucket-credential', url: GLOBAL_VARS['GIT_OPENSHIFT_CONFIGURATION']  
   GIT_HASH_FABRIC8_CONFIGURATION = sh script: "cd ${directory}/update-config && git rev-parse --verify HEAD", returnStdout: true
   GIT_HASH_FABRIC8_CONFIGURATION = GIT_HASH_FABRIC8_CONFIGURATION.trim()
 
@@ -34,7 +34,7 @@ def call(body){
           $class : 'S3BucketPublisher',
           profileName : 'openshift-profile-s3',
           entries: [[
-            bucket: "acm-aws-fabric8-configuration-repo/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}",
+            bucket: "acm-aws-openshift-configuration-repo/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}",
             selectedRegion: 'ap-southeast-1',
             showDirectlyInBrowser: true,
             sourceFile: "${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip",
