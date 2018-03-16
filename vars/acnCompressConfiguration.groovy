@@ -1,6 +1,5 @@
 #!/usr/bin/groovy
 import com.ascendmoney.vulcan.Utils
-// import io.fabric8.Fabric8Commands
 import java.io.File
 
 def call(body){
@@ -14,14 +13,14 @@ def call(body){
   def APP_VERSION = config.version
   def directory = config.directory
 
-  def GIT_HASH_FABRIC8_CONFIGURATION = ""
+  def GIT_HASH_OPENSHIFT_CONFIGURATION = ""
 
   def test_pwd = pwd()
   echo "TEST_PWD ${test_pwd}"
 
   git credentialsId: 'bitbucket-credential', url: GLOBAL_VARS['GIT_OPENSHIFT_CONFIGURATION']  
-  GIT_HASH_FABRIC8_CONFIGURATION = sh script: "cd ${directory}/update-config && git rev-parse --verify HEAD", returnStdout: true
-  GIT_HASH_FABRIC8_CONFIGURATION = GIT_HASH_FABRIC8_CONFIGURATION.trim()
+  GIT_HASH_OPENSHIFT_CONFIGURATION = sh script: "cd ${directory}/update-config && git rev-parse --verify HEAD", returnStdout: true
+  GIT_HASH_OPENSHIFT_CONFIGURATION = GIT_HASH_OPENSHIFT_CONFIGURATION.trim()
 
   def env_list = ""
   for(n = 0; n < LIST_ENV.size(); n++){
@@ -45,6 +44,6 @@ def call(body){
     } // End scope
   } // End Loop zip file and upload to s3
 
-  return GIT_HASH_FABRIC8_CONFIGURATION
+  return GIT_HASH_OPENSHIFT_CONFIGURATION
 
 } // End Compress Configuration
