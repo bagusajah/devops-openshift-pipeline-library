@@ -21,8 +21,7 @@ def call(body) {
 
     echo "=============== TEMP : WAITING SONARQUBE SERVER ==============="
     sh "mvn versions:set -DnewVersion=${newVersion}"
-    echo "command_maven ${command_maven}"
-    // sh "mvn clean ${command_maven}"
+    sh "mvn clean ${command_maven}"
 
     echo "=============== DONT FORGET ENABLE SONARQUBE AFTER SONARQUBE SERVER IS ACTIVE ==============="
     // withSonarQubeEnv('sonarqube') {
