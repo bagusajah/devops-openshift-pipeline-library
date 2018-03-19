@@ -21,7 +21,7 @@ def call(body){
       env_list = LIST_ENV[n]
       dir("/home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}") {
       sh "curl -Ok ${S3_CONFIG_URL}/${COUNTRY_CODE}/${env_list}/${APP_NAME}/${APP_NAME}-${APP_VERSION}.zip"
-      sh "mkdir -p /app-config/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
+      sh "mkdir -p /app-configs/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
       sh "cp -rf /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}/${APP_NAME}-${APP_VERSION}.zip  /app-configs/${COUNTRY_CODE}/${env_list}/${APP_NAME}/"
     } 
   } 
