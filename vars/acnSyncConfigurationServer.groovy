@@ -25,6 +25,7 @@ def call(body){
       sh "ls -lt"
       sh "mkdir -p /app-config/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
       sh "cp -rf /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}/${APP_NAME}-${APP_VERSION}.zip  /app-config/${COUNTRY_CODE}/${env_list}/${APP_NAME}/"
+      sh "ls -lt /app-config/${COUNTRY_CODE}/${env_list}/${APP_NAME}/"
     } 
   } 
 
