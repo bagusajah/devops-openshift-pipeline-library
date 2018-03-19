@@ -8,25 +8,23 @@ def call(body){
   body.delegate = config
   body()
 
-  def GLOBAL_VARS = config.global_vars
+  def APP_NAME = config.app_name
   def LIST_ENV = config.list_env
   def APP_VERSION = config.version
+  def COUNTRY_CODE =  config.country_code
   def S3_CONFIG_URL = "https://s3-ap-southeast-1.amazonaws.com/acm-aws-openshift-configuration-repo"
   def GIT_HASH_FABRIC8_CONFIGURATION = ""
 
-  dir("/home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config") {
+  
     def env_list = ""
     for(n = 0; n < LIST_ENV.size(); n++){
       env_list = LIST_ENV[n]
-      sh "mkdir -p /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}"
-      sh "cd /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}"
+      dir("/home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}") {
       sh "pwd"
-      sh "curl -Ok ${S3_CONFIG_URL}/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip"
+      sh "curl -Ok ${S3_CONFIG_URL}/${COUNTRY_CODE}/${env_list}/${APP_NAME}/${APP_NAME}-${APP_VERSION}.zip"
       sh "ls -lt"
-      sh "pwd"
-      sh "mkdir -p /app-config/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}"
-      sh "cp -rf /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip  /app-config/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/"
-       
+      sh "mkdir -p /app-config/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
+      sh "cp -rf /${APP_NAME}-${APP_VERSION}/${APP_NAME}-${APP_VERSION}.zip  /app-config/${COUNTRY_CODE}/${env_list}/${APP_NAME}/"
     } 
   } 
 
