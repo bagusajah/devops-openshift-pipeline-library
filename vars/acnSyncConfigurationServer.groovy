@@ -19,7 +19,8 @@ def call(body){
     for(n = 0; n < LIST_ENV.size(); n++){
       env_list = LIST_ENV[n]
       sh "mkdir -p /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION} && cd /home/jenkins/workspace/${env.JOB_NAME}/s3-pull-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}"
-      sh "curl -Ok ${S3_CONFIG_URL}/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip"
+      sh "pwd"
+      sh "wget ${S3_CONFIG_URL}/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip"
       sh "pwd"
       sh "ls"
       sh "mkdir -p /app-config/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}"
