@@ -19,23 +19,23 @@ def call(body) {
 
     def skipTests = config.skipTests ?: false
 
-    echo "=============== TEMP : WAITING SONARQUBE SERVER ==============="
-    sh "mvn versions:set -DnewVersion=${newVersion}"
-    sh "mvn clean ${command_maven}"
+    // echo "=============== TEMP : WAITING SONARQUBE SERVER ==============="
+    // sh "mvn versions:set -DnewVersion=${newVersion}"
+    // sh "mvn clean ${command_maven}"
 
-    echo "=============== DONT FORGET ENABLE SONARQUBE AFTER SONARQUBE SERVER IS ACTIVE ==============="
-    // withSonarQubeEnv('sonarqube') {
-    //     sh "mvn versions:set -DnewVersion=${newVersion}"
-    //     sh 'mvn clean ${command_maven} sonar:sonar ' +
-    //     "-Dsonar.host.url=${config.SONARQUBE_URL} " +
-    //     "-Dsonar.projectKey=${appName} " +
-    //     "-Dsonar.projectName=${appName} " +
-    //     "-Dsonar.projectVersion=${newVersion} " +
-    //     '-Dsonar.language=java ' +
-    //     '-Dsonar.sources=src/ '+
-    //     '-Dsonar.tests=src/test/ '+
-    //     '-Dsonar.test.inclusions=**/*Test*/** '+
-    //     '-Dsonar.exclusions=**/*Test*/**'+
-    //     '-Dsonar.java.binaries=target/classes '
-    // }
+    // echo "=============== DONT FORGET ENABLE SONARQUBE AFTER SONARQUBE SERVER IS ACTIVE ==============="
+    withSonarQubeEnv('sonarqube') {
+        sh "mvn versions:set -DnewVersion=${newVersion}"
+        sh 'mvn clean ${command_maven} sonar:sonar ' +
+        "-Dsonar.host.url=${config.SONARQUBE_URL} " +
+        "-Dsonar.projectKey=${appName} " +
+        "-Dsonar.projectName=${appName} " +
+        "-Dsonar.projectVersion=${newVersion} " +
+        '-Dsonar.language=java ' +
+        '-Dsonar.sources=src/ '+
+        '-Dsonar.tests=src/test/ '+
+        '-Dsonar.test.inclusions=**/*Test*/** '+
+        '-Dsonar.exclusions=**/*Test*/**'+
+        '-Dsonar.java.binaries=target/classes '
+    }
   } // End Function
