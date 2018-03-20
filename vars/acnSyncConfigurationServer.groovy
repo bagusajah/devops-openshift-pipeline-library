@@ -24,8 +24,8 @@ def call(body){
       env_list = LIST_ENV[n]
       dir("${DIRECTORY_WORKSPACE}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}") {
       sh "curl -Ok ${S3_CONFIG_URL}/${COUNTRY_CODE}/${env_list}/${APP_NAME}/${APP_NAME}-${APP_VERSION}.zip"
-      sh "mkdir -p /${CONFIG_PATH}/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
-      sh "cp -rf ${DIRECTORY_WORKSPACE}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}/${APP_NAME}-${APP_VERSION}.zip  /${CONFIG_PATH}/${COUNTRY_CODE}/${env_list}/${APP_NAME}/"
+      sh "mkdir -p ${CONFIG_PATH}/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
+      sh "cp -rf ${DIRECTORY_WORKSPACE}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}/${APP_NAME}-${APP_VERSION}.zip  ${CONFIG_PATH}/${COUNTRY_CODE}/${env_list}/${APP_NAME}/"
     } 
   } 
 
