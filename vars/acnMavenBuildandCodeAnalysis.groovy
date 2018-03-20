@@ -12,9 +12,9 @@ def call(body) {
     def newVersion = config.VERSION
     def pushArtifactToNexus = config.pushArtifactToNexus
     
-    def command_maven = "package"
+    def commandmaven = "package"
     if ( pushArtifactToNexus == "true" ) {
-        command_maven = "deploy"
+        commandmaven = "deploy"
     } // End Condition command mvn for push to nexus
 
     def skipTests = config.skipTests ?: false
@@ -26,7 +26,7 @@ def call(body) {
     // echo "=============== DONT FORGET ENABLE SONARQUBE AFTER SONARQUBE SERVER IS ACTIVE ==============="
     withSonarQubeEnv('sonarqube') {
         sh "mvn versions:set -DnewVersion=${newVersion}"
-        sh 'mvn clean ${command_maven} sonar:sonar ' +
+        sh 'mvn clean ${commandmaven} sonar:sonar ' +
         "-Dsonar.host.url=${config.SONARQUBE_URL} " +
         "-Dsonar.projectKey=${appName} " +
         "-Dsonar.projectName=${appName} " +
