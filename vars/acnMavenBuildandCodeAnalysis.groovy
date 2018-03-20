@@ -26,13 +26,14 @@ def call(body) {
     // echo "=============== DONT FORGET ENABLE SONARQUBE AFTER SONARQUBE SERVER IS ACTIVE ==============="
     withSonarQubeEnv('sonarqube') {
         sh "mvn versions:set -DnewVersion=${newVersion}"
-        sh 'mvn clean ${commandmaven} sonar:sonar ' +
+        echo "commandmaven ${commandmaven} mvn clean ${commandmaven}"
+        sh "mvn clean ${commandmaven} sonar:sonar " +
         "-Dsonar.host.url=${config.SONARQUBE_URL} " +
         "-Dsonar.projectKey=${appName} " +
         "-Dsonar.projectName=${appName} " +
         "-Dsonar.projectVersion=${newVersion} " +
-        '-Dsonar.language=java ' +
-        '-Dsonar.sources=src/ '+
+        "-Dsonar.language=java " +
+        "-Dsonar.sources=src/ "+
         '-Dsonar.tests=src/test/ '+
         '-Dsonar.test.inclusions=**/*Test*/** '+
         '-Dsonar.exclusions=**/*Test*/**'+
