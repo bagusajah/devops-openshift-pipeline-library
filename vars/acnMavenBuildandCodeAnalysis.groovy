@@ -18,11 +18,7 @@ def call(body) {
     } // End Condition command mvn for push to nexus
 
     def skipTests = config.skipTests ?: false
-
-    // echo "=============== TEMP : WAITING SONARQUBE SERVER ==============="
-    // sh "mvn versions:set -DnewVersion=${newVersion}"
-    // sh "mvn clean ${command_maven}"
-
+    
     withSonarQubeEnv('sonarqube') {
         sh "mvn versions:set -DnewVersion=${newVersion}"
         sh "mvn clean ${commandmaven} sonar:sonar " +
