@@ -24,6 +24,8 @@ def call(body) {
 
     def nameBuildconfig = "${GLOBAL_VARS['APP_SCOPE']}-${GLOBAL_VARS['APP_NAME']}-docker-buildconfig"
 
+    echo "in ACNIMAGEBUILD"
+
     sh "sed -i \"s/#APP_SCOPE#/${appScope}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s/#APP_LANG#/${appLang}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s/#APP_VERSION#/${appVersion}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/buildconfig-docker-image-from-dir.yaml"
