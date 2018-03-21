@@ -19,7 +19,8 @@ def call(Map parameters = [:], body) {
         nodeSelector: 'deployment-nodegroup=vulcan',
         containers: [
             [
-                name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/', resourceLimitMemory: '512Mi'
+                name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/', resourceLimitMemory: '512Mi',
+                privileged: true
             ],
             [
                 name: 'maven', image: "${mavenImage}", command: '/bin/sh -c', args: 'cat', ttyEnabled: true, workingDir: '/home/jenkins/',
@@ -27,13 +28,14 @@ def call(Map parameters = [:], body) {
                     envVar(key: 'MAVEN_OPTS', value: '-Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn')
                 ],
                 resourceLimitMemory: '1024Mi',
-                alwaysPullImage: true,
+                alwaysPullImage: true
             ]
         ],
         volumes: [
             secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
             persistentVolumeClaim(claimName: 'jenkins-maven-pvc', mountPath: '/root/.mvnrepository'),
-            persistentVolumeClaim(claimName: 'configuration-data-pvc', mountPath: '/app-configs')
+            persistentVolumeClaim(claimName: 'configuration-data-pvc', mountPath: '/app-configs'),
+            hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
         ]
     ) 
     {
