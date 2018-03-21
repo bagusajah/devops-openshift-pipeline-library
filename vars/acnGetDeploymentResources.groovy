@@ -62,7 +62,8 @@ items:
     def imageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${config.appName}:${config.appVersion}"
     //sh "echo pipeline/${platformType}/${versionOpenshift}/${applicationType}/${deploymentYamlType}.yaml"
     sh "echo replace deployment"
-    def deploymentYaml = readFile encoding: 'UTF-8', file: '"pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"'
+    //def deploymentYaml = readFile encoding: 'UTF-8', file: '"pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"'
+    def deploymentYaml = readFile('pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml')
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
