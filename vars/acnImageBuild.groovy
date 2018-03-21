@@ -10,7 +10,7 @@ def call(body) {
     
     def appScope = config.appScope
     def directory = config.directory
-    def openshiftVersionFolder = config.openshiftVersion
+    def openshiftVersionFolder = config.openshiftVersionFolder
     def appLang = config.appLang
     def appVersion = config.appVersion
     def countryCode = config.countryCode
