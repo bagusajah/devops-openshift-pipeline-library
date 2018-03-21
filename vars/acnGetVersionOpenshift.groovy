@@ -1,5 +1,5 @@
 #!/usr/bin/groovy
-import com.ascendmoney.vulcan.Utils
+import com.ascendmoney.cicd.Utils
 
 def call(body) {
 

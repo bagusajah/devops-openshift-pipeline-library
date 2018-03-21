@@ -6,6 +6,6 @@
  * @return
  */
 def call(String prefix = '') {
-    def repo = new com.ascendmoney.vulcan.Utils().getRepoName()
+    def repo = new com.ascendmoney.cicd.Utils().getRepoName()
     return "${prefix}${repo}_${env.BUILD_NUMBER}".replaceAll('-', '_').replaceAll('/', '_').replaceAll(' ', '_')
 }

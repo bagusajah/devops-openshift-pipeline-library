@@ -1,9 +1,9 @@
-package com.ascendmoney.vulcan
+package com.ascendmoney.cicd
 
 import com.cloudbees.groovy.cps.NonCPS
 
 def sayHello() {
-    return "Hi, I am vulcan"
+    return "Hi, I am openshift-cicd"
 }
 
 def getRepoName(){
