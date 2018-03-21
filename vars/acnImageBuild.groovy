@@ -22,7 +22,7 @@ def call(body) {
     def imageType = config.imageType
     // application, mountebank
 
-    def nameBuildconfig = "${GLOBAL_VARS['APP_SCOPE']}-${GLOBAL_VARS['APP_NAME']}-docker-buildconfig"
+    def nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
 
     echo "in ACNIMAGEBUILD"
 
@@ -42,7 +42,7 @@ def call(body) {
             }
         } else if ( imageType == "mountebank" ) {
             acnPrepareFileMountebank()
-            nameBuildconfig = "${GLOBAL_VARS['APP_SCOPE']}-${GLOBAL_VARS['APP_NAME']}-mountebank-docker-buildconfig"
+            nameBuildconfig = "${appScope}-${appName}-mountebank-docker-buildconfig"
         }
     	
   	} // End directory for prepare buildconfig
