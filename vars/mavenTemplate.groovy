@@ -16,7 +16,7 @@ def call(Map parameters = [:], body) {
         label: label,
         serviceAccount: 'jenkins', 
         restartPolicy: 'OnFailure', 
-        nodeSelector: 'deployment-nodegroup=vulcan',
+        nodeSelector: 'deployment-nodegroup=openshift-cicd',
         containers: [
             [
                 name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/', resourceLimitMemory: '512Mi',
