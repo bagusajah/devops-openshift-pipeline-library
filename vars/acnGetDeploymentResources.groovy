@@ -14,20 +14,25 @@ def call(body) {
 
     def expose = config.exposeApp ?: 'true'
     def yaml
-
     def platformType = 'openshift-artifacts'
-
     // Condition type of fabric8 artifact
     def applicationType = 'application'
     def appName = config.appName
     if ( appName.contains("mountebank") ){
         applicationType = 'mountebank'
     }
+
     def versionOpenshift = config.versionOpenshift
     def networkPolicy = config.networkPolicy
     def timeZone = config.timeZone ?: "Etc/UTC"
     def runwayName = config.runwayName ?: "FABRIC8"
     def certName = config.certName ?: "None"
+    if ( config.tls_enable == "true" ){
+        routeType = 'route-tls'
+    }else
+    {
+        routeType = 'route'
+    }
     def replicaNum = config.replicaNum
     sh "echo replicaNum ${replicaNum}"
     def rollingUpdateSurge = replicaNum.toInteger() * 2
@@ -53,34 +58,42 @@ items:
 """
     
     def namespace = utils.getNamespace()
-    def imageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${config.appName}:${config.version}"
+    def imageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${config.appName}:${config.appVersion}"
     //sh "echo pipeline/${platformType}/${versionOpenshift}/${applicationType}/${deploymentYamlType}.yaml"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
-    deploymentYaml = deploymentYaml.replaceAll(/#GIT_HASH#/, config.gitHash)
-    deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.version)
-    deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
-    deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
+    deploymentYaml = deploymentYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
+    deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
     deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
+    deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
+    deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
+    deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, config.appStartupArgs)
     deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
-    deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite)
-    deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
+    deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) + """
 """
-    
     def serviceYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
     serviceYaml = serviceYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    serviceYaml = serviceYaml.replaceAll(/#APP_VERSION#/, config.version)
-    serviceYaml = serviceYaml.replaceAll(/#GIT_HASH#/, config.gitHash)
-    serviceYaml = serviceYaml.replaceAll(/#INGRESS_HOSTNAME#/, config.ingressHostname) + """
+    serviceYaml = serviceYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
+    serviceYaml = serviceYaml.replaceAll(/#APP_LANG#/, config.appLang)
+    serviceYaml = serviceYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
+    serviceYaml = serviceYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
+    serviceYaml = serviceYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode) + """
+
 """
 
-    def ingressYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + 'route.yaml'
-    ingressYaml = ingressYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    ingressYaml = ingressYaml.replaceAll(/#CERT_NAME#/, certName)
-    ingressYaml = ingressYaml.replaceAll(/#INGRESS_HOSTNAME#/, config.ingressHostname) + """
+    def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
+    routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
+    routeYaml = routeYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
+    routeYaml = routeYaml.replaceAll(/#APP_LANG#/, config.appLang)
+    routeYaml = routeYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
+    routeYaml = routeYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
+    routeYaml = routeYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
+    routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, config.routeHostname) 
+    routeYaml = routeYaml.replaceAll(/#ROUTE_PATH#/, config.routePath) + """
 """
     if (networkPolicy != "ALL") {
         def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
@@ -91,15 +104,15 @@ items:
 
     if (flow.isOpenShift()){
         if (networkPolicy != "ALL") {
-            yaml = list + serviceYaml + deploymentYaml + ingressYaml + networkpolicyYaml
+            yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
         } else {
-            yaml = list + serviceYaml + deploymentYaml + ingressYaml
+            yaml = list + serviceYaml + deploymentYaml + routeYaml
         }
     } else {
         if (networkPolicy != "ALL") {
-            yaml = list + serviceYaml + deploymentYaml + ingressYaml + networkpolicyYaml
+            yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
         } else {
-            yaml = list + serviceYaml + deploymentYaml + ingressYaml
+            yaml = list + serviceYaml + deploymentYaml + routeYaml
         }
     }
 
