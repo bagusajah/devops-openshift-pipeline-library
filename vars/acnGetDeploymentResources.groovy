@@ -60,7 +60,7 @@ items:
     //def namespace = utils.getNamespace()
     def namespace = "acm-cicd"
     def imageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${config.appName}:${config.appVersion}"
-    sh "echo pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
+    sh "cat pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
     sh "echo replace deployment"
     //def deploymentYaml = readFile encoding: 'UTF-8', file: '"pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"'
     def deploymentYaml = readFile('pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml')
