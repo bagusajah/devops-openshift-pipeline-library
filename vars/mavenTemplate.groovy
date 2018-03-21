@@ -19,8 +19,7 @@ def call(Map parameters = [:], body) {
         nodeSelector: 'deployment-nodegroup=openshift-cicd',
         containers: [
             [
-                name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/', resourceLimitMemory: '512Mi',
-                privileged: true
+                name: 'jnlp', image: "${jnlpImage}", args: '${computer.jnlpmac} ${computer.name}', workingDir: '/home/jenkins/', resourceLimitMemory: '512Mi'
             ],
             [
                 name: 'maven', image: "${mavenImage}", command: '/bin/sh -c', args: 'cat', ttyEnabled: true, workingDir: '/home/jenkins/',
@@ -34,8 +33,7 @@ def call(Map parameters = [:], body) {
         volumes: [
             secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
             persistentVolumeClaim(claimName: 'jenkins-maven-pvc', mountPath: '/root/.mvnrepository'),
-            persistentVolumeClaim(claimName: 'configuration-data-pvc', mountPath: '/app-configs'),
-            hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')
+            persistentVolumeClaim(claimName: 'configuration-data-pvc', mountPath: '/app-configs')
         ]
     ) 
     {
