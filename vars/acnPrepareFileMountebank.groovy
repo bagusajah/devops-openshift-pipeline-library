@@ -1,6 +1,5 @@
 #!/usr/bin/groovy
 import com.ascendmoney.cicd.Utils
-import java.io.File
 
 def call(body) {
   def config = [:]
@@ -16,8 +15,9 @@ def call(body) {
   def pathMockdata = ""
   def GIT_INTEGRATION_TEST_NAME = ""
 
+  sh "cp ${directory}/pipeline/dockerfiles/mountebank/Dockerfile ${directory}/ocp-artifact-mountebank"
   if ( GLOBAL_VARS['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
-    pathMockdata = "${directory}/pipeline/dockerfiles/mountebank"
+    sh "cp ${directory}/pipeline/dockerfiles/mountebank/startup.sh ${directory}/ocp-artifact-mountebank"
   } else {
     GIT_TEST = GLOBAL_VARS['GIT_INTEGRATION_TEST_LIST_0']
     GIT_INTEGRATION_TEST_CUT = GIT_TEST.substring(GIT_TEST.lastIndexOf("/") + 1)
@@ -29,10 +29,9 @@ def call(body) {
     }
     def file_existing = sh script: "[ -f ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/mockdata/startup.sh ] && echo \"Found\" || echo \"Not Found\"", returnStdout: true
     if ( file_existing.contains("Not") ) {
-      pathMockdata = "${directory}/pipeline/dockerfiles/mountebank"
+      sh "cp ${directory}/pipeline/dockerfiles/mountebank/startup.sh ${directory}/ocp-artifact-mountebank"
     } else{
-      sh "cp ${directory}/pipeline/dockerfiles/mountebank/Dockerfile ${pathMockdata}"
+      sh "cp ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/mockdata/* ${directory}/ocp-artifact-mountebank/"
     }
   }
-  return pathMockdata;
-} // End method prepare file mountebank startup 
+} // End method prepare file mountebank 
