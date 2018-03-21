@@ -61,7 +61,8 @@ items:
     def namespace = "acm-cicd"
     def imageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${config.appName}:${config.appVersion}"
     //sh "echo pipeline/${platformType}/${versionOpenshift}/${applicationType}/${deploymentYamlType}.yaml"
-    def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
+    sh "echo replace deployment"
+    def deploymentYaml = readFile encoding: 'UTF-8', file: '"pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"'
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
@@ -76,6 +77,7 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
     deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) + """
 """
+    sh "echo replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
     serviceYaml = serviceYaml.replaceAll(/#ENV_NAME#/, config.envName)
     serviceYaml = serviceYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
@@ -85,7 +87,7 @@ items:
     serviceYaml = serviceYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode) + """
 
 """
-
+    sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
     routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
     routeYaml = routeYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
@@ -96,6 +98,7 @@ items:
     routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, config.routeHostname) 
     routeYaml = routeYaml.replaceAll(/#ROUTE_PATH#/, config.routePath) + """
 """
+    sh "echo replace networkpolicy"
     if (networkPolicy != "ALL") {
         def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
         networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
