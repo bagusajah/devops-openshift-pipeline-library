@@ -18,9 +18,6 @@ def call(body){
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"){
         sh "cp -rf ${directory}/update-config/${global_vars_files['COUNTRY_CODE']}/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
       }
-      dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/pre-prod"){
-        sh "cp -rf ${directory}/update-config/${global_vars_files['COUNTRY_CODE']}/pre-prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/pre-prod"
-      }
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"){
         sh "cp -rf ${directory}/update-config/${global_vars_files['COUNTRY_CODE']}/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
       }

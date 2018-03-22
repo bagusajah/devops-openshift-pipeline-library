@@ -9,7 +9,7 @@ def call(body){
   body()
 
   def GLOBAL_VARS = config.global_vars
-  def LIST_ENV = config.list_env
+  def LIST_ENV = ["dev", "qa", "staging", "prod"]
   def APP_VERSION = config.version
   def directory = config.directory
 
