@@ -103,11 +103,16 @@ items:
     sh "echo replace networkpolicy"
     if (networkPolicy != "ALL") {
     sh "echo test if"
-        def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
-        networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
-    """
-
-    }
+    def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) 
+    networkpolicyYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/#APP_LANG#/, config.appLang)
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)+ """
+"""
+    } //End replace netwockpolicy
 
     sh "echo merge atifacts"
         if (networkPolicy != "ALL") {
