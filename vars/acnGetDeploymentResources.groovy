@@ -109,7 +109,7 @@ items:
 
     }
 
-    sh "merge atifacts"
+    sh "echo merge atifacts"
         if (networkPolicy != "ALL") {
             yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
         } else {
