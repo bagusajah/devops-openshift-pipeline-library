@@ -145,7 +145,7 @@ def call(body) {
       dir("${directory}/robot/results/${environmentForWorkspace}"){
         step([
           $class : 'S3BucketPublisher',
-          profileName : 'fabric8-profile-s3',
+          profileName : 'openshift-profile-s3',
           entries: [[
             bucket: "${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}",
             selectedRegion: 'ap-southeast-1',
@@ -190,7 +190,7 @@ def call(body) {
           dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
             git credentialsId: 'bitbucket-credential', url: GIT_TEST
             sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
-            sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh"
+            sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh ${global_vars['APP_NAME']}"
             sh "cp -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
           }
         } else if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() > 1 ) {
@@ -207,7 +207,7 @@ def call(body) {
             dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
               git credentialsId: 'bitbucket-credential', url: GIT_TEST
               sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
-              sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh"
+              sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh ${global_vars['APP_NAME']}"
               sh "cp -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/results/${environmentForWorkspace}run/* ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
             } // End directory pull git
           } // End loop git more than 1
@@ -223,7 +223,7 @@ def call(body) {
           dir("${directory}/robot/results/${environmentForWorkspace}"){
             step([
               $class : 'S3BucketPublisher',
-              profileName : 'fabric8-profile-s3',
+              profileName : 'openshift-profile-s3',
               entries: [[
                 bucket: "${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}",
                 selectedRegion: 'ap-southeast-1',
