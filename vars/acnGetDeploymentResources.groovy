@@ -78,7 +78,8 @@ items:
     // deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
     // deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) 
     // deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
-
+    echo deploymentYaml
+    echo sh "echo replicaNum ${config.envName}"
 
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, 'xxx')
     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, 'xxx')
