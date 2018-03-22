@@ -72,8 +72,7 @@ def call(body){
   def object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
   
   // createEvent(json: object, index: "tracking-version")
-  sh "curl -X GET http://elasticsearch.${namespace}.svc:9200/_cat/indices?v"
-  sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d \"${jsonStr}\""
+  sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d \"${object}\""
 
   if ( flagFail == "FAIL" ) {
     def n = 2
@@ -105,7 +104,7 @@ def call(body){
       object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
       
       // createEvent(json: object, index: "tracking-version")
-      sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d \"${jsonStr}\""
+      sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d \"${object}\""
       n--
     }
   }
