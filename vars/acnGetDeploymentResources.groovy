@@ -50,10 +50,10 @@ def call(body) {
     //sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
 
     //def namespace = "acm-cicd" //fix namespaces
-    //def imageName = "${dockerRegistry}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
+    //def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     sh "cat pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
     sh "echo replace deployment"
-    sh "echo ${dockerRegistry}"
+    sh "echo ${dockerRegistryHost}"
     sh "echo ${dockerRegistryPort}"
     def list = """
 ---
@@ -81,7 +81,7 @@ items:
     // deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) 
     // deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
     echo deploymentYaml
-    sh "echo replicaNum ${config.envName}"
+        sh "echo replicaNum ${config.envName}"
 
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, 'xxx')
     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, 'xxx')
