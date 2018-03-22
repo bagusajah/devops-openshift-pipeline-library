@@ -101,24 +101,16 @@ items:
     routeYaml = routeYaml.replaceAll(/#ROUTE_PATH#/, config.routePath) + """
 """
     sh "echo replace networkpolicy"
-    sh "echo ${networkPolicy}"
     if (networkPolicy != "ALL") {
     sh "echo test if"
         def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
-    //     networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
-    // """
-    sh "cat ${networkpolicyYaml}"
+        networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
+    """
+
     }
 
-
-    if (flow.isOpenShift()){
-        if (networkPolicy != "ALL") {
-            yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
-        } else {
-            yaml = list + serviceYaml + deploymentYaml + routeYaml
-        }
-    } else {
-        if (networkPolicy != "ALL") {
+    sh "merge artifact"
+    if (networkPolicy != "ALL") {
             yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
         } else {
             yaml = list + serviceYaml + deploymentYaml + routeYaml
