@@ -25,21 +25,18 @@ def call(body){
     }
     git_hash_configuration = ""
   } else if ( global_vars_files['RUNWAY_NAME'] == "ECS" ){
-    // sh "mkdir -p ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration"
     dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}") {
       git credentialsId: 'bitbucket-credential', url: global_vars_files['GIT_ECS_CONFIGURATION']
       GIT_HASH_ECS_CONFIGURATION = sh script: "cd ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']} && git rev-parse --verify HEAD", returnStdout: true
       GIT_HASH_ECS_CONFIGURATION = GIT_HASH_ECS_CONFIGURATION.trim()
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"){
         sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
+        sh "rm -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging@tmp"
       }
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"){
         sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
+        sh "rm -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod@tmp"
       }
-      // sh "mkdir -p ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
-      // sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
-      // sh "mkdir -p ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
-      // sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
     }
     git_hash_configuration = GIT_HASH_ECS_CONFIGURATION
   } else if ( global_vars_files['RUNWAY_NAME'] == "TESSERACT" ){
