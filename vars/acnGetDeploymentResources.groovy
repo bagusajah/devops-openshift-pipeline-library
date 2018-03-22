@@ -53,8 +53,8 @@ def call(body) {
     //def imageName = "${dockerRegistry}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     sh "cat pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
     sh "echo replace deployment"
-    sh "echo ${imageName}"
-    sh "echo ${namespace}"
+    sh "echo ${dockerRegistry}"
+    sh "echo ${dockerRegistryPort}"
     def list = """
 ---
 apiVersion: v1
@@ -81,7 +81,7 @@ items:
     // deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) 
     // deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
     echo deploymentYaml
-    echo sh "echo replicaNum ${config.envName}"
+    sh "echo replicaNum ${config.envName}"
 
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, 'xxx')
     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, 'xxx')
