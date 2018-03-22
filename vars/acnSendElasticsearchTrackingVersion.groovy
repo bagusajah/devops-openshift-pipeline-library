@@ -68,7 +68,7 @@ def call(body){
   String jsonResult = "\"result\": \"${resultPipeline}\""
   String jsonStarttime = "\"start-time\": \"${startTime}\""
   String jsonEndtime = "\"end-time\": \"${endTime}\""
-  String jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime} }"
+  String jsonStr = "{ \"${jsonAppname}\", \"${jsonJobname}\", \"${jsobBuildnumber}\", \"${jsonEnvname}\", \"${jsonReruncondition}\", \"${jsonBuildartifactsonlyandskipopenshiftdeploy}\", \"${jsonDeploydevonly}\", \"${jsonGittag}\", \"${jsonGitauthorapplication}\", \"${jsonGithashapplication}\", \"${jsonRunwayname}\", \"${jsonAppversion}\", \"${jsonGithashopenshiftconfig}\", \"${jsonGithashecsconfig}\", \"${jsonGithashtesseractconfig}\", \"${jsonResult}\", \"${jsonStarttime}\", \"${jsonEndtime}\" }"
   def object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
   
   // createEvent(json: object, index: "tracking-version")
