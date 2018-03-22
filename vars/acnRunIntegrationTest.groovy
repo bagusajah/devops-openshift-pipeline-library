@@ -63,7 +63,7 @@ def call(body) {
         } else {
           echo "NOT QA env is ${environmentForWorkspace}"
           sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
-          sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
+          // sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
           dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
             git credentialsId: 'bitbucket-credential', url: GIT_TEST
             sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
@@ -113,7 +113,7 @@ def call(body) {
             GIT_INTEGRATION_TEST_NAME = GIT_INTEGRATION_TEST_CUT.minus(".git")
             if ( i == 0 ) {
               sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
-              sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
+              // sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
             }
             dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
               git credentialsId: 'bitbucket-credential', url: GIT_TEST
