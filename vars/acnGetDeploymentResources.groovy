@@ -46,8 +46,8 @@ def call(body) {
     def tokenSite = config.tokenSite ?: "alp-token.tmn-dev.com"
     def appStartupArgs = config.appStartupArgs ?: "unknown"
 
-    sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
-    sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+    //sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+    //sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
 
     def namespace = "acm-cicd" //fix namespaces
     def imageName = "${dockerRegistry}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
