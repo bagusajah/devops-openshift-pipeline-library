@@ -102,7 +102,7 @@ items:
 """
     sh "echo replace networkpolicy"
     if (networkPolicy != "ALL") {
-    //     //def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
+        def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
     //     networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
     // """
     sh "cat ${networkpolicyYaml}"
