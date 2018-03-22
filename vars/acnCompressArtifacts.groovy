@@ -40,7 +40,6 @@ def call(body){
     }
     git_hash_configuration = GIT_HASH_ECS_CONFIGURATION
   } else if ( global_vars_files['RUNWAY_NAME'] == "TESSERACT" ){
-    // sh "mkdir -p ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration"
     dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}") {
       git credentialsId: 'bitbucket-credential', url: global_vars_files['GIT_TESSERACT_CONFIGURATION']
       GIT_HASH_TESSERACT_CONFIGURATION = sh script: "cd ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']} && git rev-parse --verify HEAD", returnStdout: true
@@ -51,10 +50,6 @@ def call(body){
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"){
         sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
       }
-      // sh "mkdir -p ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
-      // sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
-      // sh "mkdir -p ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
-      // sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/prod"
     }
     sh "touch ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.txt"
     sh "echo \"package_version=${APP_VERSION}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.txt"
