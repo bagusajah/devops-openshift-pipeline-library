@@ -72,6 +72,7 @@ def call(body){
   def object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
   
   // createEvent(json: object, index: "tracking-version")
+  sh "curl -X GET http://elasticsearch.${namespace}.svc:9200/_cat/indices?v"
   sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d \"${jsonStr}\""
 
   if ( flagFail == "FAIL" ) {
