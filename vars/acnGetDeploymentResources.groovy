@@ -15,22 +15,22 @@ def call(body) {
     def expose = config.exposeApp ?: 'true'
     def yaml
     def platformType = 'openshift-artifacts'
-    // Condition type of fabric8 artifact
+
     def applicationType = 'application'
     def appName = config.appName
     if ( appName.contains("mountebank") ){
         applicationType = 'mountebank'
     }
-
+    def dockerRegistryHost = acnGetDockerRegistryServiceHost()
+    def dockerRegistryPort = 5000
     def versionOpenshift = config.versionOpenshift
     def networkPolicy = config.networkPolicy
     def timeZone = config.timeZone ?: "Etc/UTC"
-    def runwayName = config.runwayName ?: "FABRIC8"
+    def runwayName = config.runwayName ?: "OPENSHIFT"
     def certName = config.certName ?: "None"
     if ( config.tls_enable == "true" ){
         routeType = 'route-tls'
-    }else
-    {
+    }else{
         routeType = 'route'
     }
     def replicaNum = config.replicaNum
@@ -57,27 +57,28 @@ kind: List
 items:
 """
     
-//     //def namespace = utils.getNamespace()
-//     def namespace = "acm-cicd"
-//     def imageName = "${env.FABRIC8_DOCKER_REGISTRY_SERVICE_HOST}:${env.FABRIC8_DOCKER_REGISTRY_SERVICE_PORT}/${namespace}/${config.appName}:${config.appVersion}"
-//     sh "cat pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
-//     sh "echo replace deployment"
-//     def deploymentYaml = readFile encoding: 'UTF-8', file: '"pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"'
-//     //def deploymentYaml = readFile('pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml')
-//     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
-//     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
-//     deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
-//     deploymentYaml = deploymentYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
-//     deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
-//     deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
-//     deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
-//     deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
-//     deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
-//     deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
-//     deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, config.appStartupArgs)
-//     deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
-//     deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) + """
-// """
+    //def namespace = utils.getNamespace()
+    def namespace = "acm-cicd"
+    def imageName = "${dockerRegistry}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
+    sh "cat pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
+    sh "echo replace deployment"
+    def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
+    //def deploymentYaml = readFile('pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml')
+    deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
+    deploymentYaml = deploymentYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
+    deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
+    deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
+    deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
+    deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
+    deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, config.appStartupArgs)
+    deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
+    deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) 
+    deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
+"""
     sh "echo replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
     serviceYaml = serviceYaml.replaceAll(/#ENV_NAME#/, config.envName)
