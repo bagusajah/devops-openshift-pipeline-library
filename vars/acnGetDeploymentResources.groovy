@@ -64,20 +64,36 @@ items:
     sh "echo replace deployment"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     //def deploymentYaml = readFile('pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml')
-    deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
-    deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
-    deploymentYaml = deploymentYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
-    deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
-    deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
-    deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
-    deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
-    deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
-    deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
-    deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, config.appStartupArgs)
-    deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
-    deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) 
-    deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
+    // deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
+    // deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
+    // deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
+    // deploymentYaml = deploymentYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
+    // deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
+    // deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
+    // deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
+    // deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
+    // deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
+    // deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
+    // deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, config.appStartupArgs)
+    // deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, vaultSite)
+    // deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, tokenSite) 
+    // deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
+
+
+    deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#SVC_GROUP#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#VAULT_SITE#/, 'xxx')
+    deploymentYaml = deploymentYaml.replaceAll(/#TOKEN_SITE#/, 'xxx') 
+    deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, 'xxx') + """
 """
     sh "echo replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
