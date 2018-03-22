@@ -105,17 +105,17 @@ items:
     sh "echo test if"
         def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
         networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
-"""
+    """
 
     }
 
-    sh "merge artifact"
-    if (networkPolicy != "ALL") {
+    sh "merge atifacts"
+        if (networkPolicy != "ALL") {
             yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
         } else {
             yaml = list + serviceYaml + deploymentYaml + routeYaml
         }
-    }
+    
 
     echo 'using resources:\n' + yaml
     return yaml
