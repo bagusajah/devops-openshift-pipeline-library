@@ -15,8 +15,6 @@ def call(body) {
     def appVersion = config.appVersion
     def countryCode = config.countryCode
     def appName = config.appName
-    def dockerRegistry = config.dockerRegistry
-
     def packageExtension = config.packageExtension
     // jar, war, tar.gz
     def imageType = config.imageType
@@ -25,6 +23,8 @@ def call(body) {
     def nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
 
     echo "in ACNIMAGEBUILD"
+
+    def dockerRegistry = acnGetDockerRegistryServiceHost()
 
     sh "sed -i \"s/#APP_SCOPE#/${appScope}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s/#APP_LANG#/${appLang}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
