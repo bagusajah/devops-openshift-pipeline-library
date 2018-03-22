@@ -24,8 +24,6 @@ def call(body) {
 
     def nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
 
-    echo "in ACNIMAGEBUILD"
-
     def dockerRegistry = acnGetDockerRegistryServiceHost()
 
     sh "sed -i \"s/#APP_SCOPE#/${appScope}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
