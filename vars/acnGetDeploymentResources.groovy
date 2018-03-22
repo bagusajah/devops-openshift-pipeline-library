@@ -101,7 +101,9 @@ items:
     routeYaml = routeYaml.replaceAll(/#ROUTE_PATH#/, config.routePath) + """
 """
     sh "echo replace networkpolicy"
+    sh "echo ${networkPolicy}"
     if (networkPolicy != "ALL") {
+    sh "echo test if"
         def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
     //     networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
     // """
