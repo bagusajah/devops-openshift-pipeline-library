@@ -8,14 +8,16 @@ def call(body) {
     body.delegate = config
     body()
     
-    def appScope = config.appScope
+    def GLOBAL_VARS = config.global_vars
     def directory = config.directory
     def openshiftVersionFolder = config.openshiftVersionFolder
-    def appLang = config.appLang
     def appVersion = config.appVersion
-    def countryCode = config.countryCode
-    def appName = config.appName
-    def packageExtension = config.packageExtension
+
+    def appScope = GLOBAL_VARS['APP_SCOPE']
+    def appLang = GLOBAL_VARS['APP_LANG']
+    def countryCode = GLOBAL_VARS['COUNTRY_CODE']
+    def appName = GLOBAL_VARS['APP_NAME']
+    def packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
     // jar, war, tar.gz
     def imageType = config.imageType
     // application, mountebank
@@ -41,7 +43,10 @@ def call(body) {
                 sh "cp ${directory}/target/${appName}-${appVersion}.${packageExtension} ${directory}/ocp-artifact-${imageType}/"
             }
         } else if ( imageType == "mountebank" ) {
-            acnPrepareFileMountebank()
+            acnPrepareFileMountebank{
+                global_vars = GLOBAL_VARS
+                directory_workspace = directory
+            }
             nameBuildconfig = "${appScope}-${appName}-mountebank-docker-buildconfig"
         }
     	

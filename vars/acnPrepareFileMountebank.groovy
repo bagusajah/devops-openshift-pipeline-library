@@ -9,7 +9,7 @@ def call(body) {
 
   // request
   def GLOBAL_VARS = config.global_vars
-  def directory = config.directory
+  def directory = config.directory_workspace
 
   // more variables
   def pathMockdata = ""
