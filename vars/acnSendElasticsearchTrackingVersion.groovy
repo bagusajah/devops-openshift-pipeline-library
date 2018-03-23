@@ -26,17 +26,22 @@ def call(body){
   def envList = ["dev", "qa", "staging"]
   def flagFail = ""
 
+  def version_mock = ""
+
   if ( appVersion == "FAIL" ) {
     // FAIL_dev
     flagFail = "FAIL"
     countSendToElastic = envName == "dev" ? "2" : envName == "qa" ? "1" : envName == "staging" ? "0" : "waiting"
     def APP_URL_TYPE_SERVICE = new URL("${globalVariablesList['PROTOCAL_APPLICATION']}://${globalVariablesList['APP_NAME']}.${envOpenshift}.svc${globalVariablesList['PATH_INFO']}")
-    def rs = restGetURL{
-      authString = ""
-      url = APP_URL_TYPE_SERVICE
-    }
-    sh "echo application version : ${rs.build.version}"
-    appVersion = rs.build.version
+    // def rs = restGetURL{
+    //   authString = ""
+    //   url = APP_URL_TYPE_SERVICE
+    // }
+    // sh "echo application version : ${rs.build.version}"
+    // appVersion = rs.build.version
+    echo "======= mock version ======="
+    version_mock = "1.0.1-70"
+    app_version = version_mock + "-retest"
   }
 
   // ["git-tag-application", "git-author-application", "git-hash-application", "rerun-condition", "build-artifacts-only-and-skip-openshift-deploy"]
