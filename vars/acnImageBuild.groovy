@@ -12,6 +12,7 @@ def call(body) {
     def directory = config.directory
     def openshiftVersionFolder = config.openshiftVersionFolder
     def appVersion = config.appVersion
+    def namespace_cicd = config.namespace
 
     def appScope = GLOBAL_VARS['APP_SCOPE']
     def appLang = GLOBAL_VARS['APP_LANG']
@@ -20,9 +21,13 @@ def call(body) {
     def packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
     // jar, war, tar.gz
     def imageType = config.imageType
+    if ( imageType == "mountebank" ) {
+        appName = appName + "-mountebank"
+    }
     // application, mountebank
 
     def nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
+    def imageName = ""
 
     def dockerRegistry = acnGetDockerRegistryServiceHost()
 
@@ -46,7 +51,7 @@ def call(body) {
                 global_vars = GLOBAL_VARS
                 directory_workspace = directory
             }
-            nameBuildconfig = "${appScope}-${appName}-mountebank-docker-buildconfig"
+            nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
         }
     	
   	} // End directory for prepare buildconfig
@@ -55,5 +60,7 @@ def call(body) {
         sh "oc apply -f ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
         sh "oc start-build ${nameBuildconfig} --from-dir=${directory}/ocp-artifact-${imageType}/ --follow"
     }
+
+    return imageName = "${dockerRegistry}:5000/${namespace_cicd}/${appName}:${appVersion}"
 
 } // End Function

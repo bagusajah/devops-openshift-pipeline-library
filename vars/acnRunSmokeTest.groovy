@@ -28,14 +28,11 @@ def call(body) {
     error "No git to execute"
   } else {
     if ( rerun_condition_action == conditionForGetVersion ){
-      // def result = restGetURL{
-      //     authString = ""
-      //     url = app_url_type_service
-      // }
-      // app_version = result.build.version + "-retest"
-      echo "======= mock version ======="
-      version_mock = "1.0.1-98"
-      app_version = version_mock + "-retest"
+      def result = restGetURL{
+          authString = ""
+          url = app_url_type_service
+      }
+      app_version = result.build.version + "-retest"
     }
     if ( test_tools == 'robot' ) {
         dir("${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){

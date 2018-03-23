@@ -18,14 +18,11 @@ def call(body){
   def directory = config.directory_workspace
 
   if ( rerun_condition_action == conditionForGetVersion ){
-    // def result = restGetURL{
-    //   authString = ""
-    //   url = app_url_type_service
-    // }
-    // app_version = result.build.version + "-retest"
-    echo "======= mock version ======="
-    version_mock = "1.0.1-98"
-    app_version = version_mock + "-retest"
+    def result = restGetURL{
+      authString = ""
+      url = app_url_type_service
+    }
+    app_version = result.build.version + "-retest"
   }
 
   dir("${directory}/system_integration_test"){

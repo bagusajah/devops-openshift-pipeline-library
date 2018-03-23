@@ -14,24 +14,16 @@ def call(body){
 
   // def responseVersion = ""
   def rs = ""
-  def version_mock = "1.0.1-98"
 
   try {
     timeout(time: 10, unit: 'MINUTES'){
       waitUntil {
-        // rs = restGetURL{
-        //   authString = ""
-        //   url = APP_URL_OPENSHIFT_FORMAT
-        // }
-        // echo "expect ${APP_VERSION} but application version is ${rs.build.version}"
-        // if (rs.build.version == APP_VERSION){
-        //   return true
-        // }else {
-        //   return false
-        // }
-        echo "===== mock version ======"
-        echo "expect ${APP_VERSION} but application version is ${version_mock}"
-        if (version_mock == APP_VERSION){
+        rs = restGetURL{
+          authString = ""
+          url = APP_URL_OPENSHIFT_FORMAT
+        }
+        echo "expect ${APP_VERSION} but application version is ${rs.build.version}"
+        if (rs.build.version == APP_VERSION){
           return true
         }else {
           return false

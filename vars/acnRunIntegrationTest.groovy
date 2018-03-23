@@ -19,22 +19,17 @@ def call(body) {
   def test_tools = config.test_tools
   def directory = config.directory
 
-  def version_mock = ""
-
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
     slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because no git to execute'. ${env.BUILD_URL}")
     error "No git to execute"
   } else {
     if ( rerun_condition_action == conditionForGetVersion ){
-      // def result = restGetURL{
-      //   authString = ""
-      //   url = app_url_type_service
-      // }
-      // app_version = result.build.version + "-retest"
-      echo "======= mock version ======="
-      version_mock = "1.0.1-98"
-      app_version = version_mock + "-retest"
+      def result = restGetURL{
+        authString = ""
+        url = app_url_type_service
+      }
+      app_version = result.build.version + "-retest"
     }
     // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
 
