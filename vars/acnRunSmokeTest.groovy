@@ -34,7 +34,7 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version_mock = "1.0.1-89"
+      version_mock = "1.0.1-90"
       app_version = version_mock + "-retest"
     }
     if ( test_tools == 'robot' ) {
