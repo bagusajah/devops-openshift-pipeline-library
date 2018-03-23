@@ -14,7 +14,7 @@ def call(body){
 
   // def responseVersion = ""
   def rs = ""
-  def version_mock = "1.0.0-68"
+  def version_mock = "1.0.0-69"
 
   try {
     timeout(time: 10, unit: 'MINUTES'){
@@ -23,14 +23,14 @@ def call(body){
         //   authString = ""
         //   url = APP_URL_OPENSHIFT_FORMAT
         // }
-        // sh "echo application version : ${rs.build.version}"
+        // echo "expect ${APP_VERSION} but application version is ${rs.build.version}"
         // if (rs.build.version == APP_VERSION){
         //   return true
         // }else {
         //   return false
         // }
         echo "===== mock version ======"
-        sh "echo application version : ${version_mock}"
+        echo "expect ${APP_VERSION} but application version is ${version_mock}"
         if (version_mock == APP_VERSION){
           return true
         }else {
