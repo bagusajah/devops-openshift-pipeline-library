@@ -9,36 +9,7 @@ def call(body) {
   body.delegate = config
   body()
 
-  if (config.url == null){
-    error "No URL found"
-  }
-
-  retry(3){
-    return getResult(config.url, config.authString)
-  }
-}
-
-@NonCPS
-def getResult(url, authString){
-  echo "${url}"
-  HttpURLConnection connection = url.openConnection()
-  if(authString != null && authString.length() > 0)
-  {
-    connection.setRequestProperty("Authorization", "Bearer ${authString}")
-  }
-  connection.setRequestMethod("GET")
-  connection.setDoInput(true)
-  def rs = null
-  try {
-    connection.connect()
-    rs = new JsonSlurperClassic().parse(new InputStreamReader(connection.getInputStream(),"UTF-8"))
-
-  } catch(e){
-    def mockResult = "{\"build\":{\"version\":\"Cannot get version because service not available\"}}"
-    rs = new JsonSlurperClassic().parseText(mockResult)
-  } finally {
-    connection.disconnect()
-  }
-  echo 'returning'
-  return rs
+  def url = config.url
+  def result = sh script: "curl -k -X GET ${url}", returnStdout: true
+  return result
 }
