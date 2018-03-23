@@ -58,8 +58,7 @@ kind: List
 items:
 """
     
-    //def namespace = utils.getNamespace()
-    def namespace = "acm-cicd" //fix namespaces
+    def namespace = config.namespace //fix namespaces
     def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
 
