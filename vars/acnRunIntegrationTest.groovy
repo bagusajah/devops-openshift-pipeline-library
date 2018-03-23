@@ -33,7 +33,7 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version_mock = "1.0.1-75"
+      version_mock = "1.0.1-76"
       app_version = version_mock + "-retest"
     }
     // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
@@ -42,10 +42,11 @@ def call(body) {
 
     if ( test_tools == "robot" ) {
       sh "echo START RUN INTEGRATION TEST"
-      dir("${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
-        sh "touch init.txt"
-        sh "rm -rf init.txt"
-      }
+      sh "mkdir -p ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
+      // dir("${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+      //   sh "touch init.txt"
+      //   sh "rm -rf init.txt"
+      // }
       dir("${directory}/robot/results/${environmentForWorkspace}_integration/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
       }
       // sh "mkdir -p ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
