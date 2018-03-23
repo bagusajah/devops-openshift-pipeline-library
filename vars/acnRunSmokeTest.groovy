@@ -34,11 +34,13 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version_mock = "1.0.1-83"
+      version_mock = "1.0.1-84"
       app_version = version_mock + "-retest"
     }
     if ( test_tools == 'robot' ) {
         dir("${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+          sh "touch init.txt"
+          sh "rm -rf init.txt"
         }
         if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 1 ) {
             git_integration_test = "GIT_INTEGRATION_TEST_LIST_0"
