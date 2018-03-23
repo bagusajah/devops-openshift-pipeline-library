@@ -40,7 +40,7 @@ def call(body){
     // sh "echo application version : ${rs.build.version}"
     // appVersion = rs.build.version
     echo "======= mock version ======="
-    version_mock = "1.0.1-95"
+    version_mock = "1.0.1-98"
     app_version = version_mock + "-retest"
   }
 
