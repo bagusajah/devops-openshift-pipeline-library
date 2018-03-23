@@ -18,18 +18,22 @@ def call(body){
   def directory = config.directory_workspace
 
   if ( rerun_condition_action == conditionForGetVersion ){
-    def result = restGetURL{
-      authString = ""
-      url = app_url_type_service
-    }
-    app_version = result.build.version + "-retest"
+    // def result = restGetURL{
+    //   authString = ""
+    //   url = app_url_type_service
+    // }
+    // app_version = result.build.version + "-retest"
+    echo "======= mock version ======="
+    version_mock = "1.0.1-95"
+    app_version = version_mock + "-retest"
   }
 
-  sh "mkdir -p ${directory}/system_integration_test"
-
-  dir("${directory}/system_integration_test") {
+  dir("${directory}/system_integration_test"){
     git credentialsId: 'bitbucket-credential', url: 'https://bitbucket.org/ascendcorp/acm-sit-robot.git'
-    sh "mkdir -p ${directory}/system_integration_test/tmp/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/"
+  }
+  dir("${directory}/system_integration_test/tmp/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+    sh "touch init.txt"
+    sh "rm -rf init.txt"
   }
   if ( test_tools == 'robot' ) {
     sh "chmod +x ${directory}/system_integration_test/scripts/${GLOBAL_VARS['APP_NAME']}/run.sh"
