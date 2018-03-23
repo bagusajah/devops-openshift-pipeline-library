@@ -38,6 +38,7 @@ def call(body) {
             sh "cp -rf ${directory}/pipeline/script ${directory}/ocp-artifact-${imageType}/"
             sh "cp ${directory}/pipeline/dockerfiles/application/Dockerfile ${directory}/ocp-artifact-${imageType}/"
             if ( appLang == "springboot" ) {
+                sh "ls -lt ${directory}/target/"
                 sh "cp ${directory}/target/${appName}-${appVersion}.${packageExtension} ${directory}/ocp-artifact-${imageType}/"
             }
         } else if ( imageType == "mountebank" ) {
