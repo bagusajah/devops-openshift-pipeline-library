@@ -34,8 +34,8 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version = "1.0.0-67"
-      app_version = version + "-retest"
+      version_mock = "1.0.0-68"
+      app_version = version_mock + "-retest"
     }
     if ( test_tools == 'robot' ) {
         dir("${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
