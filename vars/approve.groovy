@@ -10,19 +10,14 @@ def call(body) {
     def timeoutTime= config.timeoutTime ?: 30
     def proceedMessage = """Would you like to promote version ${config.version} to the next environment?
 """
-
-    // hubotApprove message: proceedMessage, failOnError: false
-    def id = approveRequestedEvent(app: "${env.JOB_NAME}", environment: config.environment)
-
     try {
-        timeout(time: timeoutTime, unit: 'MINUTES') {
+        timeout(time:timeoutTime, unit:'MINUTES') {
             input id: 'Proceed', message: "\n${proceedMessage}"
         }
-    } catch (err) {
-        approveReceivedEvent(id: id, approved: false)
+        echo "approve"
+    } catch(Exception e) {
         return false
-        // throw err
     }
-    approveReceivedEvent(id: id, approved: true)
     return true
+
 }
