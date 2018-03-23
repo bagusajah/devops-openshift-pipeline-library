@@ -19,7 +19,7 @@ def call(body) {
   def test_tools = config.test_tools
   def directory = config.directory
 
-  def version = ""
+  def version_mock = ""
 
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
@@ -33,8 +33,8 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version = "1.0.0-67"
-      app_version = version + "-retest"
+      version_mock = "1.0.0-67"
+      app_version = version_mock + "-retest"
     }
     // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
 
