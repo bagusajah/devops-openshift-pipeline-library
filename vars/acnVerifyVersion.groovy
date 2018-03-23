@@ -14,7 +14,7 @@ def call(body){
 
   // def responseVersion = ""
   def rs = ""
-  def version_mock = "1.0.1-72"
+  def version_mock = "1.0.1-73"
 
   try {
     timeout(time: 10, unit: 'MINUTES'){

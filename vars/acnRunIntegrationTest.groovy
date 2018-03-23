@@ -33,7 +33,7 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version_mock = "1.0.1-72"
+      version_mock = "1.0.1-73"
       app_version = version_mock + "-retest"
     }
     // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
@@ -78,9 +78,12 @@ def call(body) {
           // sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
           dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
             git credentialsId: 'bitbucket-credential', url: GIT_TEST
-            sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
-            sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh" 
-            sh "cp -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
+            // sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
+            // sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh" 
+            // sh "cp -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
+            sh "chmod +x scripts/${environmentForWorkspace}/run.sh"
+            sh "cd scripts/${environmentForWorkspace} && ./run.sh" 
+            // sh "cp -rf results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
           }
         } // End condition if run smoke test
       } else if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() > 1 ) {
