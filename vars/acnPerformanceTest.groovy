@@ -23,7 +23,7 @@ def call(body){
     // }
     // app_version = result.build.version + "-retest"
     echo "======= mock version ======="
-    version_mock = "1.0.1-80"
+    version_mock = "1.0.1-81"
     app_version = version_mock + "-retest"
   }
 
