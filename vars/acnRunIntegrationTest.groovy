@@ -33,7 +33,7 @@ def call(body) {
       // }
       // app_version = result.build.version + "-retest"
       echo "======= mock version ======="
-      version_mock = "1.0.1-76"
+      version_mock = "1.0.1-77"
       app_version = version_mock + "-retest"
     }
     // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
@@ -42,15 +42,14 @@ def call(body) {
 
     if ( test_tools == "robot" ) {
       sh "echo START RUN INTEGRATION TEST"
-      sh "mkdir -p ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
-      // dir("${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
-      //   sh "touch init.txt"
-      //   sh "rm -rf init.txt"
-      // }
-      dir("${directory}/robot/results/${environmentForWorkspace}_integration/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+      dir("${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+        sh "touch init.txt"
+        sh "rm -rf init.txt"
       }
-      // sh "mkdir -p ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
-      // sh "mkdir -p ${directory}/robot/results/${environmentForWorkspace}_integration/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
+      dir("${directory}/robot/results/${environmentForWorkspace}_integration/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+        sh "touch init.txt"
+        sh "rm -rf init.txt"
+      }
       def cmd_mrg = "rebot --nostatusrc --outputdir ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER} --output output.xml --merge"
       if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 1 ) {
         sh "echo 1 GIT"
@@ -78,7 +77,6 @@ def call(body) {
         } else {
           echo "NOT QA env is ${environmentForWorkspace}"
           sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
-          // sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
           dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
             git credentialsId: 'bitbucket-credential', url: GIT_TEST
             // sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
@@ -131,7 +129,6 @@ def call(body) {
             GIT_INTEGRATION_TEST_NAME = GIT_INTEGRATION_TEST_CUT.minus(".git")
             if ( i == 0 ) {
               sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
-              // sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
             }
             dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
               git credentialsId: 'bitbucket-credential', url: GIT_TEST
@@ -190,14 +187,16 @@ def call(body) {
       } // End Condition RobotPublisher
     } else if ( test_tools == "jmeter" ) {
       container(name: 'jmeter'){
-        sh "mkdir -p ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
+        dir("${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+          sh "touch init.txt"
+          sh "rm -rf init.txt"
+        }
         if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 1 ) {
           git_integration_test = "GIT_INTEGRATION_TEST_LIST_0"
           GIT_TEST = global_vars[git_integration_test]
           GIT_INTEGRATION_TEST_CUT = GIT_TEST.substring(GIT_TEST.lastIndexOf("/") + 1)
           GIT_INTEGRATION_TEST_NAME = GIT_INTEGRATION_TEST_CUT.minus(".git")
           sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
-          sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
           dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
             git credentialsId: 'bitbucket-credential', url: GIT_TEST
             sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
@@ -213,7 +212,6 @@ def call(body) {
             GIT_INTEGRATION_TEST_NAME = GIT_INTEGRATION_TEST_CUT.minus(".git")
             if ( i == 0 ) {
                 sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
-                sh "mkdir -p ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
             }
             dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
               git credentialsId: 'bitbucket-credential', url: GIT_TEST
