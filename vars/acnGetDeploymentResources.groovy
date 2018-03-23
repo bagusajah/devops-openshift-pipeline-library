@@ -62,7 +62,7 @@ items:
     def namespace = "acm-cicd" //fix namespaces
     def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
-    //def deploymentYaml = readFile('pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml')
+
     deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_SCOPE#/, config.appScope)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_LANG#/, config.appLang)
