@@ -19,7 +19,6 @@ def call(body){
     timeout(time: 10, unit: 'MINUTES'){
       waitUntil {
         rs = restGetURL{
-          authString = ""
           url = APP_URL_OPENSHIFT_FORMAT
         }
         echo "expect ${APP_VERSION} but application version is ${rs.build.version}"

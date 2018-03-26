@@ -1,5 +1,6 @@
 #!/usr/bin/groovy
 import com.ascendmoney.cicd.Utils
+import groovy.json.JsonSlurperClassic
 
 def call(body){
   def config = [:]
@@ -19,9 +20,9 @@ def call(body){
 
   if ( rerun_condition_action == conditionForGetVersion ){
     def result = restGetURL{
-      authString = ""
       url = app_url_type_service
     }
+    result = new JsonSlurperClassic().parseText(result)
     app_version = result.build.version + "-retest"
   }
 

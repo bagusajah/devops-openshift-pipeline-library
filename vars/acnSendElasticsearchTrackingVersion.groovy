@@ -2,6 +2,7 @@
 import java.io.File
 import groovy.json.*
 import java.text.SimpleDateFormat
+import groovy.json.JsonSlurperClassic
 
 def call(body){
   def config = [:]
@@ -32,9 +33,9 @@ def call(body){
     countSendToElastic = envName == "dev" ? "2" : envName == "qa" ? "1" : envName == "staging" ? "0" : "waiting"
     def APP_URL_TYPE_SERVICE = new URL("${globalVariablesList['PROTOCAL_APPLICATION']}://${globalVariablesList['APP_NAME']}.${envOpenshift}.svc${globalVariablesList['PATH_INFO']}")
     def rs = restGetURL{
-      authString = ""
       url = APP_URL_TYPE_SERVICE
     }
+    rs = new JsonSlurperClassic().parseText(rs)
     appVersion = rs.build.version
   }
 
