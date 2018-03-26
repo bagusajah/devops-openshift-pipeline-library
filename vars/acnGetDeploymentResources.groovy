@@ -102,8 +102,10 @@ items:
     routeYaml = routeYaml.replaceAll(/#SVC_GROUP#/, config.svcGroup)
     routeYaml = routeYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
     routeYaml = routeYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
-    routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, config.routeHostname) 
-    routeYaml = routeYaml.replaceAll(/#ROUTE_PATH#/, config.routePath) + """
+    if ( applicationType != 'mountebank') {
+    routeYaml = routeYaml.replaceAll(/#ROUTE_PATH#/, config.routePath)
+     }
+    routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, config.routeHostname) + """
 """
     sh "echo replace networkpolicy"
     if (networkPolicy != "ALL") {
