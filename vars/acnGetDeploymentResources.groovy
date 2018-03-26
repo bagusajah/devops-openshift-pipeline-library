@@ -27,7 +27,6 @@ def call(body) {
     def networkPolicy = config.networkPolicy
     def timeZone = config.timeZone ?: "Etc/UTC"
     def runwayName = config.runwayName ?: "OPENSHIFT"
-    def certName = config.certName ?: "None"
     if ( config.tls_enable == "true" ){
         routeType = 'route-tls'
     }else{
@@ -45,11 +44,14 @@ def call(body) {
     def vaultSite = config.vaultSite ?: "consul.service.th-aws-alpha.consul"
     def tokenSite = config.tokenSite ?: "alp-token.tmn-dev.com"
     def appStartupArgs = config.appStartupArgs ?: "unknown"
-
+    
+    if ( applicationType != 'mountebank') {
     sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
     sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
-
-    
+    } else {
+    sh "sed -i \"s/#MOUNTEBANK_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+    sh "sed -i \"s/#MOUNTEBANK_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+    }
     sh "echo replace deployment"
     def list = """
 ---
@@ -69,7 +71,11 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/#PIPELINE_VERSION#/, config.pipelineVersion)
     deploymentYaml = deploymentYaml.replaceAll(/#COUNTRY_CODE#/, config.countryCode)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
+    if ( applicationType != 'mountebank') {
     deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
+    } else {
+    deploymentYaml = deploymentYaml.replaceAll(/#DEFAULT_MOUNTEBANK_NUM_REPLICA#/, config.replicaNum)
+    }
     deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
     deploymentYaml = deploymentYaml.replaceAll(/#TIMEZONE#/, timeZone)
     deploymentYaml = deploymentYaml.replaceAll(/#APP_STARTUP_ARGS#/, config.appStartupArgs)
