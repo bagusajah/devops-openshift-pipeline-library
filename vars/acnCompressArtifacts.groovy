@@ -35,7 +35,7 @@ def call(body){
         sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
       }
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"){
-        sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/production/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"
+        sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"
       }
     }
     git_hash_configuration = GIT_HASH_ECS_CONFIGURATION
@@ -48,7 +48,7 @@ def call(body){
         sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
       }
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"){
-        sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/production/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"
+        sh "cp -rf ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/th/prod/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"
       }
     }
     sh "touch ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.txt"
