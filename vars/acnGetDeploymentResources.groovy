@@ -27,9 +27,15 @@ def call(body) {
     def networkPolicy = config.networkPolicy
     def timeZone = config.timeZone ?: "Etc/UTC"
     def runwayName = config.runwayName ?: "OPENSHIFT"
-    if ( config.tls_enable == "true" ){
-        routeType = 'route-tls'
-    }else{
+    if ( applicationType != 'mountebank' ) {
+        if ( config.appProtocal == "https" ){
+            routeType = 'route-tls'
+        }else{
+            routeType = 'route'
+        }
+    }
+    else
+    {
         routeType = 'route'
     }
     def replicaNum = config.replicaNum
