@@ -12,17 +12,21 @@ def call(body){
   def GLOBAL_VARS = config.global_vars
   def envList = config.envList
 
-  // def responseVersion = ""
   def rs = ""
+  def resultVersionApplication = null
 
   try {
     timeout(time: 10, unit: 'MINUTES'){
       waitUntil {
         rs = restGetURL{
           url = APP_URL_OPENSHIFT_FORMAT
+          appLang = GLOBAL_VARS['APP_LANG']
         }
-        echo "expect ${APP_VERSION} but application version is ${rs.build.version}"
-        if (rs.build.version == APP_VERSION){
+        if ( GLOBAL_VARS['APP_LANG'] == "springboot" ) {
+          resultVersionApplication = rs.build.version
+        }
+        echo "expect ${APP_VERSION} but application version is ${resultVersionApplication}"
+        if (resultVersionApplication == APP_VERSION){
           return true
         }else {
           return false
