@@ -18,13 +18,10 @@ def call(body){
   try {
     timeout(time: 10, unit: 'MINUTES'){
       waitUntil {
-        rs = restGetURL{
+        rs = restGetVersionApplicationURL{
           url = APP_URL_OPENSHIFT_FORMAT
-          appLang = GLOBAL_VARS['APP_LANG']
         }
-        if ( GLOBAL_VARS['APP_LANG'] == "springboot" ) {
-          resultVersionApplication = rs.build.version
-        }
+        resultVersionApplication = rs.build.version
         echo "expect ${APP_VERSION} but application version is ${resultVersionApplication}"
         if (resultVersionApplication == APP_VERSION){
           return true

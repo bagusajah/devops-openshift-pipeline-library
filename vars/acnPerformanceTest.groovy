@@ -18,10 +18,9 @@ def call(body){
   def directory = config.directory
 
   if ( rerun_condition_action == conditionForGetVersion ){
-    def result = restGetURL{
+    def result = restGetVersionApplicationURL{
       url = app_url_type_service
     }
-    result = new JsonSlurperClassic().parseText(result)
     app_version = result.build.version + "-retest"
   }
 

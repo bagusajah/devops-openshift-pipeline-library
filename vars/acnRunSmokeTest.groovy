@@ -29,10 +29,9 @@ def call(body) {
     error "No git to execute"
   } else {
     if ( rerun_condition_action == conditionForGetVersion ){
-      def result = restGetURL{
+      def result = restGetVersionApplicationURL{
           url = app_url_type_service
       }
-      result = new JsonSlurperClassic().parseText(result)
       app_version = result.build.version + "-retest"
     }
     if ( test_tools == 'robot' ) {

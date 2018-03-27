@@ -26,10 +26,9 @@ def call(body) {
     error "No git to execute"
   } else {
     if ( rerun_condition_action == conditionForGetVersion ){
-      def result = restGetURL{
+      def result = restGetVersionApplicationURL{
         url = app_url_type_service
       }
-      result = new JsonSlurperClassic().parseText(result)
       app_version = result.build.version + "-retest"
     }
     // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true

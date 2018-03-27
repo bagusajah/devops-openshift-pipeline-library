@@ -10,13 +10,10 @@ def call(body) {
   body()
 
   def url = config.url
-  def appLang = config.appLang
   def result = null
   def mockResult = null
 
-  if ( appLang == "springboot" ) {
-  	mockResult = "{\"build\":{\"version\":\"Cannot get version because service not available\"}}"	
-  }
+  mockResult = "{\"build\":{\"version\":\"Cannot get version because service not available\"}}"	
 
   try {
   	result = sh script: "curl -k -X GET ${url}", returnStdout: true

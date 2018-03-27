@@ -32,10 +32,9 @@ def call(body){
     flagFail = "FAIL"
     countSendToElastic = envName == "dev" ? "2" : envName == "qa" ? "1" : envName == "staging" ? "0" : "waiting"
     def APP_URL_TYPE_SERVICE = new URL("${globalVariablesList['PROTOCAL_APPLICATION']}://${globalVariablesList['APP_NAME']}.${envOpenshift}.svc${globalVariablesList['PATH_INFO']}")
-    def rs = restGetURL{
+    def rs = restGetVersionApplicationURL{
       url = APP_URL_TYPE_SERVICE
     }
-    rs = new JsonSlurperClassic().parseText(rs)
     appVersion = rs.build.version
   }
 
