@@ -25,13 +25,13 @@ def call(body){
   def buildOnBranch = config.buildOnBranch
 
   def countSendToElastic = "1"
-  def envList = ["dev", "qa", "staging"]
+  def envList = ["dev", "qa", "performance"]
   def flagFail = ""
 
   if ( appVersion == "FAIL" ) {
     // FAIL_dev
     flagFail = "FAIL"
-    countSendToElastic = envName == "dev" ? "2" : envName == "qa" ? "1" : envName == "staging" ? "0" : "waiting"
+    countSendToElastic = envName == "dev" ? "2" : envName == "qa" ? "1" : envName == "performance" ? "0" : "waiting"
     def APP_URL_TYPE_SERVICE = new URL("${globalVariablesList['PROTOCAL_APPLICATION']}://${globalVariablesList['APP_NAME']}.${envOpenshift}.svc${globalVariablesList['PATH_INFO']}")
     def rs = restGetVersionApplicationURL{
       url = APP_URL_TYPE_SERVICE
@@ -45,7 +45,7 @@ def call(body){
   }
 
   if ( trackingVersionList[3] == "ignore" || trackingVersionList[3] == "dev" ) {
-    if ( globalVariablesList['DEPLOY_DEV_ONLY'] == "true" && ( envName == "qa" || envName == "staging" ) ) {
+    if ( globalVariablesList['DEPLOY_DEV_ONLY'] == "true" && ( envName == "qa" || envName == "performance" ) ) {
       appVersion = "Service not deploy (deploy dev only)"
     }
   }
@@ -78,7 +78,7 @@ def call(body){
     def n = 2
     for ( i = 0; i < countSendToElastic.toInteger(); i++ ) {
       if ( trackingVersionList[3] == "ignore" || trackingVersionList[3] == "dev" ) {
-        if ( globalVariablesList['DEPLOY_DEV_ONLY'] == "true" && ( envList[n] == "qa" || envList[n] == "staging" ) ) {
+        if ( globalVariablesList['DEPLOY_DEV_ONLY'] == "true" && ( envList[n] == "qa" || envList[n] == "performance" ) ) {
           appVersion = "Service not deploy (deploy dev only)"
         }
       }
