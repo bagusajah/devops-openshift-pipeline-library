@@ -22,7 +22,6 @@ def call(body){
   def startTime = config.startTime
   def endTime = config.endTime
   def envOpenshift = config.envOpenshift
-  def buildOnBranch = config.buildOnBranch
 
   def countSendToElastic = "1"
   def envList = ["dev", "qa", "performance"]
@@ -39,7 +38,7 @@ def call(body){
     appVersion = rs.build.version
   }
 
-  // ["git-tag-application", "git-author-application", "git-hash-application", "rerun-condition", "build-artifacts-only-and-skip-openshift-deploy"]
+  // ["git-tag-application", "git-author-application", "git-hash-application", "rerun-condition", "build-artifacts-only-and-skip-openshift-deploy", "build-on-branch"]
   if ( trackingVersionList[3] == "ignore" && trackingVersionList[4] == "true" ) {
     appVersion = "Service not deploy (build artifacts only and skip openshift deploy)"
   }
@@ -68,7 +67,7 @@ def call(body){
   String jsonResult = "\"result\": \"${resultPipeline}\""
   String jsonStarttime = "\"start-time\": \"${startTime}\""
   String jsonEndtime = "\"end-time\": \"${endTime}\""
-  String jsonBuildOnBranch = "\"build-on-branch\": \"${buildOnBranch}\""
+  String jsonBuildOnBranch = "\"build-on-branch\": \"${trackingVersionList[5]}\""
   String jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime}, ${jsonBuildOnBranch} }"
   def object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
   
@@ -100,7 +99,7 @@ def call(body){
       jsonResult = "\"result\": \"${resultPipeline}\""
       jsonStarttime = "\"start-time\": \"${startTime}\""
       jsonEndtime = "\"end-time\": \"${endTime}\""
-      jsonBuildOnBranch = "\"build-on-branch\": \"${buildOnBranch}\""
+      jsonBuildOnBranch = "\"build-on-branch\": \"${trackingVersionList[5]}\""
       jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime}, ${jsonBuildOnBranch} }"
       object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
       
