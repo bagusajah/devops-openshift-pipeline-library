@@ -22,6 +22,7 @@ def call(body){
   def startTime = config.startTime
   def endTime = config.endTime
   def envOpenshift = config.envOpenshift
+  def buildOnBranch = config.buildOnBranch
 
   def countSendToElastic = "1"
   def envList = ["dev", "qa", "staging"]
@@ -67,10 +68,10 @@ def call(body){
   String jsonResult = "\"result\": \"${resultPipeline}\""
   String jsonStarttime = "\"start-time\": \"${startTime}\""
   String jsonEndtime = "\"end-time\": \"${endTime}\""
-  String jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime} }"
+  String jsonBuildOnBranch = "\"build-on-branch\": \"${buildOnBranch}\""
+  String jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime}, ${jsonBuildOnBranch} }"
   def object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
   
-  // createEvent(json: object, index: "tracking-version")
   sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d '${object}'"
 
   if ( flagFail == "FAIL" ) {
@@ -99,10 +100,10 @@ def call(body){
       jsonResult = "\"result\": \"${resultPipeline}\""
       jsonStarttime = "\"start-time\": \"${startTime}\""
       jsonEndtime = "\"end-time\": \"${endTime}\""
-      jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime} }"
+      jsonBuildOnBranch = "\"build-on-branch\": \"${buildOnBranch}\""
+      jsonStr = "{ ${jsonAppname}, ${jsonJobname}, ${jsobBuildnumber}, ${jsonEnvname}, ${jsonReruncondition}, ${jsonBuildartifactsonlyandskipopenshiftdeploy}, ${jsonDeploydevonly}, ${jsonGittag}, ${jsonGitauthorapplication}, ${jsonGithashapplication}, ${jsonRunwayname}, ${jsonAppversion}, ${jsonGithashopenshiftconfig}, ${jsonGithashecsconfig}, ${jsonGithashtesseractconfig}, ${jsonResult}, ${jsonStarttime}, ${jsonEndtime}, ${jsonBuildOnBranch} }"
       object = new JsonBuilder(new JsonSlurper().parseText(jsonStr)).toPrettyString()
       
-      // createEvent(json: object, index: "tracking-version")
       sh "curl -X POST http://elasticsearch.${namespace}.svc:9200/tracking-version/tweet -H \"content-type: application/json\" -d '${object}'"
       n--
     }
