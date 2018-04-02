@@ -16,7 +16,7 @@ def call(body) {
         }
         echo "approve"
     } catch(Exception e) {
-        return false
+        return true
     }
     return true
 
