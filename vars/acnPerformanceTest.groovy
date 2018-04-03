@@ -35,7 +35,7 @@ def call(body){
       $class : 'S3BucketPublisher',
       profileName : 'openshift-profile-s3',
       entries: [[
-        bucket: "${GLOBAL_VARS['BUCKET_TEST_RESULT_STAGING']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}",
+        bucket: "${GLOBAL_VARS['BUCKET_TEST_RESULT_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}",
         selectedRegion: 'ap-southeast-1',
         showDirectlyInBrowser: true,
         sourceFile: "results.zip",
@@ -43,6 +43,6 @@ def call(body){
       ]]
     ])
   } // End Upload results to s3
-  sh "echo BUCKET S3 result Performance Test is https://s3.console.aws.amazon.com/s3/buckets/${GLOBAL_VARS['BUCKET_TEST_RESULT_STAGING']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
+  sh "echo BUCKET S3 result Performance Test is https://s3.console.aws.amazon.com/s3/buckets/${GLOBAL_VARS['BUCKET_TEST_RESULT_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
   sh "curl -k -H \"Authorization: ${authorizationTMTId}\" https://ascendtmt.tmn-dev.net/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
 } // End Performance Test

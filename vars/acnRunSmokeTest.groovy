@@ -113,8 +113,8 @@ def call(body) {
             bucket = global_vars['BUCKET_TEST_RESULT_DEV']
           } else if ( environmentForWorkspace == "qa" ) {
             bucket = global_vars['BUCKET_TEST_RESULT_QA']
-          } else if ( environmentForWorkspace == "staging" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_STAGING']
+          } else if ( environmentForWorkspace == "performance" ) {
+            bucket = global_vars['BUCKET_TEST_RESULT_PERFORMANCE']
           }
           if( currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' ){
             dir("${directory}/robot/results/${environmentForWorkspace}_smoke"){
