@@ -153,15 +153,15 @@ def applyResource(body){
     body.delegate = config
     body()
 
-    def artifact_data = config.artifact_data
-    def namespace_env = config.namespace_env
-    def applicationType = config.applicationType
+    def artifact = config.artifact_data
+    def namespace = config.namespace_env
+    def application = config.applicationType
 
     container(name: 'jnlp'){
         acnApplyResources { 
-            artifact_data = yaml
-            namespace_env = namespace_env
-            applicationType = applicationType
+            artifact_data = artifact
+            namespace_env = namespace
+            applicationType = application
         }
     }
 }
