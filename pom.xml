@@ -82,6 +82,13 @@
                     </sources>
                 </configuration>
 			</plugin>
+			<plugin>
+			 	<groupId>com.atlassian.maven.plugins</groupId>
+			  	<artifactId>clover-maven-plugin</artifactId> <!-- artifact was called maven-clover2-plugin before 4.1.1 -->
+			  	<configuration>
+			    	<instrumentation>method</instrumentation>
+			  	</configuration>
+			</plugin> 
 		</plugins>
 	</build>
 
