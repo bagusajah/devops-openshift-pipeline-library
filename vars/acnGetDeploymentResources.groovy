@@ -25,7 +25,7 @@ def call(body) {
     def networkPolicy = config.networkPolicy
     def timeZone = config.timeZone ?: "Etc/UTC"
     def runwayName = config.runwayName ?: "OPENSHIFT"
-    def namespace = config.namespace
+    def namespace_env = config.namespace_env
     if ( applicationType != 'mountebank' ) {
         if ( config.appProtocal == "https" ){
             routeType = 'route-tls'
@@ -139,7 +139,7 @@ items:
 
     applyResource {
         artifact_data = yaml
-        namespace = namespace
+        namespace_env = namespace_env
         applicationType  = applicationType
     }
     
@@ -147,11 +147,21 @@ items:
 } // End Main Method
 
 def applyResource(body){
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    def artifact_data = config.artifact_data
+    def namespace_env = config.namespace_env
+    def applicationType = config.applicationType
+
     container(name: 'jnlp'){
         acnApplyResources { 
-            artifact_data = rcDev
-            namespace = namespace_dev
-            applicationType = "application"
+            artifact_data = yaml
+            namespace_env = namespace_env
+            applicationType = applicationType
         }
     }
 }
