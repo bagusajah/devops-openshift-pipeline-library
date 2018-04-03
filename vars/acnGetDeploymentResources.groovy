@@ -2,8 +2,6 @@
 import com.ascendmoney.cicd.Utils
 import java.io.File
 
-
-
 def call(body) {
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
@@ -27,6 +25,7 @@ def call(body) {
     def networkPolicy = config.networkPolicy
     def timeZone = config.timeZone ?: "Etc/UTC"
     def runwayName = config.runwayName ?: "OPENSHIFT"
+    def namespace = config.namespace
     if ( applicationType != 'mountebank' ) {
         if ( config.appProtocal == "https" ){
             routeType = 'route-tls'
@@ -136,6 +135,23 @@ items:
     
 
     echo 'using resources:\n' + yaml
-    return yaml
+    // return yaml
 
-  }
+    applyResource {
+        artifact_data = yaml
+        namespace = namespace
+        applicationType  = applicationType
+    }
+    
+
+} // End Main Method
+
+def applyResource(body){
+    container(name: 'jnlp'){
+        acnApplyResources { 
+            artifact_data = rcDev
+            namespace = namespace_dev
+            applicationType = "application"
+        }
+    }
+}
