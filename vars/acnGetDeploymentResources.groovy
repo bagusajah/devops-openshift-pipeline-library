@@ -139,8 +139,8 @@ items:
 
     applyResource {
         artifact_data = yaml
-        namespace_env = namespace_env
-        applicationType  = applicationType
+        namespace = namespace_env
+        application  = applicationType
     }
     
 
@@ -154,8 +154,8 @@ def applyResource(body){
     body()
 
     def artifact = config.artifact_data
-    def namespace_env = config.namespace_env
-    def application = config.applicationType
+    def namespace_env = config.namespace
+    def application = config.application
 
     container(name: 'jnlp'){
         acnApplyResources { 
