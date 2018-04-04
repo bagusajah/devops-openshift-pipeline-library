@@ -61,6 +61,8 @@ def call(body) {
         sh "oc start-build ${nameBuildconfig} --from-dir=${directory}/ocp-artifact-${imageType}/ --follow"
     }
 
-    return imageName = "${dockerRegistry}:5000/${namespace_cicd}/${appName}:${appVersion}"
+    imageName = "${dockerRegistry}:5000/${namespace_cicd}/${appName}:${appVersion}"
+    
+    return imageName
 
 } // End Function
