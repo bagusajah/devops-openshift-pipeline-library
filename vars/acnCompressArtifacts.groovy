@@ -30,9 +30,9 @@ def call(body){
     }
     sh "touch ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
     sh "echo \"APP_IMAGE=${app_image}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
-    sh "echo \"BUILD_ON_BRANCH=${build_on_branch}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
-    sh "echo \"GIT_HASH_APPLICATION=${GIT_HASH}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
-    sh "echo \"GIT_HASH_OPENSHIFT_CONFIGURATION=${git_hash_openshift_configuration}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"BUILD_ON_BRANCH=${build_on_branch}\" >> ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"GIT_HASH_APPLICATION=${GIT_HASH}\" >> ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"GIT_HASH_OPENSHIFT_CONFIGURATION=${git_hash_openshift_configuration}\" >> ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
     git_hash_configuration = ""
   } else if ( global_vars_files['RUNWAY_NAME'] == "ECS" ){
     dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}") {
