@@ -31,7 +31,7 @@ def call(body){
     // FAIL_dev
     flagFail = "FAIL"
     countSendToElastic = envName == "dev" ? "2" : envName == "qa" ? "1" : envName == "performance" ? "0" : "waiting"
-    def APP_URL_TYPE_SERVICE = new URL("${globalVariablesList['APP_PROTOCOL']}://${globalVariablesList['APP_NAME']}.${envOpenshift}.svc${globalVariablesList['PATH_INFO']}")
+    def APP_URL_TYPE_SERVICE = new URL("${globalVariablesList['APP_PROTOCOL']}://${globalVariablesList['APP_NAME']}.${envOpenshift}.svc:${globalVariablesList['APP_PORT']}${globalVariablesList['PATH_INFO']}")
     def rs = restGetVersionApplicationURL{
       url = APP_URL_TYPE_SERVICE
     }
