@@ -48,7 +48,6 @@ def call(body) {
             dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
               git credentialsId: 'bitbucket-credential', url: GIT_TEST
               scriptRunExisting = fileExists "${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run_smoke.sh"
-              // scriptRunExisting = sh script: "[ -f ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run_smoke.sh ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
               if ( !scriptRunExisting ) {
                 sh "echo ${GIT_INTEGRATION_TEST_NAME} DONT HAVE FILE RUN_SMOKE.SH"
                 scriptRunExistingList.add("not_have")
@@ -74,7 +73,6 @@ def call(body) {
               dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
                   git credentialsId: 'bitbucket-credential', url: GIT_TEST
                   scriptRunExisting = fileExists "${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run_smoke.sh"
-                  // scriptRunExisting = sh script: "[ -f ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run_smoke.sh ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
                   if ( !scriptRunExisting ) {
                     sh "echo ${GIT_INTEGRATION_TEST_NAME} DONT HAVE FILE RUN_SMOKE.SH"
                     scriptRunExistingList.add("not_have")
@@ -110,11 +108,11 @@ def call(body) {
           sh "cd ${directory}/robot/results/${environmentForWorkspace}_smoke && /bin/zip -r \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
           def bucket = ""
           if ( environmentForWorkspace == "dev" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_DEV']
+            bucket = global_vars['TMT_TEST_RESULT_URL_DEV']
           } else if ( environmentForWorkspace == "qa" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_QA']
+            bucket = global_vars['TMT_TEST_RESULT_URL_QA']
           } else if ( environmentForWorkspace == "performance" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_PERFORMANCE']
+            bucket = global_vars['TMT_TEST_RESULT_URL_PERFORMANCE']
           }
           if( currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' ){
             dir("${directory}/robot/results/${environmentForWorkspace}_smoke"){

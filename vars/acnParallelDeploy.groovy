@@ -24,23 +24,13 @@ def call(body){
       exposeApp = 'true'
       imageName = images[0]
       namespace = namespace_cicd
-      appProtocal = GLOBAL_VARS['PROTOCAL_APPLICATION']
-      timeZone = GLOBAL_VARS['TIMEZONE']
+      appProtocal = GLOBAL_VARS['APP_PROTOCOL']
       appName = GLOBAL_VARS['APP_NAME']
       appVersion = APP_VERSION
-      appStartupArgs = GLOBAL_VARS['APP_STARTUP_ARGS']
-      appScope = GLOBAL_VARS['APP_SCOPE']
-      svcGroup = GLOBAL_VARS['SERVICE_GROUP']
-      appLang = GLOBAL_VARS['APP_LANG']
-      pipelineVersion = GLOBAL_VARS['PIPELINE_VERSION']
       envName = LIST_ENV[0]
-      countryCode = GLOBAL_VARS['COUNTRY_CODE']
-      replicaNum = GLOBAL_VARS['DEFAULT_DEV_NUM_REPLICA']
-      routeHostname = GLOBAL_VARS['DEV_ROUTE_HOSTNAME']
-      routePath = GLOBAL_VARS['ROUTE_PATH']
+      replicaNum = GLOBAL_VARS['DEFAULT_NUM_REPLICA_DEV']
+      routeHostname = GLOBAL_VARS['ROUTE_HOSTNAME_DEV']
       networkPolicy = GLOBAL_VARS['NETWORK_POLICY_ACCEPT_LABELS']
-      vaultSite = GLOBAL_VARS['DEV_VAULT_URL']
-      tokenSite = GLOBAL_VARS['DEV_TOKEN_URL']
       namespace_env = namespace_dev
     }
   }, 'Application-Mountebank': {
@@ -50,22 +40,12 @@ def call(body){
         exposeApp = 'true'
         imageName = images[1]
         namespace = namespace_cicd
-        timeZone = GLOBAL_VARS['TIMEZONE']
         appName = "${GLOBAL_VARS['APP_NAME']}-mountebank"
         appVersion = APP_VERSION
-        appStartupArgs = GLOBAL_VARS['APP_STARTUP_ARGS']
-        appScope = GLOBAL_VARS['APP_SCOPE']
-        svcGroup = GLOBAL_VARS['SERVICE_GROUP']
-        appLang = GLOBAL_VARS['APP_LANG']
-        pipelineVersion = GLOBAL_VARS['PIPELINE_VERSION']
         envName = LIST_ENV[0]
-        countryCode = GLOBAL_VARS['COUNTRY_CODE']
-        replicaNum = GLOBAL_VARS['DEFAULT_DEV_NUM_REPLICA']
-        routeHostname = GLOBAL_VARS['ROUTE_MOUNTEBANK_HOSTNAME']
-        routePath = "/"
+        replicaNum = GLOBAL_VARS['DEFAULT_NUM_REPLICA_DEV']
+        routeHostname = GLOBAL_VARS['ROUTE_HOSTNAME_MOUNTEBANK']
         networkPolicy = GLOBAL_VARS['NETWORK_POLICY_ACCEPT_LABELS']
-        vaultSite = GLOBAL_VARS['DEV_VAULT_URL']
-        tokenSite = GLOBAL_VARS['DEV_TOKEN_URL']
         namespace_env = namespace_dev
       }
     } else {

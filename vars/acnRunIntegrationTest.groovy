@@ -31,7 +31,6 @@ def call(body) {
       }
       app_version = result.build.version + "-retest"
     }
-    // def file_run_smoke_test_result = sh script: "[ -f ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml ] && echo \"Found\" || echo \"Not_Found\"", returnStdout: true
 
     def file_run_smoke_test_result = fileExists "${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/output.xml"
 
@@ -75,9 +74,6 @@ def call(body) {
           sh "rm -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}"
           dir("${directory}/robot/${GIT_INTEGRATION_TEST_NAME}") {
             git credentialsId: 'bitbucket-credential', url: GIT_TEST
-            // sh "chmod +x ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace}/run.sh"
-            // sh "cd ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/scripts/${environmentForWorkspace} && ./run.sh" 
-            // sh "cp -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
             sh "chmod +x scripts/${environmentForWorkspace}/run.sh"
             sh "cd scripts/${environmentForWorkspace} && ./run.sh" 
             sh "cp -rf results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
@@ -140,11 +136,11 @@ def call(body) {
       sh "cd ${directory}/robot/results/${environmentForWorkspace} && /bin/zip -r \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
       def bucket = ""
       if ( environmentForWorkspace == "dev" ) {
-        bucket = global_vars['BUCKET_TEST_RESULT_DEV']
+        bucket = global_vars['TMT_TEST_RESULT_URL_DEV']
       } else if ( environmentForWorkspace == "qa" ) {
-        bucket = global_vars['BUCKET_TEST_RESULT_QA']
+        bucket = global_vars['TMT_TEST_RESULT_URL_QA']
       } else if ( environmentForWorkspace == "performance" ) {
-        bucket = global_vars['BUCKET_TEST_RESULT_PERFORMANCE']
+        bucket = global_vars['TMT_TEST_RESULT_URL_PERFORMANCE']
       }
       dir("${directory}/robot/results/${environmentForWorkspace}"){
         step([
@@ -164,8 +160,8 @@ def call(body) {
       step([
         $class : 'RobotPublisher', 
         outputPath : "${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}",
-        passThreshold : global_vars['TEST_PASS_THRESHOLD'].toInteger(),
-        unstableThreshold: global_vars['TEST_UNSTABLE_THRESHOLD'].toInteger(), 
+        passThreshold : global_vars['INTEGRATE_TEST_PASS_THRESHOLD'].toInteger(),
+        unstableThreshold: global_vars['INTEGRATE_TEST_UNSTABLE_THRESHOLD'].toInteger(), 
         otherFiles : "*.png",
         outputFileName: "output.xml", 
         disableArchiveOutput: false, 
@@ -219,11 +215,11 @@ def call(body) {
           sh "cd ${directory}/robot/results/${environmentForWorkspace} && /bin/zip -r \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
           def bucket = ""
           if ( environmentForWorkspace == "dev" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_DEV']
+            bucket = global_vars['TMT_TEST_RESULT_URL_DEV']
           } else if ( environmentForWorkspace == "qa" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_QA']
+            bucket = global_vars['TMT_TEST_RESULT_URL_QA']
           } else if ( environmentForWorkspace == "performance" ) {
-            bucket = global_vars['BUCKET_TEST_RESULT_PERFORMANCE']
+            bucket = global_vars['TMT_TEST_RESULT_URL_PERFORMANCE']
           }
           dir("${directory}/robot/results/${environmentForWorkspace}"){
             step([
