@@ -31,15 +31,12 @@ def call(body) {
 
     def dockerRegistry = acnGetDockerRegistryServiceHost()
 
-    sh "sed -i \"s/#APP_SCOPE#/${appScope}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
-    sh "sed -i \"s/#APP_LANG#/${appLang}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s/#APP_VERSION#/${appVersion}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
-    sh "sed -i \"s/#DOCKER_REGISTRY_SERVICE_HOST#/${dockerRegistry}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
+    sh "sed -i \"s/#DOCKER_REGISTRY_SERVICE_IP#/${dockerRegistry}/g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
 
     dir("${directory}/ocp-artifact-${imageType}") {
         if ( imageType == "application" ) {
             sh "sed -i \"s/#APP_VERSION#/${appVersion}/g\" ${directory}/pipeline/dockerfiles/application/Dockerfile"
-            sh "sed -i \"s/#COUNTRY_CODE#/${countryCode}/g\" ${directory}/pipeline/dockerfiles/application/Dockerfile"
             sh "cp -rf ${directory}/pipeline/script ${directory}/ocp-artifact-${imageType}/"
             sh "cp ${directory}/pipeline/dockerfiles/application/Dockerfile ${directory}/ocp-artifact-${imageType}/"
             if ( appLang == "springboot" ) {
