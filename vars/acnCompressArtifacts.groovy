@@ -11,6 +11,9 @@ def call(body){
   def APP_VERSION = config.app_version
   def GIT_HASH = config.git_hash_application
   def directory = config.directory
+  def app_image = config.app_image
+  def build_on_branch = config.build_on_branch
+  def git_hash_openshift_configuration = config.git_hash_openshift_configuration
   def git_hash_configuration = ""
 
   if ( global_vars_files['RUNWAY_NAME'] == "OPENSHIFT" ) {
@@ -25,6 +28,11 @@ def call(body){
         sh "cp -rf ${directory}/update-config/${global_vars_files['COUNTRY_CODE']}/production/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/production"
       }
     }
+    sh "touch ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"APP_IMAGE=${app_image}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"BUILD_ON_BRANCH=${build_on_branch}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"GIT_HASH_APPLICATION=${GIT_HASH}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
+    sh "echo \"GIT_HASH_OPENSHIFT_CONFIGURATION=${git_hash_openshift_configuration}\" > ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/build_info.properties"
     git_hash_configuration = ""
   } else if ( global_vars_files['RUNWAY_NAME'] == "ECS" ){
     dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}") {
