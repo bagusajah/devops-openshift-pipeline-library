@@ -44,5 +44,5 @@ def call(body){
     ])
   } // End Upload results to s3
   sh "echo BUCKET S3 result Performance Test is https://s3.console.aws.amazon.com/s3/buckets/${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
-  sh "curl -k -H \"Authorization: ${authorizationTMTId}\" https://ascendtmt.tmn-dev.net/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
+  sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${GLOBAL_VARS['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
 } // End Performance Test

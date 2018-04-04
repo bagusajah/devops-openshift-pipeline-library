@@ -156,7 +156,7 @@ def call(body) {
         ])
       }
       sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
-      sh "curl -k -H \"Authorization: ${authorizationTMTId}\" https://ascendtmt.tmn-dev.net/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
+      sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
       step([
         $class : 'RobotPublisher', 
         outputPath : "${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}",
@@ -235,7 +235,7 @@ def call(body) {
             ])
           } // End upload zip file to S3
           sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
-          sh "curl -k -H \"Authorization: ${authorizationTMTId}\" https://ascendtmt.tmn-dev.net/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
+          sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
         } // End condition git equal 1 or more than 1
       } // End container jmeter
     } // End condition robot or jmeter
