@@ -22,13 +22,12 @@ def call(body) {
     // jar, war, tar.gz
     def imageType = config.imageType
     def nameImageType = "app"
+    def nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
     if ( imageType == "mountebank" ) {
         appName = appName + "-mountebank"
         nameImageType = "mb"
     }
     // application, mountebank
-
-    def nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
     def imageName = ""
 
     def dockerRegistry = acnGetDockerRegistryServiceHost()
