@@ -25,26 +25,25 @@ def call(body) {
     def networkPolicy = config.networkPolicy
     def runwayName = config.runwayName ?: "OPENSHIFT"
     def namespace_env = config.namespace_env
+    def gitHashApplication = config.gitHashApplication
+    def gitSourceBranch = config.gitSourceBranch
+
     if ( applicationType != 'mountebank' ) {
         if ( config.appProtocal == "https" ){
             routeType = 'route-tls'
         }else{
             routeType = 'route'
         }
-    }
-    else
-    {
+    } else {
         routeType = 'route'
     }
+
     def replicaNum = config.replicaNum
-    sh "echo replicaNum ${replicaNum}"
     def rollingUpdateSurge = replicaNum.toInteger() * 2
-    sh "echo rollingUpdateSurge ${rollingUpdateSurge}"
     def rollingUpdateUnavailable = 0
     if ( replicaNum.toInteger() > 1 ) {
         rollingUpdateUnavailable = replicaNum.toInteger() / 2
     }
-    sh "echo rollingUpdateUnavailable ${rollingUpdateUnavailable}"
     
     if ( applicationType != 'mountebank') {
     sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
@@ -73,6 +72,8 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/#DEFAULT_NUM_REPLICA_MB#/, config.replicaNum)
     }
     deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
+    deploymentYaml = deploymentYaml.replaceAll(/#BUILD_HASH#/, gitHashApplication)
+    deploymentYaml = deploymentYaml.replaceAll(/#GIT_SOURCE_BRANCH#/, gitSourceBranch)
     deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
 
 """
