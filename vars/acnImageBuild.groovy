@@ -21,12 +21,14 @@ def call(body) {
     def packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
     // jar, war, tar.gz
     def imageType = config.imageType
+    def nameImageType = "app"
     if ( imageType == "mountebank" ) {
         appName = appName + "-mountebank"
+        nameImageType = "mb"
     }
     // application, mountebank
 
-    def nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
+    def nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
     def imageName = ""
 
     def dockerRegistry = acnGetDockerRegistryServiceHost()
@@ -48,7 +50,6 @@ def call(body) {
                 global_vars = GLOBAL_VARS
                 directory_workspace = directory
             }
-            nameBuildconfig = "${appScope}-${appName}-docker-buildconfig"
         }
     	
   	} // End directory for prepare buildconfig
