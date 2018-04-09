@@ -29,7 +29,7 @@ def call(body) {
 
     sh "export LC_CTYPE=en_US.UTF-8"
     sh "export LC_ALL=en_US.UTF-8"
-    sh "export CLIENT_KEY=$(sed -E \':a;N;$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g\' /certs/${appScope}-client-key.key)"
+    sh "export CLIENT_KEY=$(sed -E \':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g\' /certs/${appScope}-client-key.key)"
     sh "perl -p -i -e \'s/#cert#/$ENV{CLIENT_KEY}/g\' ./tmp/client_key.txt"
     sleep(10000)
   	// key: "#CLIENT_KEY#"
