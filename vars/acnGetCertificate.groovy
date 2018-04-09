@@ -16,9 +16,9 @@ def call(body) {
     def CA_CERT = ""
     def certificates = []
     // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
-    sh "touch ./client_key.txt ; echo \"#cert#\" > ./client_key.txt"
-    sh "touch ./client_cert.txt ; echo \"#cert#\" > ./client_cert.txt"
-    sh "touch ./ca_cert.txt ; echo \"#cert#\" > ./ca_cert.txt"
+    sh "touch ./client_key.txt ; echo -n \"#cert#\" > ./client_key.txt"
+    sh "touch ./client_cert.txt ; echo -n \"#cert#\" > ./client_cert.txt"
+    sh "touch ./ca_cert.txt ; echo -n \"#cert#\" > ./ca_cert.txt"
     sh "export LC_CTYPE=en_US.UTF-8"
     sh "export LC_ALL=en_US.UTF-8"
     CLIENT_KEY = sh script: "export CLIENT_KEY=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-key.key) ; perl -p -i -e \'s/#cert#/\$ENV{CLIENT_KEY}/g\' ./client_key.txt ; cat ./client_key.txt", returnStdout: true
