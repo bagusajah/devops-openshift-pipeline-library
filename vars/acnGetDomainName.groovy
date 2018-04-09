@@ -15,6 +15,7 @@ def call(body) {
     def domainNameSuffix = ""
 
     domainNameSuffix = sh script: "cat /domains/${appScope}-domain.txt", returnStdout: true
+    domainNameSuffix = domainNameSuffix.trim()
     domainName = domainNamePrefix + "." + domainNameSuffix
 
   	return domainName
