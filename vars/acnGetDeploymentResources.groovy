@@ -66,6 +66,13 @@ def call(body) {
     sh "sed -i \"s/#MOUNTEBANK_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     }
     sh "echo replace deployment"
+
+    if ( routeType == "route-tls" ) {
+        sh "sed -i \"s~#CLIENT_KEY#~${certList[0]}~g\" pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+        sh "sed -i \"s~#CLIENT_CERT#~${certList[1]}~g\" pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+        sh "sed -i \"s~#CA_CERT#~${certList[2]}~g\" pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+    }
+
     def list = """
 ---
 apiVersion: v1
@@ -97,11 +104,6 @@ items:
 """
     sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
-    if ( routeType == "route-tls" ) {
-        routeYaml = routeYaml.replaceAll(/#CLIENT_KEY#/, certList[0])
-        routeYaml = routeYaml.replaceAll(/#CLIENT_CERT#/, certList[1])
-        routeYaml = routeYaml.replaceAll(/#CA_CERT#/, certList[2])
-    }
     routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
     routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, domainName) + """
 """
