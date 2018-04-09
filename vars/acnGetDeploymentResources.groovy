@@ -98,9 +98,9 @@ items:
     sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
     if ( routeType == "route-tls" ) {
-        routeYaml = routeYaml.replaceAll(/#CLIENT_KEY#/, certList[0])
-        routeYaml = routeYaml.replaceAll(/#CLIENT_CERT#/, certList[1])
-        routeYaml = routeYaml.replaceAll(/#CA_CERT#/, certList[2])
+        routeYaml = routeYaml.replaceAll(/#CLIENT_KEY#/, certList[0].trim())
+        routeYaml = routeYaml.replaceAll(/#CLIENT_CERT#/, certList[1].trim())
+        routeYaml = routeYaml.replaceAll(/#CA_CERT#/, certList[2].trim())
     }
     routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
     routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, domainName) + """
