@@ -28,6 +28,11 @@ def call(body) {
     def gitHashApplication = config.gitHashApplication
     def gitSourceBranch = config.gitSourceBranch
 
+    def domainName = acnGetDomainName{
+        appScope = config.appScope
+        domainNamePrefix = config.routeHostname
+    }
+
     if ( applicationType != 'mountebank' ) {
         if ( config.appProtocal == "https" ){
             routeType = 'route-tls'
@@ -85,7 +90,7 @@ items:
     sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
     routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, config.routeHostname) + """
+    routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, domainName) + """
 """
     sh "echo replace networkpolicy"
     if (networkPolicy != "ALL") {

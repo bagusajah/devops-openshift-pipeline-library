@@ -35,6 +35,7 @@ def call(body){
       namespace_env = namespace_dev
       gitHashApplication = buildDetailList[2]
       gitSourceBranch = buildDetailList[5]
+      appScope = GLOBAL_VARS['APP_SCOPE']
     }
   }, 'Application-Mountebank': {
     if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
@@ -52,6 +53,7 @@ def call(body){
         namespace_env = namespace_dev
         gitHashApplication = buildDetailList[2]
         gitSourceBranch = buildDetailList[5]
+        appScope = GLOBAL_VARS['APP_SCOPE']
       }
     } else {
       sh "echo http://${GLOBAL_VARS['APP_NAME']}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"

@@ -14,11 +14,6 @@ def call(body) {
     def domainName = ""
     def domainNameSuffix = ""
 
-    // appScope = truemoney
-
-    // /domains/
-    // equator-domain.txt
-    // truemoney-domain.txt
     domainNameSuffix = sh script: "cat /domains/${appScope}-domain.txt", returnStdout: true
     domainName = domainNamePrefix + "." + domainNameSuffix
 
