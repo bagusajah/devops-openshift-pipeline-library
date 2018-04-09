@@ -10,32 +10,24 @@ def call(body) {
 
     def appScope = config.appScope
 
-    // /certs
-    // truemoney-ca-cert.crt
-    // truemoney-client-cert.crt
-    // truemoney-client-key.key
-
+    def pathMounteCert = "/certs"
     def CLIENT_KEY = ""
     def CLIENT_CERT = ""
     def CA_CERT = ""
-
-    // CLIENT_KEY = sh script: "cat /certs/${appScope}-client-key.key", returnStdout: true
-    // CLIENT_CERT = sh script: "cat /certs/${appScope}-client-cert.crt", returnStdout: true
-    // CA_CERT = sh script: "cat /certs/${appScope}-ca-cert.crt", returnStdout: true
-
-    sh "touch ./tmp/cert.txt"
-
-    sh "echo \"#cert#\" > ./tmp/cert.txt"
-
+    def certificates = []
+    // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
+    sh "touch ./client_key.txt ; echo \"#cert#\" > ./client_key.txt"
+    sh "touch ./client_cert.txt ; echo \"#cert#\" > ./client_cert.txt"
+    sh "touch ./ca_cert.txt ; echo \"#cert#\" > ./ca_cert.txt"
     sh "export LC_CTYPE=en_US.UTF-8"
     sh "export LC_ALL=en_US.UTF-8"
-    sh "export CLIENT_KEY=$(sed -E \':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g\' /certs/${appScope}-client-key.key)"
-    sh "perl -p -i -e \'s/#cert#/$ENV{CLIENT_KEY}/g\' ./tmp/client_key.txt"
-    sleep(10000)
-  	// key: "#CLIENT_KEY#"
-   //    certificate: "#CLIENT_CERT#"
-   //    caCertificate: "#CA_CERT#"
+    CLIENT_KEY = sh script: "export CLIENT_KEY=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-key.key) ; perl -p -i -e \'s/#cert#/\$ENV{CLIENT_KEY}/g\' ./client_key.txt ; cat ./client_key.txt", returnStdout: true
+    CLIENT_CERT = sh script: "export CLIENT_CERT=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-cert.crt) ; perl -p -i -e \'s/#cert#/\$ENV{CLIENT_CERT}/g\' ./client_cert.txt ; cat ./client_cert.txt", returnStdout: true
+    CA_CERT = sh script: "export CA_CERT=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-cert.crt) ; perl -p -i -e \'s/#cert#/\$ENV{CA_CERT}/g\' ./ca_cert.txt ; cat ./ca_cert.txt", returnStdout: true
+    certificates.add(CLIENT_KEY)
+    certificates.add(CLIENT_CERT)
+    certificates.add(CA_CERT)
 
-    // return domainName
+    return certificates
 
 } // End Function

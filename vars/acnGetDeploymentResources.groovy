@@ -28,6 +28,9 @@ def call(body) {
     def gitHashApplication = config.gitHashApplication
     def gitSourceBranch = config.gitSourceBranch
 
+    def certList = []
+    // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
+
     def domainName = acnGetDomainName{
         appScope = config.appScope
         domainNamePrefix = config.routeHostname
@@ -36,6 +39,11 @@ def call(body) {
     if ( applicationType != 'mountebank' ) {
         if ( config.appProtocal == "https" ){
             routeType = 'route-tls'
+            // call lib for get certificate
+            // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
+            certList = acnGetCertificate{
+                appScope = config.appScope
+            }
         }else{
             routeType = 'route'
         }
@@ -89,12 +97,16 @@ items:
 """
     sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
+    if ( routeType == "route-tls" ) {
+        routeYaml = routeYaml.replaceAll(/#CLIENT_KEY#/, certList[0])
+        routeYaml = routeYaml.replaceAll(/#CLIENT_CERT#/, certList[1])
+        routeYaml = routeYaml.replaceAll(/#CA_CERT#/, certList[2])
+    }
     routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
     routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, domainName) + """
 """
     sh "echo replace networkpolicy"
     if (networkPolicy != "ALL") {
-    sh "echo test if"
     def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
     networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) 
     networkpolicyYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
