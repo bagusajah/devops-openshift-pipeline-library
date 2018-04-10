@@ -24,9 +24,9 @@ def call(body) {
     CLIENT_KEY = sh script: "export CLIENT_KEY=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-key.key) ; perl -p -i -e \'s/#cert#/\$ENV{CLIENT_KEY}/g\' ./client_key.txt ; cat ./client_key.txt", returnStdout: true
     CLIENT_CERT = sh script: "export CLIENT_CERT=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-cert.crt) ; perl -p -i -e \'s/#cert#/\$ENV{CLIENT_CERT}/g\' ./client_cert.txt ; cat ./client_cert.txt", returnStdout: true
     CA_CERT = sh script: "export CA_CERT=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-cert.crt) ; perl -p -i -e \'s/#cert#/\$ENV{CA_CERT}/g\' ./ca_cert.txt ; cat ./ca_cert.txt", returnStdout: true
-    // certificates.add(CLIENT_KEY.trim())
-    // certificates.add(CLIENT_CERT.trim())
-    // certificates.add(CA_CERT.trim())
+    certificates.add(CLIENT_KEY)
+    certificates.add(CLIENT_CERT)
+    certificates.add(CA_CERT)
 
     return certificates
 
