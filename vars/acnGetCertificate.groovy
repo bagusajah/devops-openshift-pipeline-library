@@ -18,6 +18,6 @@ def call(body) {
     sh "export CLIENT_KEY=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-key.key) ; perl -p -i -e \'s/#CLIENT_KEY#/\$ENV{CLIENT_KEY}/g\' ${pathFile}"
     sh "export CLIENT_CERT=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-cert.crt) ; perl -p -i -e \'s/#CLIENT_CERT#/\$ENV{CLIENT_CERT}/g\' ${pathFile}"
     sh "export CA_CERT=\$(sed -E ':a;N;\$!ba;s/\\r{0,1}\\n/\\\\r\\\\n/g' ${pathMounteCert}/${appScope}-client-cert.crt) ; perl -p -i -e \'s/#CA_CERT#/\$ENV{CA_CERT}/g\' ${pathFile}"
-
+    sh "cat ${pathFile}"
 
 } // End Function
