@@ -74,7 +74,7 @@ def call(body){
     git_hash_configuration = ""
   } // End Condition copy artifact and config to path distributed-runway/runwayName/appName-appVersion
   sh "cp -rf ${directory}/pipeline ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}"
-  sh "cd ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']} && /bin/tar -zcvf \"${global_vars_files['APP_NAME']}-${APP_VERSION}.zip\" \"${global_vars_files['APP_NAME']}-${APP_VERSION}/\""
+  sh "cd ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']} && /bin/tar -zcvf \"${global_vars_files['APP_NAME']}-${APP_VERSION}.tar.gz\" \"${global_vars_files['APP_NAME']}-${APP_VERSION}/\""
   dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}"){
     step([
       $class : 'S3BucketPublisher',
@@ -83,11 +83,11 @@ def call(body){
         bucket: "openshift-distributed-artifacts/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}",
         selectedRegion: 'ap-southeast-1',
         showDirectlyInBrowser: true,
-        sourceFile: "${global_vars_files['APP_NAME']}-${APP_VERSION}.zip",
+        sourceFile: "${global_vars_files['APP_NAME']}-${APP_VERSION}.tar.gz",
         storageClass: 'STANDARD'
       ]]
     ])
-  } // End directory for upload zip file to S3
+  } // End directory for upload .tar.gz file to S3
 
   return git_hash_configuration
 

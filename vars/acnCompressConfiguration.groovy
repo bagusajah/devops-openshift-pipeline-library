@@ -27,7 +27,7 @@ def call(body){
     env_list = LIST_ENV[n]
     dir("${directory}/update-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}"){
       sh "cp -rf ${directory}/update-config/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/* ${directory}/update-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}/"
-      sh "cd ${directory}/update-config/tmp/${env_list} && /bin/tar -zcvf \"${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip\" \"${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}/\""
+      sh "cd ${directory}/update-config/tmp/${env_list} && /bin/tar -zcvf \"${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.tar.gz\" \"${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}/\""
       dir("${directory}/update-config/tmp/${env_list}"){
         step([
           $class : 'S3BucketPublisher',
@@ -36,7 +36,7 @@ def call(body){
             bucket: "acm-aws-openshift-configuration-repo/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}",
             selectedRegion: 'ap-southeast-1',
             showDirectlyInBrowser: true,
-            sourceFile: "${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.zip",
+            sourceFile: "${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.tar.gz",
             storageClass: 'STANDARD'
           ]]
         ])
