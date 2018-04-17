@@ -58,8 +58,8 @@ def call(Map parameters = [:], body) {
         ],
         volumes: [
             secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
-            persistentVolumeClaim(claimName: 'jenkins-maven-pvc', mountPath: '/root/.mvnrepository'),
-            persistentVolumeClaim(claimName: 'configuration-data-pvc', mountPath: '/app-configs'),
+            persistentVolumeClaim(claimName: 'jenkins-mvn-local-repo', mountPath: '/root/.mvnrepository'),
+            persistentVolumeClaim(claimName: 'pvc-configuration-data', mountPath: '/app-configs'),
             configMapVolume(configMapName: 'global-domain-configmap', mountPath: '/domains'),
             secretVolume(secretName: 'global-certificate-secret', mountPath: '/certs')
         ]
