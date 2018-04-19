@@ -30,7 +30,7 @@ def call(body) {
         "-Dsonar.sources=src/ "+
         "-Dsonar.tests=src/test/ "+
         "-Dsonar.test.inclusions=**/*Test*/** "+
-        "-Dsonar.exclusions=**/*Test*/**"+
-        "-Dsonar.java.binaries=target/classes "
+        "-Dsonar.exclusions=**/*Test*/** "+
+        "-Dsonar.java.binaries=target/classes"
     }
   } // End Function
