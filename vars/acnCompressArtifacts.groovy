@@ -18,9 +18,6 @@ def call(body){
 
   if ( global_vars_files['RUNWAY_NAME'] == "OPENSHIFT" ) {
     dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}") {
-      dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/performance"){
-        sh "cp -rf ${directory}/update-config/${global_vars_files['COUNTRY_CODE']}/performance/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/performance"
-      }
       dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"){
         sh "cp -rf ${directory}/update-config/${global_vars_files['COUNTRY_CODE']}/staging/${global_vars_files['APP_NAME']}/* ${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}-${APP_VERSION}/configuration/staging"
       }
@@ -78,7 +75,7 @@ def call(body){
   dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}"){
     step([
       $class : 'S3BucketPublisher',
-      profileName : 'openshift-profile-s3',
+      profileName : 'openshift-s3-credential',
       entries: [[
         bucket: "openshift-distributed-artifacts/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}",
         selectedRegion: 'ap-southeast-1',

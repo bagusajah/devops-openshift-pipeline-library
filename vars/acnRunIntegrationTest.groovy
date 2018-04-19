@@ -145,7 +145,7 @@ def call(body) {
       dir("${directory}/robot/results/${environmentForWorkspace}"){
         step([
           $class : 'S3BucketPublisher',
-          profileName : 'openshift-profile-s3',
+          profileName : 'openshift-s3-credential',
           entries: [[
             bucket: "${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}",
             selectedRegion: 'ap-southeast-1',
@@ -224,7 +224,7 @@ def call(body) {
           dir("${directory}/robot/results/${environmentForWorkspace}"){
             step([
               $class : 'S3BucketPublisher',
-              profileName : 'openshift-profile-s3',
+              profileName : 'openshift-s3-credential',
               entries: [[
                 bucket: "${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}",
                 selectedRegion: 'ap-southeast-1',

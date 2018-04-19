@@ -31,7 +31,7 @@ def call(body){
       dir("${directory}/update-config/tmp/${env_list}"){
         step([
           $class : 'S3BucketPublisher',
-          profileName : 'openshift-profile-s3',
+          profileName : 'openshift-s3-credential',
           entries: [[
             bucket: "acm-aws-openshift-configuration-repo/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}",
             selectedRegion: 'ap-southeast-1',

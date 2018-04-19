@@ -40,7 +40,7 @@ def call(body){
     dir("${directory}/system_integration_test/tmp"){
       step([
         $class : 'S3BucketPublisher',
-        profileName : 'openshift-profile-s3',
+        profileName : 'openshift-s3-credential',
         entries: [[
           bucket: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/robot-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}",
           selectedRegion: 'ap-southeast-1',
