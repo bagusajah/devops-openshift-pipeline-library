@@ -24,7 +24,7 @@ def call(Map parameters = [:], body) {
                 image: "${jnlpImage}", 
                 args: '${computer.jnlpmac} ${computer.name}', 
                 workingDir: '/home/jenkins/', 
-                resourceLimitMemory: '512Mi'
+                resourceLimitMemory: '64Mi'
             ],
             [
                 name: 'maven', 
@@ -45,6 +45,7 @@ def call(Map parameters = [:], body) {
                 command: '/bin/sh -c', 
                 args: 'cat', 
                 ttyEnabled: true,
+                resourceLimitMemory: '512Mi',
                 alwaysPullImage: true
             ],
             [
@@ -53,6 +54,7 @@ def call(Map parameters = [:], body) {
                 command: '/bin/sh -c', 
                 args: 'cat', 
                 ttyEnabled: true,
+                resourceLimitMemory: '512Mi',
                 alwaysPullImage: true
             ]
         ],
