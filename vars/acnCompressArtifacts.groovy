@@ -75,7 +75,7 @@ def call(body){
   dir("${directory}/distributed-runway/${global_vars_files['RUNWAY_NAME']}"){
     step([
       $class : 'S3BucketPublisher',
-      profileName : 'openshift-s3-credential',
+      profileName : 'openshift-s3-profile',
       entries: [[
         bucket: "openshift-distributed-artifacts/${global_vars_files['RUNWAY_NAME']}/${global_vars_files['APP_NAME']}",
         selectedRegion: 'ap-southeast-1',

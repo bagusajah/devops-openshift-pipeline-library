@@ -33,7 +33,7 @@ def call(body){
   dir("${directory}/performance_test/${GLOBAL_VARS['APP_NAME']}/scripts/pipeline_integrated"){
     step([
       $class : 'S3BucketPublisher',
-      profileName : 'openshift-s3-credential',
+      profileName : 'openshift-s3-profile',
       entries: [[
         bucket: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}",
         selectedRegion: 'ap-southeast-1',

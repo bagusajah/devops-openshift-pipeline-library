@@ -118,7 +118,7 @@ def call(body) {
             dir("${directory}/robot/results/${environmentForWorkspace}_smoke"){
               step([
                 $class : 'S3BucketPublisher',
-                profileName : 'openshift-s3-credential',
+                profileName : 'openshift-s3-profile',
                 entries: [[
                   bucket: "${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}",
                   selectedRegion: 'ap-southeast-1',
