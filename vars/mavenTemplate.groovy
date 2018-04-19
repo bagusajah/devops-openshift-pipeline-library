@@ -34,7 +34,7 @@ def call(Map parameters = [:], body) {
                 ttyEnabled: true, 
                 workingDir: '/home/jenkins/',
                 envVars: [
-                    envVar(key: 'MAVEN_OPTS', value: '-Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn')
+                    envVar(key: 'MAVEN_OPTS', value: '-Xmx512m -XX:MaxPermSize=350m -Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn')
                 ],
                 resourceLimitMemory: '2048Mi',
                 alwaysPullImage: true
