@@ -24,7 +24,7 @@ def call(Map parameters = [:], body) {
                 image: "${jnlpImage}", 
                 args: '${computer.jnlpmac} ${computer.name}', 
                 workingDir: '/home/jenkins/', 
-                resourceLimitMemory: '64Mi'
+                resourceLimitMemory: '128Mi'
             ],
             [
                 name: 'maven', 
