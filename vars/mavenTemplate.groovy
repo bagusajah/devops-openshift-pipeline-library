@@ -36,7 +36,7 @@ def call(Map parameters = [:], body) {
                 envVars: [
                     envVar(key: 'MAVEN_OPTS', value: '-Duser.home=/root/ -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn')
                 ],
-                resourceLimitMemory: '1024Mi',
+                resourceLimitMemory: '2048Mi',
                 alwaysPullImage: true
             ],
             [
