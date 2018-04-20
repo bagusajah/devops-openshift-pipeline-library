@@ -61,11 +61,12 @@ def call(body) {
     }
     
     if ( applicationType != 'mountebank') {
-    sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
-    sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+        sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+        sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
     } else {
-    sh "sed -i \"s/#MOUNTEBANK_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
-    sh "sed -i \"s/#MOUNTEBANK_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        sh "sed -i \"s/#MOUNTEBANK_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        sh "sed -i \"s/#MOUNTEBANK_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        sh "sed -i \"s~#MB_ROUTE_HOSTNAME#~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
     }
     sh "echo replace deployment"
 
