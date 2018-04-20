@@ -19,6 +19,7 @@ def call(body) {
     def countryCode = GLOBAL_VARS['COUNTRY_CODE']
     def appName = GLOBAL_VARS['APP_NAME']
     def packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
+    def middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
     // jar, war, tar.gz
     def imageType = config.imageType
     def nameImageType = "app"
@@ -39,6 +40,7 @@ def call(body) {
     dir("${directory}/ocp-artifact-${imageType}") {
         if ( imageType == "application" ) {
             sh "sed -i \"s/#APP_VERSION#/${appVersion}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
+            sh "sed -i \"s/#MIDDLEWARE_NAME#/${middlewareName}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
             sh "cp -rf ${directory}/pipeline/dockerfiles/${appLang}/script ${directory}/ocp-artifact-${imageType}/"
             sh "cp ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile ${directory}/ocp-artifact-${imageType}/"
             if ( appLang == "springboot" ) {
