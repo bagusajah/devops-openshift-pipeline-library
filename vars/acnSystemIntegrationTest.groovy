@@ -66,7 +66,7 @@ def call(body){
       enableCache: false
     ])
     if( currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' ){
-      slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step Run System Integration Test on ${environmentForWorkspace} environment. ${env.BUILD_URL}")
+      slackSend (channel: "${GLOBAL_VARS['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step Run System Integration Test on ${environmentForWorkspace} environment. ${env.BUILD_URL}")
       error "Pipeline aborted due to ${env.JOB_NAME} run system integration test ${env.BUILD_NUMBER} is FAILURE"
     } // End Condition RobotPublisher
   } else if ( test_tools == 'jmeter' ) {
