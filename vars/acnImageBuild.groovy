@@ -39,8 +39,12 @@ def call(body) {
 
     dir("${directory}/ocp-artifact-${imageType}") {
         if ( imageType == "application" ) {
+            sh "sed -i \"s/#APP_NAME#/${appName}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
             sh "sed -i \"s/#APP_VERSION#/${appVersion}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
             sh "sed -i \"s/#MIDDLEWARE_NAME#/${middlewareName}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
+            sh "sed -i \"s/#PACKAGE_EXTENSION#/${packageExtension}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
+            sh "sed -i \"s/#APP_LANG#/${appLang}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
+            sh "sed -i \"s/#COUNTRY_CODE#/${countryCode}/g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile" 
             sh "cp -rf ${directory}/pipeline/dockerfiles/${appLang}/script ${directory}/ocp-artifact-${imageType}/"
             sh "cp ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile ${directory}/ocp-artifact-${imageType}/"
             if ( appLang == "springboot" ) {
