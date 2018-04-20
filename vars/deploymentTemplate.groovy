@@ -24,7 +24,9 @@ def call(Map parameters = [:], body) {
             ]
         ],
         volumes: [
-            persistentVolumeClaim(claimName: 'configuration-data-pvc', mountPath: '/app-configs')
+            persistentVolumeClaim(claimName: 'pvc-configuration-data', mountPath: '/app-configs'),
+            configMapVolume(configMapName: 'global-domain-configmap', mountPath: '/domains'),
+            secretVolume(secretName: 'global-certificate-secret', mountPath: '/certs')
         ]
     ) 
     {
