@@ -16,7 +16,7 @@ def call(body){
   def app_url_type_service = config.app_url_type_service
   def conditionForGetVersion = config.conditionForGetVersion
   def test_tools = config.test_tools
-  def directory = config.directory_workspace
+  def directory = config.directory
 
   if ( rerun_condition_action == conditionForGetVersion ){
     def result = restGetVersionApplicationURL{
