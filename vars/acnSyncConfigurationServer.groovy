@@ -19,7 +19,7 @@ def call(body){
   for(n = 0; n < LIST_ENV.size(); n++){
     env_list = LIST_ENV[n]
     dir("${DIRECTORY_WORKSPACE}/s3-pull-config/tmp/${env_list}/${APP_NAME}-${APP_VERSION}") {
-      withAWS(credentials:'openshift-profile-s3') {
+      withAWS(credentials:'openshift-s3-credential') {
         s3Download bucket: 'acm-aws-openshift-configuration-repo', file: "${APP_NAME}-${APP_VERSION}.tar.gz", path: "${COUNTRY_CODE}/${env_list}/${APP_NAME}/${APP_NAME}-${APP_VERSION}.tar.gz"
       }
       sh "mkdir -p ${CONFIG_PATH}/${COUNTRY_CODE}/${env_list}/${APP_NAME}"
