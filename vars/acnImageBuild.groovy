@@ -34,8 +34,8 @@ def call(body) {
 
     def dockerRegistry = acnGetDockerRegistryServiceHost()
 
-    sh "sed -i \"s~'#APP_VERSION#'~${appVersion}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
-    sh "sed -i \"s~'#DOCKER_REGISTRY_SERVICE_IP#'~${dockerRegistry}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
+    sh "sed -i \"s~#APP_VERSION#'~${appVersion}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
+    sh "sed -i \"s~'#DOCKER_REGISTRY_SERVICE_IP#~${dockerRegistry}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
 
     dir("${directory}/ocp-artifact-${imageType}") {
         if ( imageType == "application" ) {

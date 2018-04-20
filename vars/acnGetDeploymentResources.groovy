@@ -101,7 +101,7 @@ items:
 """
     sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
-    routeYaml = routeYaml.replaceAll(/#ENV_NAME#'/, config.envName)
+    routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
     routeYaml = routeYaml.replaceAll(/'#ROUTE_HOSTNAME#'/, domainName) + """
 """
     sh "echo replace networkpolicy"
