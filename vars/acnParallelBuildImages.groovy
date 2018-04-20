@@ -31,6 +31,8 @@ def call(body){
       appVersion = APP_VERSION
       imageType = "application"
       namespace = namespace_cicd
+      envNameImage = namespace_dev.substring(4)
+      // acm-dev
     }
     images.add(imageApplication)
   }, 'Application-Mountebank': {
@@ -42,8 +44,8 @@ def call(body){
         appVersion = APP_VERSION
         imageType = "mountebank"
         namespace = namespace_cicd
+        envNameImage = namespace_dev.substring(4)
       }
-      images.add(imageApplicationMountebank)
     } else {
       echo "http://${GLOBAL_VARS['APP_NAME']}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
     } // End condition for take action to build images mountebank

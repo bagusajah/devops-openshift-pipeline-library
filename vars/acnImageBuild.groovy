@@ -13,6 +13,7 @@ def call(body) {
     def openshiftVersionFolder = config.openshiftVersionFolder
     def appVersion = config.appVersion
     def namespace_cicd = config.namespace
+    def envNameImage = config.envNameImage
 
     def appScope = GLOBAL_VARS['APP_SCOPE']
     def appLang = GLOBAL_VARS['APP_LANG']
@@ -34,6 +35,7 @@ def call(body) {
 
     def dockerRegistry = acnGetDockerRegistryServiceHost()
 
+    sh "sed -i \"s~'#ENV_NAME#'~${envNameImage}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s~#APP_VERSION#'~${appVersion}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s~'#DOCKER_REGISTRY_SERVICE_IP#~${dockerRegistry}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
 
