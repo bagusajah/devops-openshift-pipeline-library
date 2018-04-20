@@ -61,12 +61,12 @@ def call(body) {
     }
     
     if ( applicationType != 'mountebank') {
-        sh "sed -i \"s/#ROLLING_UPDATE_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
-        sh "sed -i \"s/#ROLLING_UPDATE_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+        sh "sed -i \"s~'#ROLLING_UPDATE_SURGE#'~${rollingUpdateSurge}~g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+        sh "sed -i \"s~'#ROLLING_UPDATE_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
     } else {
-        sh "sed -i \"s/#MOUNTEBANK_SURGE#/${rollingUpdateSurge}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
-        sh "sed -i \"s/#MOUNTEBANK_UNAVAILABLE#/${rollingUpdateUnavailable}/g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
-        sh "sed -i \"s~#MB_ROUTE_HOSTNAME#~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+        sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
     }
     sh "echo replace deployment"
 
@@ -81,34 +81,34 @@ items:
     def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
 
-    deploymentYaml = deploymentYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    deploymentYaml = deploymentYaml.replaceAll(/#APP_VERSION#/, config.appVersion)
+    deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, config.envName)
+    deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, config.appVersion)
     if ( applicationType != 'mountebank') {
-    deploymentYaml = deploymentYaml.replaceAll(/#NUM_OF_REPLICA#/, config.replicaNum)
+    deploymentYaml = deploymentYaml.replaceAll(/'#NUM_OF_REPLICA#'/, config.replicaNum)
     } else {
-    deploymentYaml = deploymentYaml.replaceAll(/#DEFAULT_NUM_REPLICA_MB#/, config.replicaNum)
+    deploymentYaml = deploymentYaml.replaceAll(/'#DEFAULT_NUM_REPLICA_MB#'/, config.replicaNum)
     }
-    deploymentYaml = deploymentYaml.replaceAll(/#IMAGE_URL#/, imageName)
-    deploymentYaml = deploymentYaml.replaceAll(/#BUILD_HASH#/, gitHashApplication)
-    deploymentYaml = deploymentYaml.replaceAll(/#GIT_SOURCE_BRANCH#/, gitSourceBranch)
-    deploymentYaml = deploymentYaml.replaceAll(/#RUNWAY_NAME#/, runwayName) + """
+    deploymentYaml = deploymentYaml.replaceAll(/'#IMAGE_URL#'/, imageName)
+    deploymentYaml = deploymentYaml.replaceAll(/'#BUILD_HASH#'/, gitHashApplication)
+    deploymentYaml = deploymentYaml.replaceAll(/'#GIT_SOURCE_BRANCH#'/, gitSourceBranch)
+    deploymentYaml = deploymentYaml.replaceAll(/'#RUNWAY_NAME#'/, runwayName) + """
 
 """
     sh "echo replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
-    serviceYaml = serviceYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
+    serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, config.envName) + """
 
 """
     sh "echo replace route"
     def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
-    routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, domainName) + """
+    routeYaml = routeYaml.replaceAll(/#ENV_NAME#'/, config.envName)
+    routeYaml = routeYaml.replaceAll(/'#ROUTE_HOSTNAME#'/, domainName) + """
 """
     sh "echo replace networkpolicy"
     if (networkPolicy != "default") {
     def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
-    networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) 
-    networkpolicyYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
+    networkpolicyYaml = networkpolicyYaml.replaceAll(/'#ENV_NAME#'/, config.envName) 
+    networkpolicyYaml = routeYaml.replaceAll(/'#ENV_NAME#'/, config.envName) + """
 """
     } //End replace networkpolicy
 
