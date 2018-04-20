@@ -104,7 +104,7 @@ items:
     routeYaml = routeYaml.replaceAll(/#ROUTE_HOSTNAME#/, domainName) + """
 """
     sh "echo replace networkpolicy"
-    if (networkPolicy != "ALL") {
+    if (networkPolicy != "default") {
     def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
     networkpolicyYaml = networkpolicyYaml.replaceAll(/#ENV_NAME#/, config.envName) 
     networkpolicyYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName) + """
@@ -112,7 +112,7 @@ items:
     } //End replace networkpolicy
 
     sh "echo merge atifacts"
-        if (networkPolicy != "ALL") {
+        if (networkPolicy != "default") {
             yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
         } else {
             yaml = list + serviceYaml + deploymentYaml + routeYaml
