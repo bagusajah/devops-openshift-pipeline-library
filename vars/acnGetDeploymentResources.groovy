@@ -38,6 +38,7 @@ def call(body) {
         domainNamePrefix = config.routeHostname
     }
 
+    sh "echo routeTLSEnable ${routeTLSEnable}"
     if ( applicationType != 'mountebank' ) {
         if ( routeTLSEnable == "true" ){
             routeType = "route-tls"
