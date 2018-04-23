@@ -28,6 +28,7 @@ def call(body) {
     def gitHashApplication = config.gitHashApplication
     def gitSourceBranch = config.gitSourceBranch
     def pathFileRoute = ""
+    def routeTLSEnable = config.routeTLSEnable
 
     def certList = []
     // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
@@ -38,10 +39,9 @@ def call(body) {
     }
 
     if ( applicationType != 'mountebank' ) {
-        if ( config.appProtocal == "https" ){
+        if ( routeTLSEnable == "true" ){
             routeType = "route-tls"
             pathFileRoute = "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + routeType + ".yaml"
-            echo "pathFileRoute ${pathFileRoute}"
             certList = acnGetCertificate{
                 appScope = config.appScope
                 pathFile = pathFileRoute

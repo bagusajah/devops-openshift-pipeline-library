@@ -36,6 +36,7 @@ def call(body){
       gitHashApplication = buildDetailList[2]
       gitSourceBranch = buildDetailList[5]
       appScope = GLOBAL_VARS['APP_SCOPE']
+      routeTLSEnable = GLOBAL_VARS['ROUTE_TLS_ENABLE']
     }
   }, 'Application-Mountebank': {
     if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
@@ -54,6 +55,7 @@ def call(body){
         gitHashApplication = buildDetailList[2]
         gitSourceBranch = buildDetailList[5]
         appScope = GLOBAL_VARS['APP_SCOPE']
+        routeTLSEnable = GLOBAL_VARS['ROUTE_TLS_ENABLE']
       }
     } else {
       sh "echo http://${GLOBAL_VARS['APP_NAME']}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
