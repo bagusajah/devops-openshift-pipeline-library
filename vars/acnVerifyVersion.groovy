@@ -32,7 +32,13 @@ def call(body){
     }
   }
   catch(e) {
-    slackSend (channel: "${GLOBAL_VARS['CHANNEL_SLACK_NOTIFICATION']}", color: '#FF9900', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step \"Verify version application has changed\" on ${envList} environment. ${env.BUILD_URL}")
+    // slackSend (channel: "${GLOBAL_VARS['CHANNEL_SLACK_NOTIFICATION']}", color: '#FF9900', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step \"Verify version application has changed\" on ${envList} environment. ${env.BUILD_URL}")
+    acnSendAlertToWebhook {
+      urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+      envName = APP_URL_OPENSHIFT_FORMAT
+      stageCurrent = "FAIL step Verify version application has changed"
+      appName = GLOBAL_VARS['APP_NAME']
+    }
     error "Pipeline aborted due to ${env.JOB_NAME} can not deploy version ${env.BUILD_NUMBER}"
   }
 

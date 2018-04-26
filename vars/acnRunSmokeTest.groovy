@@ -25,7 +25,13 @@ def call(body) {
 
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
-    slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because no git to execute'. ${env.BUILD_URL}")
+    // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because no git to execute'. ${env.BUILD_URL}")
+    acnSendAlertToWebhook {
+      urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+      envName = environmentForWorkspace
+      stageCurrent = "FAIL step Run Integration Test Because no git to execute"
+      appName = GLOBAL_VARS['APP_NAME']
+    }
     error "No git to execute"
   } else {
     if ( rerun_condition_action == conditionForGetVersion ){
@@ -130,7 +136,13 @@ def call(body) {
             } // End upload zip file to S3
             sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
             sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
-            slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step Run Smoke Test on ${environmentForWorkspace} environment. ${env.BUILD_URL}")
+            // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step Run Smoke Test on ${environmentForWorkspace} environment. ${env.BUILD_URL}")
+            acnSendAlertToWebhook {
+              urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+              envName = environmentForWorkspace
+              stageCurrent = "FAIL step Run Smoke Test"
+              appName = GLOBAL_VARS['APP_NAME']
+            }
             error "Pipeline aborted due to ${env.JOB_NAME} run system integration test ${env.BUILD_NUMBER} is FAILURE"
           } // End Condition RobotPublisher is Fail
         } // End condition have run_smoke.sh

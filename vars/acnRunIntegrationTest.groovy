@@ -22,7 +22,13 @@ def call(body) {
 
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
-    slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because no git to execute'. ${env.BUILD_URL}")
+    // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because no git to execute'. ${env.BUILD_URL}")
+    acnSendAlertToWebhook {
+      urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+      envName = environmentForWorkspace
+      stageCurrent = "FAIL step Run Integration Test Because no git to execute"
+      appName = GLOBAL_VARS['APP_NAME']
+    }
     error "No git to execute"
   } else {
     if ( rerun_condition_action == conditionForGetVersion ){
@@ -171,10 +177,22 @@ def call(body) {
         enableCache: false
       ])
       if( currentBuild.result == 'UNSTABLE' ){
-        slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because result threshold less than '${global_vars['ROBOT_UNSTABLE_THRESHOLD']}'. ${env.BUILD_URL}")
+        // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because result threshold less than '${global_vars['ROBOT_UNSTABLE_THRESHOLD']}'. ${env.BUILD_URL}")
+        acnSendAlertToWebhook {
+          urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+          envName = environmentForWorkspace
+          stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
+          appName = GLOBAL_VARS['APP_NAME']
+        }
         error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
       } else if(currentBuild.result == 'FAILURE'){
-        slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FF9900', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAILURE step Run Integration Test on ${environmentForWorkspace} environment. Because result threshold less than '${global_vars['ROBOT_PASS_THRESHOLD']}'. ${env.BUILD_URL}")
+        // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FF9900', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAILURE step Run Integration Test on ${environmentForWorkspace} environment. Because result threshold less than '${global_vars['ROBOT_PASS_THRESHOLD']}'. ${env.BUILD_URL}")
+        acnSendAlertToWebhook {
+          urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+          envName = environmentForWorkspace
+          stageCurrent = "FAILURE Because result threshold less than ${global_vars['ROBOT_PASS_THRESHOLD']}"
+          appName = GLOBAL_VARS['APP_NAME']
+        }
         error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is FAILURE"
       } // End Condition RobotPublisher
     } else if ( test_tools == "jmeter" ) {
