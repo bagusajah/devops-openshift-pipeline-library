@@ -77,7 +77,7 @@ def call(body){
   sh "cd ${directory}/distributed-runway/${runway_name} && /bin/tar -zcvf \"${app_name}-${APP_VERSION}.tar.gz\" \"${app_name}-${APP_VERSION}/\""
   dir("${directory}/distributed-runway/${runway_name}"){
     withAWS(credentials:'openshift-s3-credential') {
-      s3Upload bucket: 'openshift-distributed-artifacts', file: "${app_name}-${APP_VERSION}.tar.gz", path: "openshift-distributed-artifacts/${runway_name}/${app_name}/${app_name}-${APP_VERSION}.tar.gz"
+      s3Upload bucket: 'openshift-distributed-artifacts', file: "${app_name}-${APP_VERSION}.tar.gz", path: "${runway_name}/${app_name}/${app_name}-${APP_VERSION}.tar.gz"
     }
   } // End directory for upload .tar.gz file to S3
 
