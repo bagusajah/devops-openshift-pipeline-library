@@ -19,8 +19,8 @@ def call(body) {
     if ( appName.contains("mountebank") ){
         applicationType = 'mountebank'
     }
-    def dockerRegistryHost = acnGetDockerRegistryServiceHost()
-    def dockerRegistryPort = 5000
+    // def dockerRegistryHost = acnGetDockerRegistryServiceHost()
+    // def dockerRegistryPort = 5000
     def versionOpenshift = config.versionOpenshift
     def networkPolicy = config.networkPolicy
     def runwayName = config.runwayName ?: "OPENSHIFT"
@@ -38,7 +38,7 @@ def call(body) {
         domainNamePrefix = config.routeHostname
     }
 
-    sh "echo routeTLSEnable ${routeTLSEnable}"
+    routeType = 'route'
     if ( applicationType != 'mountebank' ) {
         if ( routeTLSEnable == "true" ){
             routeType = "route-tls"
@@ -47,11 +47,7 @@ def call(body) {
                 appScope = config.appScope
                 pathFile = pathFileRoute
             }
-        }else{
-            routeType = 'route'
         }
-    } else {
-        routeType = 'route'
     }
 
     def replicaNum = config.replicaNum
@@ -79,7 +75,8 @@ items:
 """
     
     def namespace = config.namespace //fix namespaces
-    def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
+    def imageName = config.imageName
+    // def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
 
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, config.envName)
@@ -114,15 +111,13 @@ items:
     } //End replace networkpolicy
 
     sh "echo merge atifacts"
-        if (networkPolicy != "default") {
-            yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
-        } else {
-            yaml = list + serviceYaml + deploymentYaml + routeYaml
-        }
-    
+    if ( networkPolicy != "default" ) {
+        yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
+    } else {
+        yaml = list + serviceYaml + deploymentYaml + routeYaml
+    }
 
     echo 'using resources:\n' + yaml
-    // return yaml
 
     applyResource {
         artifact_data = yaml
@@ -130,7 +125,6 @@ items:
         application  = applicationType
     }
     
-
 } // End Main Method
 
 def applyResource(body){
