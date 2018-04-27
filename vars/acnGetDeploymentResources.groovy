@@ -19,8 +19,7 @@ def call(body) {
     if ( appName.contains("mountebank") ){
         applicationType = 'mountebank'
     }
-    // def dockerRegistryHost = acnGetDockerRegistryServiceHost()
-    // def dockerRegistryPort = 5000
+    
     def versionOpenshift = config.versionOpenshift
     def networkPolicy = config.networkPolicy
     def runwayName = config.runwayName ?: "OPENSHIFT"
@@ -74,9 +73,7 @@ kind: List
 items:
 """
     
-    def namespace = config.namespace //fix namespaces
     def imageName = config.imageName
-    // def imageName = "${dockerRegistryHost}:${dockerRegistryPort}/${namespace}/${config.appName}:${config.appVersion}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
 
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, config.envName)

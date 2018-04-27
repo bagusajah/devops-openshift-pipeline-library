@@ -24,8 +24,6 @@ def call(body){
       versionOpenshift = openshiftVersion
       exposeApp = 'true'
       imageName = images[0]
-      namespace = namespace_cicd
-      appProtocal = GLOBAL_VARS['APP_PROTOCOL']
       appName = GLOBAL_VARS['APP_NAME']
       appVersion = APP_VERSION
       envName = LIST_ENV[0]
@@ -44,7 +42,6 @@ def call(body){
         versionOpenshift = openshiftVersion
         exposeApp = 'true'
         imageName = images[1]
-        namespace = namespace_cicd
         appName = "${GLOBAL_VARS['APP_NAME']}-mountebank"
         appVersion = APP_VERSION
         envName = LIST_ENV[0]
