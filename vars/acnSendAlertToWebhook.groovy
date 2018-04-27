@@ -1,5 +1,7 @@
 #!/usr/bin/groovy
-import com.ascendmoney.cicd.Utils
+import groovy.json.*
+import java.text.SimpleDateFormat
+import groovy.json.JsonSlurperClassic
 
 def call(body) {
 
