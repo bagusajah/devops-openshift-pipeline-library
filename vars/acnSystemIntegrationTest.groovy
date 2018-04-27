@@ -38,17 +38,9 @@ def call(body){
     sh "cp -rf ${directory}/system_integration_test/results/${GLOBAL_VARS['APP_NAME']}/* ${directory}/system_integration_test/tmp/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
     sh "cd ${directory}/system_integration_test/tmp && /bin/zip -r \"${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
     dir("${directory}/system_integration_test/tmp"){
-      step([
-        $class : 'S3BucketPublisher',
-        profileName : 'openshift-s3-profile',
-        entries: [[
-          bucket: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/robot-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}",
-          selectedRegion: 'ap-southeast-1',
-          showDirectlyInBrowser: true,
-          sourceFile: "${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip",
-          storageClass: 'STANDARD'
-        ]]
-      ])
+      withAWS(credentials:'openshift-s3-credential') {
+        s3Upload bucket: GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE'], file: "${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/robot-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
+      }
     }
     sh "echo BUCKET S3 result SIT is https://s3.console.aws.amazon.com/s3/buckets/${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/robot-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
     sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${GLOBAL_VARS['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"

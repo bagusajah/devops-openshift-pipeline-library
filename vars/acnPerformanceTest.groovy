@@ -31,17 +31,9 @@ def call(body){
   sh "cd ${directory}/performance_test/${GLOBAL_VARS['APP_NAME']}/scripts/pipeline_integrated && ./run.sh"
   sh "cd ${directory}/performance_test/${GLOBAL_VARS['APP_NAME']}/scripts/pipeline_integrated && /bin/zip -r \"results.zip\" \"results\""
   dir("${directory}/performance_test/${GLOBAL_VARS['APP_NAME']}/scripts/pipeline_integrated"){
-    step([
-      $class : 'S3BucketPublisher',
-      profileName : 'openshift-s3-profile',
-      entries: [[
-        bucket: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}",
-        selectedRegion: 'ap-southeast-1',
-        showDirectlyInBrowser: true,
-        sourceFile: "results.zip",
-        storageClass: 'STANDARD'
-      ]]
-    ])
+    withAWS(credentials:'openshift-s3-credential') {
+      s3Upload bucket: GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE'], file: "results.zip", path: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/results.zip"
+    }
   } // End Upload results to s3
   sh "echo BUCKET S3 result Performance Test is https://s3.console.aws.amazon.com/s3/buckets/${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/performance-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
   sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${GLOBAL_VARS['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
