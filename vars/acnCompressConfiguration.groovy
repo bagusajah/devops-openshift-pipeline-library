@@ -29,17 +29,9 @@ def call(body){
       sh "cp -rf ${directory}/update-config/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/* ${directory}/update-config/tmp/${env_list}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}/"
       sh "cd ${directory}/update-config/tmp/${env_list} && /bin/tar -zcvf \"${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.tar.gz\" \"${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}/\""
       dir("${directory}/update-config/tmp/${env_list}"){
-        step([
-          $class : 'S3BucketPublisher',
-          profileName : 'openshift-s3-profile',
-          entries: [[
-            bucket: "acm-aws-openshift-configuration-repo/${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}",
-            selectedRegion: 'ap-southeast-1',
-            showDirectlyInBrowser: true,
-            sourceFile: "${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.tar.gz",
-            storageClass: 'STANDARD'
-          ]]
-        ])
+        withAWS(credentials:'openshift-s3-credential') {
+          s3Upload bucket: 'acm-aws-openshift-configuration-repo', file: "${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.tar.gz", path: "${GLOBAL_VARS['COUNTRY_CODE']}/${env_list}/${GLOBAL_VARS['APP_NAME']}/${GLOBAL_VARS['APP_NAME']}-${APP_VERSION}.tar.gz"
+        }
       } // End Upload zip file to s3
     } // End scope
   } // End Loop zip file and upload to s3
