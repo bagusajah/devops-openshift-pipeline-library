@@ -11,7 +11,6 @@ def call(body){
   def APP_VERSION = config.version
   def app_name = config.app_name
   def url_webhook_google_chat_notification = config.url_webhook_google_chat_notification
-  def envList = config.envList
 
   def rs = ""
   def resultVersionApplication = null
