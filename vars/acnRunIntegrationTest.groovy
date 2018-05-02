@@ -9,7 +9,6 @@ def call(body) {
   body.delegate = config
   body()
 
-  echo "IN0 acnRunIntegrationTest"
   def conditionForGetVersion = config.conditionForGetVersion
   def environmentForWorkspace = config.environmentForWorkspace
   def global_vars = config.global_vars
@@ -20,7 +19,6 @@ def call(body) {
   def authorizationTMTId = config.authorizationTMTId
   def test_tools = config.test_tools
   def directory = config.directory
-  echo "IN1 acnRunIntegrationTest"
 
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
