@@ -170,6 +170,7 @@ def call(body) {
         enableCache: false
       ])
       if( currentBuild.result == 'UNSTABLE' ){
+        acnSendAlertToWebhook {
           urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
           envName = environmentForWorkspace
           stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
