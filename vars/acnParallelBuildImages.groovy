@@ -24,21 +24,32 @@ def call(body){
     if( GLOBAL_VARS['RUNWAY_NAME'] == "TESSERACT" ) {
       sh "cp -f ${directory_workspace}/startup.sh ${directory_workspace}/pipeline/script/tesseract-startup.sh"
     }
-    imageApplication = acnImageBuild{
+    imageApplication = acnImageBuild {
       global_vars = GLOBAL_VARS
+      appScope = GLOBAL_VARS['APP_SCOPE']
+      appLang = GLOBAL_VARS['APP_LANG']
+      countryCode = GLOBAL_VARS['COUNTRY_CODE']
+      appName = GLOBAL_VARS['APP_NAME']
+      packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
+      middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
       directory = directory_workspace
       openshiftVersionFolder = openshiftVersion
       appVersion = APP_VERSION
       imageType = "application"
       namespace = namespace_cicd
       envNameImage = namespace_dev.substring(4)
-      // acm-dev
     }
     images.add(imageApplication)
   }, 'Application-Mountebank': {
     if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
-      imageApplicationMountebank = acnImageBuild{
+      imageApplicationMountebank = acnImageBuild {
         global_vars = GLOBAL_VARS
+        appScope = GLOBAL_VARS['APP_SCOPE']
+        appLang = GLOBAL_VARS['APP_LANG']
+        countryCode = GLOBAL_VARS['COUNTRY_CODE']
+        appName = GLOBAL_VARS['APP_NAME']
+        packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
+        middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
         directory = directory_workspace
         openshiftVersionFolder = openshiftVersion
         appVersion = APP_VERSION

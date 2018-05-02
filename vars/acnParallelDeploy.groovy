@@ -8,7 +8,13 @@ def call(body){
   body.delegate = config
   body()
 
-  def GLOBAL_VARS = config.global_vars
+  def app_name = config.app_name
+  def replica_num = config.replicaNum
+  def route_hostname = config.routeHostname
+  def route_hostname_mountebank = config.routeHostnameMountebank
+  def network_policy = config.networkPolicy
+  def app_scope = config.appScope
+  def route_tls_enable = config.routeTLSEnable
   def openshiftVersion = config.openshift_version 
   def images = config.imagesList
   def namespace_cicd = config.namespace 
@@ -24,17 +30,17 @@ def call(body){
       versionOpenshift = openshiftVersion
       exposeApp = 'true'
       imageName = images[0]
-      appName = GLOBAL_VARS['APP_NAME']
+      appName = app_name
       appVersion = APP_VERSION
       envName = LIST_ENV[0]
-      replicaNum = GLOBAL_VARS['DEFAULT_NUM_REPLICA_DEV']
-      routeHostname = GLOBAL_VARS['ROUTE_HOSTNAME_DEV']
-      networkPolicy = GLOBAL_VARS['NETWORK_POLICY_ACCEPT_LABELS']
+      replicaNum = replica_num
+      routeHostname = route_hostname
+      networkPolicy = network_policy
       namespace_env = namespace_dev
       gitHashApplication = buildDetailList[2]
       gitSourceBranch = buildDetailList[5]
-      appScope = GLOBAL_VARS['APP_SCOPE']
-      routeTLSEnable = GLOBAL_VARS['ROUTE_TLS_ENABLE']
+      appScope = app_scope
+      routeTLSEnable = route_tls_enable
     }
   }, 'Application-Mountebank': {
     if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
@@ -42,20 +48,20 @@ def call(body){
         versionOpenshift = openshiftVersion
         exposeApp = 'true'
         imageName = images[1]
-        appName = "${GLOBAL_VARS['APP_NAME']}-mountebank"
+        appName = "${app_name}-mountebank"
         appVersion = APP_VERSION
         envName = LIST_ENV[0]
-        replicaNum = GLOBAL_VARS['DEFAULT_NUM_REPLICA_DEV']
-        routeHostname = GLOBAL_VARS['ROUTE_HOSTNAME_MOUNTEBANK']
-        networkPolicy = GLOBAL_VARS['NETWORK_POLICY_ACCEPT_LABELS']
+        replicaNum = replica_num
+        routeHostname = route_hostname_mountebank
+        networkPolicy = network_policy
         namespace_env = namespace_dev
         gitHashApplication = buildDetailList[2]
         gitSourceBranch = buildDetailList[5]
-        appScope = GLOBAL_VARS['APP_SCOPE']
-        routeTLSEnable = GLOBAL_VARS['ROUTE_TLS_ENABLE']
+        appScope = app_scope
+        routeTLSEnable = route_tls_enable
       }
     } else {
-      sh "echo http://${GLOBAL_VARS['APP_NAME']}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
+      sh "echo http://${app_name}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
     }
   } // End Scopy Deploy Parallel
 

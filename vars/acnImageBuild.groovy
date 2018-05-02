@@ -15,12 +15,12 @@ def call(body) {
     def namespace_cicd = config.namespace
     def envNameImage = config.envNameImage
 
-    def appScope = GLOBAL_VARS['APP_SCOPE']
-    def appLang = GLOBAL_VARS['APP_LANG']
-    def countryCode = GLOBAL_VARS['COUNTRY_CODE']
-    def appName = GLOBAL_VARS['APP_NAME']
-    def packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
-    def middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
+    def appScope = config.appScope
+    def appLang = config.appLang
+    def countryCode = config.countryCode
+    def appName = config.appName
+    def packageExtension = config.packageExtension
+    def middlewareName = config.middlewareName
     // jar, war, tar.gz
     def imageType = config.imageType
     def nameImageType = "app"

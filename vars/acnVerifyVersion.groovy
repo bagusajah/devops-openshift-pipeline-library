@@ -9,7 +9,8 @@ def call(body){
 
   def APP_URL_OPENSHIFT_FORMAT = config.app_url_openshift_format
   def APP_VERSION = config.version
-  def GLOBAL_VARS = config.global_vars
+  def app_name = config.app_name
+  def url_webhook_google_chat_notification = config.url_webhook_google_chat_notification
   def envList = config.envList
 
   def rs = ""
@@ -25,19 +26,18 @@ def call(body){
         echo "expect ${APP_VERSION} but application version is ${resultVersionApplication}"
         if (resultVersionApplication == APP_VERSION){
           return true
-        }else {
+        } else {
           return false
         }
       } // End waitUntil
     }
   }
   catch(e) {
-    // slackSend (channel: "${GLOBAL_VARS['CHANNEL_SLACK_NOTIFICATION']}", color: '#FF9900', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step \"Verify version application has changed\" on ${envList} environment. ${env.BUILD_URL}")
     acnSendAlertToWebhook {
-      urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+      urlWebhook = url_webhook_google_chat_notification
       envName = APP_URL_OPENSHIFT_FORMAT
       stageCurrent = "FAIL step Verify version application has changed"
-      appName = GLOBAL_VARS['APP_NAME']
+      appName = app_name
     }
     error "Pipeline aborted due to ${env.JOB_NAME} can not deploy version ${env.BUILD_NUMBER}"
   }

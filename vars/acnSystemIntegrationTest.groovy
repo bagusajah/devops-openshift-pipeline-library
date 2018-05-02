@@ -8,7 +8,10 @@ def call(body){
   body.delegate = config
   body()
 
-  def GLOBAL_VARS = config.global_vars
+  def app_name = = config.app_name
+  def tmt_test_result_url_performance = config.tmt_test_result_url_performance
+  def tmt_url = config.tmt_url
+  def url_webhook_google_chat_notification = config.url_webhook_google_chat_notification
   def app_version = config.app_version
   def authorizationTMTId = config.authorizationTMTId
   def jobTMTId = config.jobTMTId
@@ -28,25 +31,25 @@ def call(body){
   dir("${directory}/system_integration_test"){
     git credentialsId: 'bitbucket-credential', url: 'https://bitbucket.org/ascendcorp/acm-sit-robot.git'
   }
-  dir("${directory}/system_integration_test/tmp/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
+  dir("${directory}/system_integration_test/tmp/${app_name}-${app_version}-build-${env.BUILD_NUMBER}"){
     sh "touch init.txt"
     sh "rm -rf init.txt"
   }
   if ( test_tools == 'robot' ) {
-    sh "chmod +x ${directory}/system_integration_test/scripts/${GLOBAL_VARS['APP_NAME']}/run.sh"
-    sh "cd ${directory}/system_integration_test/scripts/${GLOBAL_VARS['APP_NAME']} && ./run.sh ${GLOBAL_VARS['APP_NAME']}"
-    sh "cp -rf ${directory}/system_integration_test/results/${GLOBAL_VARS['APP_NAME']}/* ${directory}/system_integration_test/tmp/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
-    sh "cd ${directory}/system_integration_test/tmp && /bin/zip -r \"${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
+    sh "chmod +x ${directory}/system_integration_test/scripts/${app_name}/run.sh"
+    sh "cd ${directory}/system_integration_test/scripts/${app_name} && ./run.sh ${app_name}"
+    sh "cp -rf ${directory}/system_integration_test/results/${app_name}/* ${directory}/system_integration_test/tmp/${app_name}-${app_version}-build-${env.BUILD_NUMBER}"
+    sh "cd ${directory}/system_integration_test/tmp && /bin/zip -r \"${app_name}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${app_name}-${app_version}-build-${env.BUILD_NUMBER}/\""
     dir("${directory}/system_integration_test/tmp"){
       withAWS(credentials:'openshift-s3-credential') {
-        s3Upload bucket: GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE'], file: "${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/robot-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/${GLOBAL_VARS['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
+        s3Upload bucket: tmt_test_result_url_performance, file: "${app_name}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "robot-result/${app_name}/${env.BUILD_NUMBER}/${app_name}-${app_version}-build-${env.BUILD_NUMBER}.zip"
       }
     }
-    sh "echo BUCKET S3 result SIT is https://s3.console.aws.amazon.com/s3/buckets/${GLOBAL_VARS['TMT_TEST_RESULT_URL_PERFORMANCE']}/robot-result/${GLOBAL_VARS['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
-    sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${GLOBAL_VARS['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
+    sh "echo BUCKET S3 result SIT is https://s3.console.aws.amazon.com/s3/buckets/${tmt_test_result_url_performance}/robot-result/${app_name}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
+    sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${tmt_url}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
     step([
       $class : 'RobotPublisher', 
-      outputPath : "${directory}/system_integration_test/results/${GLOBAL_VARS['APP_NAME']}",
+      outputPath : "${directory}/system_integration_test/results/${app_name}",
       passThreshold : 100,
       unstableThreshold: 100, 
       otherFiles : "*.png",
@@ -58,12 +61,11 @@ def call(body){
       enableCache: false
     ])
     if( currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' ){
-      // slackSend (channel: "${GLOBAL_VARS['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAIL step Run System Integration Test on ${environmentForWorkspace} environment. ${env.BUILD_URL}")
       acnSendAlertToWebhook {
-        urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+        urlWebhook = url_webhook_google_chat_notification
         envName = environmentForWorkspace
         stageCurrent = "FAIL step Run System Integration Test"
-        appName = GLOBAL_VARS['APP_NAME']
+        appName = app_name
       }
       error "Pipeline aborted due to ${env.JOB_NAME} run system integration test ${env.BUILD_NUMBER} is FAILURE"
     } // End Condition RobotPublisher

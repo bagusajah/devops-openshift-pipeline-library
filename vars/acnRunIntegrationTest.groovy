@@ -22,7 +22,6 @@ def call(body) {
 
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
-    // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because no git to execute'. ${env.BUILD_URL}")
     acnSendAlertToWebhook {
       urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
       envName = environmentForWorkspace
@@ -150,7 +149,7 @@ def call(body) {
       }
       dir("${directory}/robot/results/${environmentForWorkspace}"){
         withAWS(credentials:'openshift-s3-credential') {
-          s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
+          s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
         }
       }
       sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
@@ -169,8 +168,6 @@ def call(body) {
         enableCache: false
       ])
       if( currentBuild.result == 'UNSTABLE' ){
-        // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FFFF66', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} UNSTABLE step Run Integration Test on ${environmentForWorkspace} environment. Because result threshold less than '${global_vars['ROBOT_UNSTABLE_THRESHOLD']}'. ${env.BUILD_URL}")
-        acnSendAlertToWebhook {
           urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
           envName = environmentForWorkspace
           stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
@@ -178,7 +175,6 @@ def call(body) {
         }
         error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
       } else if(currentBuild.result == 'FAILURE'){
-        // slackSend (channel: "${global_vars['CHANNEL_SLACK_NOTIFICATION']}", color: '#FF9900', message: "${env.JOB_NAME} build number ${env.BUILD_NUMBER} FAILURE step Run Integration Test on ${environmentForWorkspace} environment. Because result threshold less than '${global_vars['ROBOT_PASS_THRESHOLD']}'. ${env.BUILD_URL}")
         acnSendAlertToWebhook {
           urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
           envName = environmentForWorkspace
@@ -233,7 +229,7 @@ def call(body) {
           }
           dir("${directory}/robot/results/${environmentForWorkspace}"){
             withAWS(credentials:'openshift-s3-credential') {
-              s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
+              s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
             }
           } // End upload zip file to S3
           sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
