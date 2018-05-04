@@ -62,6 +62,7 @@ def call(Map parameters = [:], body) {
             persistentVolumeClaim(claimName: 'jenkins-mvn-local-repo', mountPath: '/root/.mvnrepository'),
             persistentVolumeClaim(claimName: 'pvc-configuration-data', mountPath: '/app-configs'),
             configMapVolume(configMapName: 'global-domain-configmap', mountPath: '/domains'),
+            configMapVolume(configMapName: 'global-countrycode-configmap', mountPath: '/countrycode'),
             secretVolume(secretName: 'global-certificate-secret', mountPath: '/certs')
         ]
     ) 
