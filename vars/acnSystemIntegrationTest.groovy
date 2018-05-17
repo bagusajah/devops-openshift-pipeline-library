@@ -11,7 +11,7 @@ def call(body){
   def app_name = = config.app_name
   def tmt_test_result_url_performance = config.tmt_test_result_url_performance
   def tmt_url = config.tmt_url
-  def url_webhook_google_chat_notification = config.url_webhook_google_chat_notification
+  def GCHAT_NOTIFIER_WEBHOOK = config.GCHAT_NOTIFIER_WEBHOOK
   def app_version = config.app_version
   def authorizationTMTId = config.authorizationTMTId
   def jobTMTId = config.jobTMTId
@@ -62,7 +62,7 @@ def call(body){
     ])
     if( currentBuild.result == 'UNSTABLE' || currentBuild.result == 'FAILURE' ){
       acnSendAlertToWebhook {
-        urlWebhook = url_webhook_google_chat_notification
+        urlWebhook = GCHAT_NOTIFIER_WEBHOOK
         envName = environmentForWorkspace
         stageCurrent = "FAIL step Run System Integration Test"
         appName = app_name

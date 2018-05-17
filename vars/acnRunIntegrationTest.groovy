@@ -23,7 +23,7 @@ def call(body) {
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
     acnSendAlertToWebhook {
-      urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+      urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
       envName = environmentForWorkspace
       stageCurrent = "FAIL step Run Integration Test Because no git to execute"
       appName = GLOBAL_VARS['APP_NAME']
@@ -169,7 +169,7 @@ def call(body) {
       ])
       if( currentBuild.result == 'UNSTABLE' ){
         acnSendAlertToWebhook {
-          urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+          urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
           envName = environmentForWorkspace
           stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
           appName = GLOBAL_VARS['APP_NAME']
@@ -177,7 +177,7 @@ def call(body) {
         error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
       } else if(currentBuild.result == 'FAILURE'){
         acnSendAlertToWebhook {
-          urlWebhook = GLOBAL_VARS['URL_WEBHOOK_GOOGLE_CHAT_NOTIFICATION']
+          urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
           envName = environmentForWorkspace
           stageCurrent = "FAILURE Because result threshold less than ${global_vars['ROBOT_PASS_THRESHOLD']}"
           appName = GLOBAL_VARS['APP_NAME']

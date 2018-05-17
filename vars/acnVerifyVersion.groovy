@@ -10,7 +10,7 @@ def call(body){
   def APP_URL_OPENSHIFT_FORMAT = config.app_url_openshift_format
   def APP_VERSION = config.version
   def app_name = config.app_name
-  def url_webhook_google_chat_notification = config.url_webhook_google_chat_notification
+  def GCHAT_NOTIFIER_WEBHOOK = config.GCHAT_NOTIFIER_WEBHOOK
 
   def rs = ""
   def resultVersionApplication = null
@@ -33,7 +33,7 @@ def call(body){
   }
   catch(e) {
     acnSendAlertToWebhook {
-      urlWebhook = url_webhook_google_chat_notification
+      urlWebhook = GCHAT_NOTIFIER_WEBHOOK
       envName = APP_URL_OPENSHIFT_FORMAT
       stageCurrent = "FAIL step Verify version application has changed"
       appName = app_name
