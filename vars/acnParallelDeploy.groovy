@@ -27,6 +27,21 @@ def call(body){
   def directory = config.directory
 
   echo "START PARALLEL"
+  echo "openshiftVersion ${openshiftVersion}"
+  echo "images[0] ${images[0]}"
+  echo "app_name ${app_name}"
+  echo "APP_VERSION ${APP_VERSION}"
+  echo "LIST_ENV[0] ${LIST_ENV[0]}"
+  echo "replica_num ${replica_num}"
+  echo "route_hostname ${route_hostname}"
+  echo "network_policy ${network_policy}"
+  echo "namespace_dev ${namespace_dev}"
+  echo "buildDetailList[2] ${buildDetailList[2]}"
+  echo "buildDetailList[5] ${buildDetailList[5]}"
+  echo "app_scope ${app_scope}"
+  echo "route_tls_enable ${route_tls_enable}"
+  echo "buildDetailList ${buildDetailList}"
+  echo "directory ${directory}"
 
   parallel 'Application': {
     def rcDev = acnGetDeploymentResources { 
