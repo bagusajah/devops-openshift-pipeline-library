@@ -8,8 +8,6 @@ def call(body) {
     body.delegate = config
     body()
 
-    def utils = new Utils()
-
     def yaml
     def platformType = 'openshift-artifacts'
 

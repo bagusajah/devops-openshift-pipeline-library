@@ -43,7 +43,7 @@ def call(body){
   echo "buildDetailList ${buildDetailList}"
   echo "directory ${directory}"
 
-  def rcDev = acnGetDeploymentResources { 
+  acnGetDeploymentResources { 
     versionOpenshift = openshiftVersion
     imageName = images[0]
     appName = app_name
