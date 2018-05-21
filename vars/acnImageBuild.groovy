@@ -37,6 +37,7 @@ def call(body) {
 
     sh "sed -i \"s~'#ENV_NAME#'~${envNameImage}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s~#APP_VERSION#'~${appVersion}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
+    sh "sed -i \"s~#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
     sh "sed -i \"s~'#DOCKER_REGISTRY_SERVICE_IP#~${dockerRegistry}~g\" ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
 
     dir("${directory}/ocp-artifact-${imageType}") {
