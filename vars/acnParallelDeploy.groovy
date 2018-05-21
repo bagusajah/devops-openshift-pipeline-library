@@ -43,10 +43,10 @@ def call(body){
   echo "buildDetailList ${buildDetailList}"
   echo "directory ${directory}"
 
-  parallel 'Application': {
+  parallel "Application": {
     def rcDev = acnGetDeploymentResources { 
       versionOpenshift = openshiftVersion
-      exposeApp = 'true'
+      exposeApp = "true"
       imageName = images[0]
       appName = app_name
       appVersion = APP_VERSION
@@ -62,11 +62,11 @@ def call(body){
       forceDeployList = buildDetailList
       directoryWorkspace = directory
     }
-  }, 'Application-Mountebank': {
-    if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
+  }, "Application-Mountebank": {
+    if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
       def rcDevMB = acnGetDeploymentResources { 
         versionOpenshift = openshiftVersion
-        exposeApp = 'true'
+        exposeApp = "true"
         imageName = images[1]
         appName = "${app_name}-mountebank"
         appVersion = APP_VERSION
