@@ -85,6 +85,7 @@ def call(body) {
             sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            sleep(10000)
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
                 namespaceEnv = namespace_env
