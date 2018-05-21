@@ -43,46 +43,64 @@ def call(body){
   echo "buildDetailList ${buildDetailList}"
   echo "directory ${directory}"
 
-  parallel "Application": {
-    def rcDev = acnGetDeploymentResources { 
-      versionOpenshift = openshiftVersion
-      imageName = images[0]
-      appName = app_name
-      appVersion = APP_VERSION
-      envName = LIST_ENV[0]
-      replicaNum = replica_num
-      routeHostname = route_hostname
-      networkPolicy = network_policy
-      namespace_env = namespace_dev
-      gitHashApplication = buildDetailList[2]
-      gitSourceBranch = buildDetailList[5]
-      appScope = app_scope
-      routeTLSEnable = route_tls_enable
-      forceDeployList = buildDetailList
-      directoryWorkspace = directory
-    }
-  }, "Application-Mountebank": {
-    if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
-      def rcDevMB = acnGetDeploymentResources { 
-        versionOpenshift = openshiftVersion
-        imageName = images[1]
-        appName = "${app_name}-mountebank"
-        appVersion = APP_VERSION
-        envName = LIST_ENV[0]
-        replicaNum = replica_num
-        routeHostname = route_hostname_mountebank
-        networkPolicy = network_policy
-        namespace_env = namespace_dev
-        gitHashApplication = buildDetailList[2]
-        gitSourceBranch = buildDetailList[5]
-        appScope = app_scope
-        routeTLSEnable = route_tls_enable
-        forceDeployList = buildDetailList
-        directoryWorkspace = directory
-      }
-    } else {
-      sh "echo http://${app_name}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
-    }
-  } // End Scopy Deploy Parallel
+  def rcDev = acnGetDeploymentResources { 
+    versionOpenshift = openshiftVersion
+    imageName = images[0]
+    appName = app_name
+    appVersion = APP_VERSION
+    envName = LIST_ENV[0]
+    replicaNum = replica_num
+    routeHostname = route_hostname
+    networkPolicy = network_policy
+    namespace_env = namespace_dev
+    gitHashApplication = buildDetailList[2]
+    gitSourceBranch = buildDetailList[5]
+    appScope = app_scope
+    routeTLSEnable = route_tls_enable
+    forceDeployList = buildDetailList
+    directoryWorkspace = directory
+  }
+
+  // parallel "Application": {
+  //   def rcDev = acnGetDeploymentResources { 
+  //     versionOpenshift = openshiftVersion
+  //     imageName = images[0]
+  //     appName = app_name
+  //     appVersion = APP_VERSION
+  //     envName = LIST_ENV[0]
+  //     replicaNum = replica_num
+  //     routeHostname = route_hostname
+  //     networkPolicy = network_policy
+  //     namespace_env = namespace_dev
+  //     gitHashApplication = buildDetailList[2]
+  //     gitSourceBranch = buildDetailList[5]
+  //     appScope = app_scope
+  //     routeTLSEnable = route_tls_enable
+  //     forceDeployList = buildDetailList
+  //     directoryWorkspace = directory
+  //   }
+  // }, "Application-Mountebank": {
+  //   if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
+  //     def rcDevMB = acnGetDeploymentResources { 
+  //       versionOpenshift = openshiftVersion
+  //       imageName = images[1]
+  //       appName = "${app_name}-mountebank"
+  //       appVersion = APP_VERSION
+  //       envName = LIST_ENV[0]
+  //       replicaNum = replica_num
+  //       routeHostname = route_hostname_mountebank
+  //       networkPolicy = network_policy
+  //       namespace_env = namespace_dev
+  //       gitHashApplication = buildDetailList[2]
+  //       gitSourceBranch = buildDetailList[5]
+  //       appScope = app_scope
+  //       routeTLSEnable = route_tls_enable
+  //       forceDeployList = buildDetailList
+  //       directoryWorkspace = directory
+  //     }
+  //   } else {
+  //     sh "echo http://${app_name}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
+  //   }
+  // } // End Scopy Deploy Parallel
 
 } // End Parallel deploy
