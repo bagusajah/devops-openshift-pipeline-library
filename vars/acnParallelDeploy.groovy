@@ -25,6 +25,7 @@ def call(body){
   def APP_VERSION = config.app_version
   def buildDetailList = config.buildDetailList
   def directory = config.directory
+  def countryCode = config.country_code
 
   parallel "Application": {
     acnGetDeploymentResources { 
@@ -43,6 +44,7 @@ def call(body){
       routeTLSEnable = route_tls_enable
       forceDeployList = buildDetailList
       directoryWorkspace = directory
+      country_code = countryCode
     }
   }, "Application-Mountebank": {
     if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
@@ -62,6 +64,7 @@ def call(body){
         routeTLSEnable = route_tls_enable
         forceDeployList = buildDetailList
         directoryWorkspace = directory
+        country_code = countryCode
       }
     } else {
       sh "echo http://${app_name}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
