@@ -34,8 +34,7 @@ def call(body) {
     def replicaNum = config.replicaNum
     def pathFileRoute = ""
     def responseDeploy = ""
-
-    echo "START DEPLOYMENT"
+    def routeType = ""
 
     def certList = []
     // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
@@ -72,7 +71,7 @@ def call(body) {
             }
         }
         // Deploy ROUTE
-        routeType = 'route'
+        routeType = "route"
         if ( applicationType != 'mountebank' && forceDeployList[9] == "true" ) {
             if ( routeTLSEnable == "true" ) {
                 routeType = "route-tls"
