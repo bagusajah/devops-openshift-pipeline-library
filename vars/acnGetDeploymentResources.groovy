@@ -21,7 +21,7 @@ def call(body) {
     }
     
     def forceDeployList = config.forceDeployList
-    def directory = config.directory
+    def directory = config.directoryWorkspace
     def versionOpenshift = config.versionOpenshift
     def networkPolicy = config.networkPolicy
     def runwayName = config.runwayName ?: "OPENSHIFT"
@@ -31,6 +31,8 @@ def call(body) {
     def routeTLSEnable = config.routeTLSEnable
     def pathFileRoute = ""
     def responseDeploy = ""
+
+    echo "START DEPLOYMENT"
 
     def certList = []
     // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]

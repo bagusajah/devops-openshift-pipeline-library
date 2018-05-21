@@ -24,7 +24,7 @@ def call(body){
   def listFileCommitBoolean = config.listCommitBoolean
   def APP_VERSION = config.app_version
   def buildDetailList = config.buildDetailList
-  def directory_workspace = config.directory
+  def directory = config.directory
 
   parallel 'Application': {
     def rcDev = acnGetDeploymentResources { 
@@ -43,7 +43,7 @@ def call(body){
       appScope = app_scope
       routeTLSEnable = route_tls_enable
       forceDeployList = buildDetailList
-      directory = directory_workspace
+      directoryWorkspace = directory
     }
   }, 'Application-Mountebank': {
     if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
@@ -63,7 +63,7 @@ def call(body){
         appScope = app_scope
         routeTLSEnable = route_tls_enable
         forceDeployList = buildDetailList
-        directory = directory_workspace
+        directoryWorkspace = directory
       }
     } else {
       sh "echo http://${app_name}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
