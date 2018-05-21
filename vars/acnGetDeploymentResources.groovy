@@ -71,7 +71,9 @@ def call(body) {
         // Deploy ROUTE
         routeType = 'route'
         if ( applicationType != 'mountebank' && forceDeployList[9] == "true" ) {
-            routeType = "route-tls"
+            if ( routeTLSEnable == "true" ) {
+                routeType = "route-tls"
+            }
             certList = acnGetCertificate{
                 appScope = config.appScope
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
