@@ -46,7 +46,6 @@ def call(body){
   parallel "Application": {
     def rcDev = acnGetDeploymentResources { 
       versionOpenshift = openshiftVersion
-      exposeApp = "true"
       imageName = images[0]
       appName = app_name
       appVersion = APP_VERSION
@@ -66,7 +65,6 @@ def call(body){
     if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
       def rcDevMB = acnGetDeploymentResources { 
         versionOpenshift = openshiftVersion
-        exposeApp = "true"
         imageName = images[1]
         appName = "${app_name}-mountebank"
         appVersion = APP_VERSION

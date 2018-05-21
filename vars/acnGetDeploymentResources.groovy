@@ -10,7 +10,6 @@ def call(body) {
 
     def utils = new Utils()
 
-    def expose = config.exposeApp ?: 'true'
     def yaml
     def platformType = 'openshift-artifacts'
 
