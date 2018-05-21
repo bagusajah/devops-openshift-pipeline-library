@@ -20,14 +20,17 @@ def call(body) {
         applicationType = 'mountebank'
     }
     
+    def forceDeployList = config.forceDeployList
+    def directory = config.directory
     def versionOpenshift = config.versionOpenshift
     def networkPolicy = config.networkPolicy
     def runwayName = config.runwayName ?: "OPENSHIFT"
     def namespace_env = config.namespace_env
     def gitHashApplication = config.gitHashApplication
     def gitSourceBranch = config.gitSourceBranch
-    def pathFileRoute = ""
     def routeTLSEnable = config.routeTLSEnable
+    def pathFileRoute = ""
+    def responseDeploy = ""
 
     def certList = []
     // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
@@ -37,14 +40,51 @@ def call(body) {
         domainNamePrefix = config.routeHostname
     }
 
-    routeType = 'route'
-    if ( applicationType != 'mountebank' ) {
-        if ( routeTLSEnable == "true" ){
+    // Deploy PVC
+    if ( applicationType != 'mountebank' && forceDeployList[7] == "true" ) {
+        responseDeploy = applyResourceYaml {
+            pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml"
+            namespaceEnv = namespace_env
+        }
+        if ( responseDeploy == "error" ) {
+            error "Pipeline failure stage: DEPLOY PVC"
+        }
+    }
+    
+    if ( responseDeploy == "success" || forceDeployList[7] == "false" ) {
+        // Deploy NETWORK POLICY
+        if ( applicationType != 'mountebank' && forceDeployList[6] == "true" ) {
+            responseDeploy = applyResourceYaml {
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                namespaceEnv = namespace_env
+            }
+        }
+        // Deploy AUTOSCALING
+        if ( applicationType != 'mountebank' && forceDeployList[8] == "true" ) {
+            responseDeploy = applyResourceYaml {
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/autoscaling.yaml"
+                namespaceEnv = namespace_env
+            }
+        }
+        // Deploy ROUTE
+        routeType = 'route'
+        if ( applicationType != 'mountebank' && forceDeployList[9] == "true" ) {
             routeType = "route-tls"
-            pathFileRoute = "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + routeType + ".yaml"
             certList = acnGetCertificate{
                 appScope = config.appScope
-                pathFile = pathFileRoute
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            }
+            sh "sed -i \"s~#ENV_NAME#~${config.envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            responseDeploy = applyResourceYaml {
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+                namespaceEnv = namespace_env
+            }
+        } else if ( applicationType == 'mountebank' ) {
+            sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            responseDeploy = applyResourceYaml {
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                namespaceEnv = namespace_env
             }
         }
     }
@@ -57,12 +97,11 @@ def call(body) {
     }
     
     if ( applicationType != 'mountebank') {
-        sh "sed -i \"s~'#ROLLING_UPDATE_SURGE#'~${rollingUpdateSurge}~g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
-        sh "sed -i \"s~'#ROLLING_UPDATE_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+        sh "sed -i \"s~'#ROLLING_UPDATE_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
+        sh "sed -i \"s~'#ROLLING_UPDATE_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
     } else {
-        sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
-        sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
-        sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+        sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     }
     sh "echo replace deployment"
 
@@ -74,8 +113,7 @@ items:
 """
     
     def imageName = config.imageName
-    def deploymentYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
-
+    def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, config.envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, config.appVersion)
     if ( applicationType != 'mountebank') {
@@ -90,33 +128,18 @@ items:
 
 """
     sh "echo replace service"
-    def serviceYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
+    def serviceYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
     serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, config.envName) + """
 
-"""
-    sh "echo replace route"
-    def routeYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/' + applicationType + '/' + routeType +'.yaml'
-    routeYaml = routeYaml.replaceAll(/#ENV_NAME#/, config.envName)
-    routeYaml = routeYaml.replaceAll(/'#ROUTE_HOSTNAME#'/, domainName) + """
-"""
-    sh "echo replace networkpolicy"
-    if (networkPolicy != "default") {
-    def networkpolicyYaml = readFile encoding: 'UTF-8', file: "pipeline/" + platformType + "/" + versionOpenshift + '/application/networkpolicy.yaml'
-    networkpolicyYaml = networkpolicyYaml.replaceAll(/'#ENV_NAME#'/, config.envName) 
-    networkpolicyYaml = routeYaml.replaceAll(/'#ENV_NAME#'/, config.envName) + """
 """
     } //End replace networkpolicy
 
     sh "echo merge atifacts"
-    if ( networkPolicy != "default" ) {
-        yaml = list + serviceYaml + deploymentYaml + routeYaml + networkpolicyYaml
-    } else {
-        yaml = list + serviceYaml + deploymentYaml + routeYaml
-    }
+    yaml = list + serviceYaml + deploymentYaml
 
     echo 'using resources:\n' + yaml
 
-    applyResource {
+    applyResourceNonYaml {
         artifact_data = yaml
         namespaceEnv = namespace_env
         application  = applicationType
@@ -124,7 +147,7 @@ items:
     
 } // End Main Method
 
-def applyResource(body){
+def applyResourceNonYaml(body){
 
     def config = [:]
     body.resolveStrategy = Closure.DELEGATE_FIRST
@@ -142,4 +165,24 @@ def applyResource(body){
             applicationType = application
         }
     }
+}
+
+def applyResourceYaml(body){
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    def pathFile = config.pathFile
+    def namespaceEnv = config.namespaceEnv
+
+    container(name: 'jnlp'){
+        responseDeploy = sh script: "oc apply -f ${pathFile} -n ${namespaceEnv}", returnStdout: true
+    }
+
+    String error = String.valueOf(responseDeploy.contains("error"));
+    
+    responseDeployConclude = error == "true" ? "error" : "success"
+    return responseDeployConclude;
 }
