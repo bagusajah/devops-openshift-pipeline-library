@@ -14,6 +14,7 @@ def call(body){
   def APP_VERSION = config.app_version
   def namespace_cicd = config.namespace
   def namespace_dev = config.namespaceDev
+  def country_code = config.country_code
   def APPLICATION_MOUNTEBANK_EXISTING = config.applicationMountebankExisting
   def listFileCommitBoolean = config.listCommitBoolean
   def images = []
@@ -28,7 +29,7 @@ def call(body){
       global_vars = GLOBAL_VARS
       appScope = GLOBAL_VARS['APP_SCOPE']
       appLang = GLOBAL_VARS['APP_LANG']
-      countryCode = GLOBAL_VARS['COUNTRY_CODE']
+      countryCode = country_code
       appName = GLOBAL_VARS['APP_NAME']
       packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
       middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
@@ -46,7 +47,7 @@ def call(body){
         global_vars = GLOBAL_VARS
         appScope = GLOBAL_VARS['APP_SCOPE']
         appLang = GLOBAL_VARS['APP_LANG']
-        countryCode = GLOBAL_VARS['COUNTRY_CODE']
+        countryCode = country_code
         appName = GLOBAL_VARS['APP_NAME']
         packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
         middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
