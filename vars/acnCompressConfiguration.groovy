@@ -31,7 +31,6 @@ def call(body){
           s3Upload bucket: 'acm-aws-openshift-configuration-repo', file: "${app_name}-${APP_VERSION}.tar.gz", path: "${country_code}/${env_list}/${app_name}/${app_name}-${APP_VERSION}.tar.gz"
         }
       } // End Upload zip file to s3
-      sh "rm -rf ${directory}/update-config/tmp/${env_list}"
     } // End scope
   } // End Loop zip file and upload to s3
 
