@@ -26,6 +26,8 @@ def call(body){
   def buildDetailList = config.buildDetailList
   def directory = config.directory
 
+  echo "START PARALLEL"
+
   parallel 'Application': {
     def rcDev = acnGetDeploymentResources { 
       versionOpenshift = openshiftVersion
