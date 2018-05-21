@@ -179,9 +179,12 @@ def applyResourceYaml(body){
 
     def pathFile = config.pathFile
     def namespaceEnv = config.namespaceEnv
+    // def kind = ""
+    // def nameOfKind = ""
     def responseDeploy = ""
 
     container(name: 'jnlp'){
+        // sh "oc delete ${kind} ${nameOfKind} -n ${namespaceEnv}"
         responseDeploy = sh script: "oc apply -f ${pathFile} -n ${namespaceEnv}", returnStdout: true
     }
 
