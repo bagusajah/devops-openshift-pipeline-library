@@ -179,12 +179,13 @@ def applyResourceYaml(body){
 
     def pathFile = config.pathFile
     def namespaceEnv = config.namespaceEnv
+    def responseDeploy = ""
 
     container(name: 'jnlp'){
         responseDeploy = sh script: "oc apply -f ${pathFile} -n ${namespaceEnv}", returnStdout: true
     }
 
-    String error = String.valueOf(responseDeploy.contains("error"));
+    def error = String.valueOf(responseDeploy.contains("error"));
     
     responseDeployConclude = error == "true" ? "error" : "success"
     return responseDeployConclude;
