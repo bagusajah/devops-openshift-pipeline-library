@@ -26,6 +26,12 @@ def call(body) {
     def gitHashApplication = config.gitHashApplication
     def gitSourceBranch = config.gitSourceBranch
     def routeTLSEnable = config.routeTLSEnable
+    def app_scope = config.appScope
+    def route_hostname = config.routeHostname
+    def envName = config.envName
+    def appVersion = config.appVersion
+    def imageName = config.imageName
+    def replicaNum = config.replicaNum
     def pathFileRoute = ""
     def responseDeploy = ""
 
@@ -35,8 +41,8 @@ def call(body) {
     // ["CLIENT_KEY", "CLIENT_CERT", "CA_CERT"]
 
     def domainName = acnGetDomainName{
-        appScope = config.appScope
-        domainNamePrefix = config.routeHostname
+        appScope = app_scope
+        domainNamePrefix = route_hostname
     }
 
     // Deploy PVC
@@ -72,10 +78,10 @@ def call(body) {
                 routeType = "route-tls"
             }
             certList = acnGetCertificate{
-                appScope = config.appScope
+                appScope = app_scope
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             }
-            sh "sed -i \"s~#ENV_NAME#~${config.envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
@@ -90,7 +96,6 @@ def call(body) {
         }
     }
 
-    def replicaNum = config.replicaNum
     def rollingUpdateSurge = replicaNum.toInteger() * 2
     def rollingUpdateUnavailable = 0
     if ( replicaNum.toInteger() > 1 ) {
@@ -113,14 +118,14 @@ kind: List
 items:
 """
     
-    def imageName = config.imageName
+    
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
-    deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, config.envName)
-    deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, config.appVersion)
+    deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
+    deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
     if ( applicationType != 'mountebank') {
-    deploymentYaml = deploymentYaml.replaceAll(/'#NUM_OF_REPLICA#'/, config.replicaNum)
+        deploymentYaml = deploymentYaml.replaceAll(/'#NUM_OF_REPLICA#'/, replicaNum)
     } else {
-    deploymentYaml = deploymentYaml.replaceAll(/'#DEFAULT_NUM_REPLICA_MB#'/, config.replicaNum)
+        deploymentYaml = deploymentYaml.replaceAll(/'#DEFAULT_NUM_REPLICA_MB#'/, replicaNum)
     }
     deploymentYaml = deploymentYaml.replaceAll(/'#IMAGE_URL#'/, imageName)
     deploymentYaml = deploymentYaml.replaceAll(/'#BUILD_HASH#'/, gitHashApplication)
@@ -130,11 +135,9 @@ items:
 """
     sh "echo replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
-    serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, config.envName) + """
+    serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, envName) + """
 
 """
-    } //End replace networkpolicy
-
     sh "echo merge atifacts"
     yaml = list + serviceYaml + deploymentYaml
 
@@ -147,26 +150,6 @@ items:
     }
     
 } // End Main Method
-
-def applyResourceNonYaml(body){
-
-    def config = [:]
-    body.resolveStrategy = Closure.DELEGATE_FIRST
-    body.delegate = config
-    body()
-
-    def artifact = config.artifact_data
-    def namespaceEnv = config.namespaceEnv
-    def application = config.application
-
-    container(name: 'jnlp'){
-        acnApplyResources { 
-            artifact_data = artifact
-            namespace = namespaceEnv
-            applicationType = application
-        }
-    }
-}
 
 def applyResourceYaml(body){
 
@@ -190,4 +173,24 @@ def applyResourceYaml(body){
     
     responseDeployConclude = error == "true" ? "error" : "success"
     return responseDeployConclude;
+}
+
+def applyResourceNonYaml(body){
+
+    def config = [:]
+    body.resolveStrategy = Closure.DELEGATE_FIRST
+    body.delegate = config
+    body()
+
+    def artifact = config.artifact_data
+    def namespaceEnv = config.namespaceEnv
+    def application = config.application
+
+    container(name: 'jnlp'){
+        acnApplyResources { 
+            artifact_data = artifact
+            namespace = namespaceEnv
+            applicationType = application
+        }
+    }
 }
