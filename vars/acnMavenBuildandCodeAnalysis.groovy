@@ -11,6 +11,7 @@ def call(body) {
     def appName = config.APPNAME
     def newVersion = config.VERSION
     def pushArtifactToNexus = config.pushArtifactToNexus
+    def sonarqubeUrl = config.SONARQUBE_URL
     
     def commandmaven = "package"
     if ( pushArtifactToNexus == "true" ) {
@@ -22,7 +23,7 @@ def call(body) {
     withSonarQubeEnv('sonarqube') {
         sh "mvn versions:set -DnewVersion=${newVersion}"
         sh "mvn clean ${commandmaven} sonar:sonar " +
-        "-Dsonar.host.url=${config.SONARQUBE_URL} " +
+        "-Dsonar.host.url=${sonarqubeUrl} " +
         "-Dsonar.projectKey=${appName} " +
         "-Dsonar.projectName=${appName} " +
         "-Dsonar.projectVersion=${newVersion} " +

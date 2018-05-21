@@ -11,10 +11,9 @@ def call(body){
   def git_openshift_configuration = config.git_openshift_configuration
   def app_name = config.app_name
   def country_code = config.country_code
-  def LIST_ENV = ["dev", "qa", "performance", "staging", "production"]
   def APP_VERSION = config.version
   def directory = config.directory
-
+  def LIST_ENV = ["dev", "qa", "performance", "staging", "production"]
   def GIT_HASH_OPENSHIFT_CONFIGURATION = ""
 
   git credentialsId: 'bitbucket-credential', url: git_openshift_configuration  
@@ -27,6 +26,7 @@ def call(body){
     dir("${directory}/update-config/tmp/${env_list}/${app_name}-${APP_VERSION}"){
       sh "cp -rf ${directory}/update-config/${country_code}/${env_list}/${app_name}/* ${directory}/update-config/tmp/${env_list}/${app_name}-${APP_VERSION}/"
       sh "cd ${directory}/update-config/tmp/${env_list} && /bin/tar -zcvf \"${app_name}-${APP_VERSION}.tar.gz\" \"${app_name}-${APP_VERSION}/\""
+      sh "rm -rf ${directory}/update-config/tmp"
       dir("${directory}/update-config/tmp/${env_list}"){
         withAWS(credentials:'openshift-s3-credential') {
           s3Upload bucket: 'acm-aws-openshift-configuration-repo', file: "${app_name}-${APP_VERSION}.tar.gz", path: "${country_code}/${env_list}/${app_name}/${app_name}-${APP_VERSION}.tar.gz"
