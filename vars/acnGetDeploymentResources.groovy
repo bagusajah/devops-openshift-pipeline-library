@@ -80,6 +80,7 @@ def call(body) {
                 appScope = app_scope
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             }
+            sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
             responseDeploy = applyResourceYaml {
