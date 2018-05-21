@@ -26,12 +26,12 @@ def call(body){
     dir("${directory}/update-config/tmp/${env_list}/${app_name}-${APP_VERSION}"){
       sh "cp -rf ${directory}/update-config/${country_code}/${env_list}/${app_name}/* ${directory}/update-config/tmp/${env_list}/${app_name}-${APP_VERSION}/"
       sh "cd ${directory}/update-config/tmp/${env_list} && /bin/tar -zcvf \"${app_name}-${APP_VERSION}.tar.gz\" \"${app_name}-${APP_VERSION}/\""
-      sh "rm -rf ${directory}/update-config/tmp"
       dir("${directory}/update-config/tmp/${env_list}"){
         withAWS(credentials:'openshift-s3-credential') {
           s3Upload bucket: 'acm-aws-openshift-configuration-repo', file: "${app_name}-${APP_VERSION}.tar.gz", path: "${country_code}/${env_list}/${app_name}/${app_name}-${APP_VERSION}.tar.gz"
         }
       } // End Upload zip file to s3
+      sh "rm -rf ${directory}/update-config/tmp/${env_list}"
     } // End scope
   } // End Loop zip file and upload to s3
 
