@@ -64,6 +64,7 @@ def call(body) {
   	} // End directory for prepare buildconfig
 
     container(name: 'jnlp'){
+        sh "cat ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
         sh "oc apply -f ${directory}/pipeline/openshift-artifacts/${openshiftVersionFolder}/${imageType}/buildconfig-docker-image-from-dir.yaml"
         sh "oc start-build ${nameBuildconfig} --from-dir=${directory}/ocp-artifact-${imageType}/ --follow"
     }
