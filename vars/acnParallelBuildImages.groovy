@@ -43,21 +43,21 @@ def call(body){
     images.add(imageApplication)
   }, 'Application-Mountebank': {
     if(APPLICATION_MOUNTEBANK_EXISTING == 'application-MB-Not-Existing' || listFileCommitBoolean.contains(true)){
-      imageApplicationMountebank = acnImageBuild {
-        global_vars = GLOBAL_VARS
-        appScope = GLOBAL_VARS['APP_SCOPE']
-        appLang = GLOBAL_VARS['APP_LANG']
-        countryCode = country_code
-        appName = GLOBAL_VARS['APP_NAME']
-        packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
-        middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
-        directory = directory_workspace
-        openshiftVersionFolder = openshiftVersion
-        appVersion = APP_VERSION
-        imageType = "mountebank"
-        namespace = namespace_cicd
-        envNameImage = "dev"
-      }
+      // imageApplicationMountebank = acnImageBuild {
+      //   global_vars = GLOBAL_VARS
+      //   appScope = GLOBAL_VARS['APP_SCOPE']
+      //   appLang = GLOBAL_VARS['APP_LANG']
+      //   countryCode = country_code
+      //   appName = GLOBAL_VARS['APP_NAME']
+      //   packageExtension = GLOBAL_VARS['PACKAGE_EXTENSION']
+      //   middlewareName = GLOBAL_VARS['MIDDLEWARE_NAME']
+      //   directory = directory_workspace
+      //   openshiftVersionFolder = openshiftVersion
+      //   appVersion = APP_VERSION
+      //   imageType = "mountebank"
+      //   namespace = namespace_cicd
+      //   envNameImage = "dev"
+      // }
     } else {
       echo "http://${GLOBAL_VARS['APP_NAME']}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
     } // End condition for take action to build images mountebank

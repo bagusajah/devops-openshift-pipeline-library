@@ -48,24 +48,24 @@ def call(body){
     }
   }, "Application-Mountebank": {
     if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
-      acnGetDeploymentResources { 
-        versionOpenshift = openshiftVersion
-        imageName = images[1]
-        appName = "${app_name}-mountebank"
-        appVersion = APP_VERSION
-        envName = LIST_ENV[0]
-        replicaNum = replica_num
-        routeHostname = route_hostname_mountebank
-        networkPolicy = network_policy
-        namespace_env = namespace_dev
-        gitHashApplication = buildDetailList[2]
-        gitSourceBranch = buildDetailList[5]
-        appScope = app_scope
-        routeTLSEnable = route_tls_enable
-        forceDeployList = buildDetailList
-        directoryWorkspace = directory
-        country_code = countryCode
-      }
+      // acnGetDeploymentResources { 
+      //   versionOpenshift = openshiftVersion
+      //   imageName = images[1]
+      //   appName = "${app_name}-mountebank"
+      //   appVersion = APP_VERSION
+      //   envName = LIST_ENV[0]
+      //   replicaNum = replica_num
+      //   routeHostname = route_hostname_mountebank
+      //   networkPolicy = network_policy
+      //   namespace_env = namespace_dev
+      //   gitHashApplication = buildDetailList[2]
+      //   gitSourceBranch = buildDetailList[5]
+      //   appScope = app_scope
+      //   routeTLSEnable = route_tls_enable
+      //   forceDeployList = buildDetailList
+      //   directoryWorkspace = directory
+      //   country_code = countryCode
+      // }
     } else {
       sh "echo http://${app_name}-mountebank.${namespace_dev}.svc:2525 already existing and no change artifact"
     }

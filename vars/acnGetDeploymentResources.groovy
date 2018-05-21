@@ -90,9 +90,10 @@ def call(body) {
                 namespaceEnv = namespace_env
             }
         } else if ( applicationType == 'mountebank' ) {
-            sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
             sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
             sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 namespaceEnv = namespace_env
