@@ -140,6 +140,7 @@ items:
 """
     sh "echo replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
+    serviceYaml = serviceYaml.replaceAll(/'#COUNTRY_CODE#'/, countryCode)
     serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, envName) + """
 
 """
