@@ -135,6 +135,7 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/'#IMAGE_URL#'/, imageName)
     deploymentYaml = deploymentYaml.replaceAll(/'#BUILD_HASH#'/, gitHashApplication)
     deploymentYaml = deploymentYaml.replaceAll(/'#GIT_SOURCE_BRANCH#'/, gitSourceBranch)
+    deploymentYaml = deploymentYaml.replaceAll(/'#COUNTRY_CODE#'/, countryCode)
     deploymentYaml = deploymentYaml.replaceAll(/'#RUNWAY_NAME#'/, runwayName) + """
 
 """
