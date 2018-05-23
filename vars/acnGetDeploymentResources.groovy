@@ -186,7 +186,7 @@ def applyResourceYaml(body){
     def pathFile = config.pathFile
     def namespaceEnv = config.namespaceEnv
     def kind = config.kind
-    def app_name = config.appName
+    def app_name = config.app_name
     def responseDeploy = ""
 
     container(name: 'jnlp'){
