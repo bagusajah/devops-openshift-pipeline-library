@@ -140,8 +140,6 @@ apiVersion: v1
 kind: List
 items:
 """
-    def tmp_deployment = directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
-    sh "cat ${tmp_deployment}"
     echo "envName ${envName}"
     echo "appVersion ${appVersion}"
     echo "imageName ${imageName}"
@@ -159,8 +157,6 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/'#RUNWAY_NAME#'/, runwayName) + """
 
 """
-    sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
-    echo "replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
     serviceYaml = serviceYaml.replaceAll(/'#COUNTRY_CODE#'/, countryCode)
     serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, envName) + """
