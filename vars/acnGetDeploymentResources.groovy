@@ -50,6 +50,8 @@ def call(body) {
         responseDeploy = applyResourceYaml {
             pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml"
             namespaceEnv = namespace_env
+            kind = "pvc"
+            app_name = appName
         }
         if ( responseDeploy == "error" ) {
             error "Pipeline failure stage: DEPLOY PVC"
@@ -62,14 +64,19 @@ def call(body) {
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 namespaceEnv = namespace_env
+                kind = "networkpolicy"
+                app_name = appName
             }
         }
         // Deploy AUTOSCALING
         if ( applicationType != 'mountebank' && forceDeployList[8] == "true" ) {
-            responseDeploy = applyResourceYaml {
-                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/autoscaling.yaml"
-                namespaceEnv = namespace_env
-            }
+            echo "WAITING"
+            // responseDeploy = applyResourceYaml {
+            //     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/autoscaling.yaml"
+            //     namespaceEnv = namespace_env
+            //     kind = "WAITNG"
+            //     app_name = appName
+            // }
         }
         // Deploy ROUTE
         routeType = "route"
@@ -88,15 +95,24 @@ def call(body) {
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
                 namespaceEnv = namespace_env
+                kind = "route"
+                app_name = appName
             }
         } else if ( applicationType == 'mountebank' ) {
-            sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-            sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-            sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-            sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-            responseDeploy = applyResourceYaml {
-                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                namespaceEnv = namespace_env
+            if ( namespace_env.contains("dev") ) {
+                sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                responseGetRoute = sh script: "oc get route -l appName=${appName}-mountebank -n ${namespace_env}", returnStdout: true
+                if ( responseGetRoute.contains("No resources found.") ) {
+                    responseDeploy = applyResourceYaml {
+                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                        namespaceEnv = namespace_env
+                        kind = "route"
+                        app_name = appName + "-mountebank"
+                    }
+                }
             }
         }
     }
@@ -167,12 +183,12 @@ def applyResourceYaml(body){
 
     def pathFile = config.pathFile
     def namespaceEnv = config.namespaceEnv
-    // def kind = ""
-    // def nameOfKind = ""
+    def kind = config.kind
+    def app_name = config.appName
     def responseDeploy = ""
 
     container(name: 'jnlp'){
-        // sh "oc delete ${kind} ${nameOfKind} -n ${namespaceEnv}"
+        sh "oc delete ${kind} -l appName=${app_name} -n ${namespaceEnv}"
         responseDeploy = sh script: "oc apply -f ${pathFile} -n ${namespaceEnv}", returnStdout: true
     }
 
