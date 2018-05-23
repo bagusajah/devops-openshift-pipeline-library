@@ -10,6 +10,7 @@ def call(body){
 
   def app_name = config.app_name
   def replica_num = config.replicaNum
+  def replica_num_mountebank = config.replicaNumMountebank
   def route_hostname = config.routeHostname
   def route_hostname_mountebank = config.routeHostnameMountebank
   def network_policy = config.networkPolicy
@@ -54,7 +55,7 @@ def call(body){
         appName = "${app_name}-mountebank"
         appVersion = APP_VERSION
         envName = LIST_ENV[0]
-        replicaNum = replica_num
+        replicaNum = replica_num_mountebank
         routeHostname = route_hostname_mountebank
         networkPolicy = network_policy
         namespace_env = namespace_dev

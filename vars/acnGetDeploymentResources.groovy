@@ -105,13 +105,13 @@ def call(body) {
                 sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 container(name: 'jnlp'){
-                    responseGetRoute = sh script: "oc get route -l appName=${appName}-mountebank -n ${namespace_env}", returnStdout: true
+                    responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
                     if ( responseGetRoute.contains("No resources found.") ) {
                         responseDeploy = applyResourceYaml {
                             pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                             namespaceEnv = namespace_env
                             kind = "route"
-                            app_name = appName + "-mountebank"
+                            app_name = appName
                         }
                     }
                 }
@@ -132,7 +132,6 @@ def call(body) {
         sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     }
-    sh "echo replace deployment"
 
     def list = """
 ---
@@ -157,13 +156,14 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/'#RUNWAY_NAME#'/, runwayName) + """
 
 """
-    sh "echo replace service"
+    sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/${applicationType}/deploymentconfig.yaml"
+    echo "replace service"
     def serviceYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/"  + versionOpenshift + '/' + applicationType + '/service.yaml'
     serviceYaml = serviceYaml.replaceAll(/'#COUNTRY_CODE#'/, countryCode)
     serviceYaml = serviceYaml.replaceAll(/'#ENV_NAME#'/, envName) + """
 
 """
-    sh "echo merge atifacts"
+    echo "merge atifacts"
     yaml = list + serviceYaml + deploymentYaml
 
     echo 'using resources:\n' + yaml
