@@ -140,7 +140,8 @@ kind: List
 items:
 """
     
-    
+    def path = directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
+    echo "path ${path}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)

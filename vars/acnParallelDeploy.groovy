@@ -29,24 +29,25 @@ def call(body){
   def countryCode = config.country_code
 
   parallel "Application": {
-    acnGetDeploymentResources { 
-      versionOpenshift = openshiftVersion
-      imageName = images[0]
-      appName = app_name
-      appVersion = APP_VERSION
-      envName = LIST_ENV[0]
-      replicaNum = replica_num
-      routeHostname = route_hostname
-      networkPolicy = network_policy
-      namespace_env = namespace_dev
-      gitHashApplication = buildDetailList[2]
-      gitSourceBranch = buildDetailList[5]
-      appScope = app_scope
-      routeTLSEnable = route_tls_enable
-      forceDeployList = buildDetailList
-      directoryWorkspace = directory
-      country_code = countryCode
-    }
+    echo "APP"
+    // acnGetDeploymentResources { 
+    //   versionOpenshift = openshiftVersion
+    //   imageName = images[0]
+    //   appName = app_name
+    //   appVersion = APP_VERSION
+    //   envName = LIST_ENV[0]
+    //   replicaNum = replica_num
+    //   routeHostname = route_hostname
+    //   networkPolicy = network_policy
+    //   namespace_env = namespace_dev
+    //   gitHashApplication = buildDetailList[2]
+    //   gitSourceBranch = buildDetailList[5]
+    //   appScope = app_scope
+    //   routeTLSEnable = route_tls_enable
+    //   forceDeployList = buildDetailList
+    //   directoryWorkspace = directory
+    //   country_code = countryCode
+    // }
   }, "Application-Mountebank": {
     if(APPLICATION_MOUNTEBANK_EXISTING == "application-MB-Not-Existing" || listFileCommitBoolean.contains(true)){
       acnGetDeploymentResources { 
