@@ -104,13 +104,15 @@ def call(body) {
                 sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                responseGetRoute = sh script: "oc get route -l appName=${appName}-mountebank -n ${namespace_env}", returnStdout: true
-                if ( responseGetRoute.contains("No resources found.") ) {
-                    responseDeploy = applyResourceYaml {
-                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                        namespaceEnv = namespace_env
-                        kind = "route"
-                        app_name = appName + "-mountebank"
+                container(name: 'jnlp'){
+                    responseGetRoute = sh script: "oc get route -l appName=${appName}-mountebank -n ${namespace_env}", returnStdout: true
+                    if ( responseGetRoute.contains("No resources found.") ) {
+                        responseDeploy = applyResourceYaml {
+                            pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+                            namespaceEnv = namespace_env
+                            kind = "route"
+                            app_name = appName + "-mountebank"
+                        }
                     }
                 }
             }
