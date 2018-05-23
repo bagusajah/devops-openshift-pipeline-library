@@ -102,9 +102,9 @@ def call(body) {
                 sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                 container(name: 'jnlp'){
                     responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep mountebank | awk '{print \$2}'", returnStdout: true
+                    echo "responseGetRoute ${responseGetRoute}"
                     if ( responseGetRoute.contains("No resources found.") ) {
                         responseDeploy = applyResourceYaml {
                             pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
@@ -142,6 +142,13 @@ items:
 """
     def tmp_deployment = directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     sh "cat ${tmp_deployment}"
+    echo "envName ${envName}"
+    echo "appVersion ${appVersion}"
+    echo "imageName ${imageName}"
+    echo "gitHashApplication ${gitHashApplication}"
+    echo "gitSourceBranch ${gitSourceBranch}"
+    echo "countryCode ${countryCode}"
+    echo "runwayName ${runwayName}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
