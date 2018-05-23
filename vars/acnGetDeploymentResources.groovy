@@ -126,9 +126,11 @@ def call(body) {
     }
     
     if ( applicationType != 'mountebank') {
+        sh "sed -i \"s~'#NUM_OF_REPLICA#'~${replicaNum}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
         sh "sed -i \"s~'#ROLLING_UPDATE_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
         sh "sed -i \"s~'#ROLLING_UPDATE_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/deploymentconfig.yaml"
     } else {
+        sh "sed -i \"s~'#DEFAULT_NUM_REPLICA_MB#'~${replicaNum}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     }
@@ -145,11 +147,11 @@ items:
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
-    if ( applicationType != 'mountebank') {
-        deploymentYaml = deploymentYaml.replaceAll(/'#NUM_OF_REPLICA#'/, replicaNum)
-    } else {
-        deploymentYaml = deploymentYaml.replaceAll(/'#DEFAULT_NUM_REPLICA_MB#'/, replicaNum)
-    }
+    // if ( applicationType != 'mountebank') {
+    //     deploymentYaml = deploymentYaml.replaceAll(/'#NUM_OF_REPLICA#'/, replicaNum)
+    // } else {
+    //     deploymentYaml = deploymentYaml.replaceAll(/'#DEFAULT_NUM_REPLICA_MB#'/, replicaNum)
+    // }
     deploymentYaml = deploymentYaml.replaceAll(/'#IMAGE_URL#'/, imageName)
     deploymentYaml = deploymentYaml.replaceAll(/'#BUILD_HASH#'/, gitHashApplication)
     deploymentYaml = deploymentYaml.replaceAll(/'#GIT_SOURCE_BRANCH#'/, gitSourceBranch)
