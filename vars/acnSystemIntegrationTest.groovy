@@ -8,7 +8,7 @@ def call(body){
   body.delegate = config
   body()
 
-  def app_name = = config.app_name
+  def app_name = config.app_name
   def tmt_test_result_url_performance = config.tmt_test_result_url_performance
   def tmt_url = config.tmt_url
   def GCHAT_NOTIFIER_WEBHOOK = config.GCHAT_NOTIFIER_WEBHOOK
