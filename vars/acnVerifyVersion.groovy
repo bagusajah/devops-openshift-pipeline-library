@@ -32,11 +32,13 @@ def call(body){
     }
   }
   catch(e) {
-    acnSendAlertToWebhook {
-      urlWebhook = GCHAT_NOTIFIER_WEBHOOK
-      envName = APP_URL_OPENSHIFT_FORMAT
-      stageCurrent = "FAIL step Verify version application has changed"
-      appName = app_name
+    if ( !APP_URL_OPENSHIFT_FORMAT.contains("staging") || !APP_URL_OPENSHIFT_FORMAT.contains("production") ) {
+      acnSendAlertToWebhook {
+        urlWebhook = GCHAT_NOTIFIER_WEBHOOK
+        envName = APP_URL_OPENSHIFT_FORMAT
+        stageCurrent = "FAIL step Verify version application has changed"
+        appName = app_name
+      }
     }
     error "Pipeline aborted due to ${env.JOB_NAME} can not deploy version ${env.BUILD_NUMBER}"
   }
