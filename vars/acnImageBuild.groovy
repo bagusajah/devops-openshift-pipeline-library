@@ -53,6 +53,9 @@ def call(body) {
             if ( appLang == "springboot" ) {
                 sh "ls -lt ${directory}/target/"
                 sh "cp ${directory}/target/${appName}-${appVersion}.${packageExtension} ${directory}/ocp-artifact-${imageType}/"
+            } else if ( appLang == "django" ) {
+                sh "ls -la ${directory}"
+                sh "cp ${directory}/${appName}.tar.gz ${directory}/ocp-artifact-${imageType}/"
             }
         } else if ( imageType == "mountebank" ) {
             acnPrepareFileMountebank{
