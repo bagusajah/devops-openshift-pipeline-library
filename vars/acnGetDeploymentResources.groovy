@@ -127,6 +127,7 @@ def call(body) {
             // Deploy NETWORK POLICY
             if ( applicationType != 'mountebank' && forceDeployList[6] == "true" ) {
                 sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 responseDeploy = applyResourceYaml {
                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                     namespaceEnv = namespace_env
@@ -145,6 +146,7 @@ def call(body) {
                 // }
             }
             // Deploy ROUTE
+            echo "start route"
             routeType = "route"
             if ( applicationType != 'mountebank' && forceDeployList[9] == "true" ) {
                 if ( routeTLSEnable == "true" ) {
