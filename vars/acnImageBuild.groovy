@@ -27,7 +27,7 @@ def call(body) {
     def nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
     if ( imageType == "mountebank" ) {
         nameImageType = "mb"
-        nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
+        nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image"
         appName = appName + "-mountebank"
     }
     // application, mountebank
