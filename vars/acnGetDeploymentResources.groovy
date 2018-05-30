@@ -70,6 +70,7 @@ def call(body) {
                 responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
             }
             if ( responseGetNetworkPolicy.contains("No resources found.") ) {
+                sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 responseDeploy = applyResourceYaml {
                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                     namespaceEnv = namespace_env
@@ -125,6 +126,7 @@ def call(body) {
         if ( responseDeploy == "success" || forceDeployList[7] == "false" ) {
             // Deploy NETWORK POLICY
             if ( applicationType != 'mountebank' && forceDeployList[6] == "true" ) {
+                sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 responseDeploy = applyResourceYaml {
                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                     namespaceEnv = namespace_env
