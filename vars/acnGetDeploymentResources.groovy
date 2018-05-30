@@ -45,9 +45,12 @@ def call(body) {
         domainNamePrefix = route_hostname
     }
 
-    if ( envName == "staging" || "production" ) {
+    if ( envName == "staging" || envName == "production" ) {
         // Check PVC existing
-        responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+        responseGetPVC = ""
+        container(name: 'jnlp'){
+            responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+        }
         if ( responseGetPVC.contains("No resources found.") ) {
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml"
@@ -62,7 +65,10 @@ def call(body) {
         } 
         if ( !responseGetPVC.contains("No resources found.") ) {
             // Check network policy existing
-            responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+            responseGetNetworkPolicy = ""
+            container(name: 'jnlp'){
+                responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+            }
             if ( responseGetNetworkPolicy.contains("No resources found.") ) {
                 responseDeploy = applyResourceYaml {
                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
@@ -85,7 +91,10 @@ def call(body) {
 
             // Check route existing
             routeType = "route"
-            responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+            responseGetRoute = ""
+            container(name: 'jnlp'){
+                responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+            }
             if ( responseGetRoute.contains("No resources found.") ) {
                 if ( routeTLSEnable == "true" ) {
                     routeType = "route-tls"
@@ -196,13 +205,6 @@ apiVersion: v1
 kind: List
 items:
 """
-    echo "envName ${envName}"
-    echo "appVersion ${appVersion}"
-    echo "imageName ${imageName}"
-    echo "gitHashApplication ${gitHashApplication}"
-    echo "gitSourceBranch ${gitSourceBranch}"
-    echo "countryCode ${countryCode}"
-    echo "runwayName ${runwayName}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
