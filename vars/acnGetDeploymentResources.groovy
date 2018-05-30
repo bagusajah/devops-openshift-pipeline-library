@@ -49,7 +49,7 @@ def call(body) {
         // Check PVC existing
         responseGetPVC = ""
         container(name: 'jnlp'){
-            responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+            responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
         }
         if ( responseGetPVC.contains("No resources found.") ) {
             responseDeploy = applyResourceYaml {
@@ -67,7 +67,7 @@ def call(body) {
             // Check network policy existing
             responseGetNetworkPolicy = ""
             container(name: 'jnlp'){
-                responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+                responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
             }
             if ( responseGetNetworkPolicy.contains("No resources found.") ) {
                 sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
@@ -80,7 +80,7 @@ def call(body) {
             }
 
             // Check autoscaling existing
-            // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+            // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
             // if ( responseGetNetworkPolicy.contains("No resources found.") ) {
             //     responseDeploy = applyResourceYaml {
             //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
@@ -94,7 +94,7 @@ def call(body) {
             routeType = "route"
             responseGetRoute = ""
             container(name: 'jnlp'){
-                responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep ${appName} | awk '{print \$2}'", returnStdout: true
+                responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
             }
             if ( responseGetRoute.contains("No resources found.") ) {
                 if ( routeTLSEnable == "true" ) {
@@ -171,7 +171,7 @@ def call(body) {
                     sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                     sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                     container(name: 'jnlp'){
-                        responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep mountebank | awk '{print \$2}'", returnStdout: true
+                        responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
                         echo "responseGetRoute ${responseGetRoute}"
                         if ( responseGetRoute.contains("No resources found.") ) {
                             responseDeploy = applyResourceYaml {
