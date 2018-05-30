@@ -72,6 +72,8 @@ def call(body) {
     }
 
     imageName = "${dockerRegistry}:5000/${namespace_cicd}/${appName}:${appVersion}"
+
+    echo "imageName ${imageName}"
     
     return imageName
 
