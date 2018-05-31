@@ -253,9 +253,11 @@ def applyResourceYaml(body){
         responseDeploy = sh script: "oc apply -f ${pathFile} -n ${namespaceEnv}", returnStdout: true
     }
 
-    def error = String.valueOf(responseDeploy.contains("error"));
+    responseDeployConclude = "success"
+    if ( responseDeploy.contains("error") ) {
+        responseDeployConclude = "error"
+    }
     
-    responseDeployConclude = error == "true" ? "error" : "success"
     return responseDeployConclude;
 }
 
