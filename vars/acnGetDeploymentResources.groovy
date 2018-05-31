@@ -188,10 +188,6 @@ def call(body) {
         }
     }
         
-    echo "replicaNum ${replicaNum}"
-    echo "rollingUpdateSurge ${rollingUpdateSurge}"
-    echo "rollingUpdateUnavailable ${rollingUpdateUnavailable}"
-    
     def rollingUpdateSurge = replicaNum.toInteger() * 2
     def rollingUpdateUnavailable = 0
     if ( replicaNum.toInteger() > 1 ) {
@@ -206,8 +202,6 @@ def call(body) {
         sh "sed -i \"s~'#DEFAULT_NUM_REPLICA_MB#'~${replicaNum}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
-        echo "BEFORE"
-        sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     }
 
     def list = """
