@@ -212,6 +212,13 @@ apiVersion: v1
 kind: List
 items:
 """
+    echo "ENV_NAME ${ENV_NAME}"
+    echo "APP_VERSION ${APP_VERSION}"
+    echo "IMAGE_URL ${IMAGE_URL}"
+    echo "BUILD_HASH ${BUILD_HASH}"
+    echo "GIT_SOURCE_BRANCH ${GIT_SOURCE_BRANCH}"
+    echo "COUNTRY_CODE ${COUNTRY_CODE}"
+    echo "RUNWAY_NAME ${RUNWAY_NAME}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
@@ -219,8 +226,6 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/'#BUILD_HASH#'/, gitHashApplication)
     deploymentYaml = deploymentYaml.replaceAll(/'#GIT_SOURCE_BRANCH#'/, gitSourceBranch)
     deploymentYaml = deploymentYaml.replaceAll(/'#COUNTRY_CODE#'/, countryCode)
-    echo "AFTER"
-    sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#RUNWAY_NAME#'/, runwayName) + """
 
 """
