@@ -212,13 +212,13 @@ apiVersion: v1
 kind: List
 items:
 """
-    echo "ENV_NAME ${ENV_NAME}"
-    echo "APP_VERSION ${APP_VERSION}"
-    echo "IMAGE_URL ${IMAGE_URL}"
-    echo "BUILD_HASH ${BUILD_HASH}"
-    echo "GIT_SOURCE_BRANCH ${GIT_SOURCE_BRANCH}"
-    echo "COUNTRY_CODE ${COUNTRY_CODE}"
-    echo "RUNWAY_NAME ${RUNWAY_NAME}"
+    echo "ENV_NAME ${envName}"
+    echo "APP_VERSION ${appVersion}"
+    echo "IMAGE_URL ${imageName}"
+    echo "BUILD_HASH ${gitHashApplication}"
+    echo "GIT_SOURCE_BRANCH ${gitSourceBranch}"
+    echo "COUNTRY_CODE ${countryCode}"
+    echo "RUNWAY_NAME ${runwayName}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
