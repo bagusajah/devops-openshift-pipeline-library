@@ -188,6 +188,10 @@ def call(body) {
         }
     }
         
+    echo "replicaNum ${replicaNum}"
+    echo "rollingUpdateSurge ${rollingUpdateSurge}"
+    echo "rollingUpdateUnavailable ${rollingUpdateUnavailable}"
+    
     def rollingUpdateSurge = replicaNum.toInteger() * 2
     def rollingUpdateUnavailable = 0
     if ( replicaNum.toInteger() > 1 ) {
@@ -212,13 +216,6 @@ apiVersion: v1
 kind: List
 items:
 """
-    echo "ENV_NAME ${envName}"
-    echo "APP_VERSION ${appVersion}"
-    echo "IMAGE_URL ${imageName}"
-    echo "BUILD_HASH ${gitHashApplication}"
-    echo "GIT_SOURCE_BRANCH ${gitSourceBranch}"
-    echo "COUNTRY_CODE ${countryCode}"
-    echo "RUNWAY_NAME ${runwayName}"
     def deploymentYaml = readFile encoding: 'UTF-8', file: directory + "/pipeline/" + platformType + "/" + versionOpenshift + "/" + applicationType + "/" + "deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#ENV_NAME#'/, envName)
     deploymentYaml = deploymentYaml.replaceAll(/'#APP_VERSION#'/, appVersion)
