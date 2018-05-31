@@ -172,12 +172,15 @@ def call(body) {
                     container(name: 'jnlp'){
                         responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
                         if ( !responseGetRoute.contains(appName) ) {
+                            echo "Route ${appName} is not existing"
                             responseDeploy = applyResourceYaml {
                                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                                 namespaceEnv = namespace_env
                                 kind = "route"
                                 app_name = appName
                             }
+                        } else {
+                            echo "Route ${appName} is existing"
                         }
                     }
                 }
