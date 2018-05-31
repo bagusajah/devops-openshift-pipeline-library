@@ -202,6 +202,8 @@ def call(body) {
         sh "sed -i \"s~'#DEFAULT_NUM_REPLICA_MB#'~${replicaNum}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_SURGE#'~${rollingUpdateSurge}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
         sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
+        echo "BEFORE"
+        sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     }
 
     def list = """
@@ -217,6 +219,8 @@ items:
     deploymentYaml = deploymentYaml.replaceAll(/'#BUILD_HASH#'/, gitHashApplication)
     deploymentYaml = deploymentYaml.replaceAll(/'#GIT_SOURCE_BRANCH#'/, gitSourceBranch)
     deploymentYaml = deploymentYaml.replaceAll(/'#COUNTRY_CODE#'/, countryCode)
+    echo "AFTER"
+    sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig.yaml"
     deploymentYaml = deploymentYaml.replaceAll(/'#RUNWAY_NAME#'/, runwayName) + """
 
 """
