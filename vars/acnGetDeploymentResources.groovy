@@ -171,8 +171,7 @@ def call(body) {
                     sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                     container(name: 'jnlp'){
                         responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
-                        echo "responseGetRoute ${responseGetRoute}"
-                        if ( responseGetRoute.contains("No resources found.") ) {
+                        if ( !responseGetRoute.contains(appName) ) {
                             responseDeploy = applyResourceYaml {
                                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                                 namespaceEnv = namespace_env
