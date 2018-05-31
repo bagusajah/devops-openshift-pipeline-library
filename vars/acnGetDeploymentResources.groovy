@@ -49,9 +49,9 @@ def call(body) {
         // Check PVC existing
         responseGetPVC = ""
         container(name: 'jnlp'){
-            responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
+            responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env}", returnStdout: true
         }
-        if ( responseGetPVC.contains("No resources found.") ) {
+        if ( !responseGetPVC.contains(appName) ) {
             responseDeploy = applyResourceYaml {
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml"
                 namespaceEnv = namespace_env
@@ -62,14 +62,13 @@ def call(body) {
                 error "Pipeline failure stage: DEPLOY PVC"
             } 
 
-        } 
-        if ( !responseGetPVC.contains("No resources found.") ) {
+        } else {
             // Check network policy existing
             responseGetNetworkPolicy = ""
             container(name: 'jnlp'){
-                responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
+                responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
             }
-            if ( responseGetNetworkPolicy.contains("No resources found.") ) {
+            if ( !responseGetNetworkPolicy.contains(appName) ) {
                 sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 responseDeploy = applyResourceYaml {
                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
@@ -80,8 +79,8 @@ def call(body) {
             }
 
             // Check autoscaling existing
-            // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
-            // if ( responseGetNetworkPolicy.contains("No resources found.") ) {
+            // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
+            // if ( !responseGetNetworkPolicy.contains(appName) ) {
             //     responseDeploy = applyResourceYaml {
             //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
             //         namespaceEnv = namespace_env
@@ -94,9 +93,9 @@ def call(body) {
             routeType = "route"
             responseGetRoute = ""
             container(name: 'jnlp'){
-                responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
+                responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
             }
-            if ( responseGetRoute.contains("No resources found.") ) {
+            if ( !responseGetRoute.contains(appName) ) {
                 if ( routeTLSEnable == "true" ) {
                     routeType = "route-tls"
                 }
@@ -171,7 +170,7 @@ def call(body) {
                     sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                     sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
                     container(name: 'jnlp'){
-                        responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} | awk '{print \$2}'", returnStdout: true
+                        responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
                         echo "responseGetRoute ${responseGetRoute}"
                         if ( responseGetRoute.contains("No resources found.") ) {
                             responseDeploy = applyResourceYaml {
