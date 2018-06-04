@@ -21,20 +21,11 @@ def call(body){
 
   if ( runway_name == "OPENSHIFT" ) {
     dir("${directory}/distributed-runway/${runway_name}") {
-      // dir("${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"){
-      //   sh "cp -rf ${directory}/update-config/${country_code}/staging/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"
-      // }
-      // dir("${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"){
-      //   sh "cp -rf ${directory}/update-config/${country_code}/production/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"
-      // }
-      git credentialsId: 'bitbucket-credential', url: git_configuration
-      GIT_HASH_OPENSHIFT_CONFIGURATION = sh script: "cd ${directory}/distributed-runway/${runway_name} && git rev-parse --verify HEAD", returnStdout: true
-      GIT_HASH_OPENSHIFT_CONFIGURATION = GIT_HASH_OPENSHIFT_CONFIGURATION.trim()
       dir("${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"){
-        sh "cp -rf ${directory}/distributed-runway/${runway_name}/TH/staging/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"
+        sh "cp -rf ${directory}/update-config/${country_code}/staging/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"
       }
       dir("${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"){
-        sh "cp -rf ${directory}/distributed-runway/${runway_name}/TH/production/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"
+        sh "cp -rf ${directory}/update-config/${country_code}/production/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"
       }
     }
     sh "touch ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/build_info.properties"
@@ -42,7 +33,7 @@ def call(body){
     sh "echo \"BUILD_ON_BRANCH=${build_on_branch}\" >> ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/build_info.properties"
     sh "echo \"GIT_HASH_APPLICATION=${GIT_HASH}\" >> ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/build_info.properties"
     sh "echo \"GIT_HASH_OPENSHIFT_CONFIGURATION=${git_hash_openshift_configuration}\" >> ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/build_info.properties"
-    git_hash_configuration = GIT_HASH_OPENSHIFT_CONFIGURATION
+    git_hash_configuration = ""
   } else if ( runway_name == "ECS" ){
     dir("${directory}/distributed-runway/${runway_name}") {
       git credentialsId: 'bitbucket-credential', url: git_configuration
