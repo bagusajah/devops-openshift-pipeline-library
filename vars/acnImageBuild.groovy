@@ -48,6 +48,7 @@ def call(body) {
             sh "sed -i \"s~#PACKAGE_EXTENSION#~${packageExtension}~g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile"
             sh "sed -i \"s~#COUNTRY_CODE#~${countryCode}~g\" ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile" 
             sh "sed -i \"s~#PACKAGE_EXTENSION#~${packageExtension}~g\" ${directory}/pipeline/dockerfiles/${appLang}/script/openshift-startup.sh"
+            sh "sed -i \"s~#APP_PROTOCOL#~${GLOBAL_VARS['APP_PROTOCOL']}~g\" ${directory}/pipeline/dockerfiles/${appLang}/script/openshift-startup.sh"
             sh "cp -rf ${directory}/pipeline/dockerfiles/${appLang}/script ${directory}/ocp-artifact-${imageType}/"
             sh "cp ${directory}/pipeline/dockerfiles/${appLang}/dockerfiles/application/Dockerfile ${directory}/ocp-artifact-${imageType}/"
             if ( appLang == "springboot" ) {
