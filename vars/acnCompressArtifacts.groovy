@@ -31,10 +31,10 @@ def call(body){
       GIT_HASH_OPENSHIFT_CONFIGURATION = sh script: "cd ${directory}/distributed-runway/${runway_name} && git rev-parse --verify HEAD", returnStdout: true
       GIT_HASH_OPENSHIFT_CONFIGURATION = GIT_HASH_OPENSHIFT_CONFIGURATION.trim()
       dir("${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"){
-        sh "cp -rf ${directory}/distributed-runway/${runway_name}/th/staging/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"
+        sh "cp -rf ${directory}/distributed-runway/${runway_name}/TH/staging/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/staging"
       }
       dir("${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"){
-        sh "cp -rf ${directory}/distributed-runway/${runway_name}/th/prod/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"
+        sh "cp -rf ${directory}/distributed-runway/${runway_name}/TH/production/${app_name}/* ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/configuration/production"
       }
     }
     sh "touch ${directory}/distributed-runway/${runway_name}/${app_name}-${APP_VERSION}/build_info.properties"
