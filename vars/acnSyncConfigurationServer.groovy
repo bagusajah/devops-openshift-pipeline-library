@@ -14,7 +14,6 @@ def call(body){
   def COUNTRY_CODE =  config.country_code
   def DIRECTORY_WORKSPACE = config.directory
   def CONFIG_PATH = config.config_path
-  def runway_name = config.runway_name
   
   def env_list = ""
   for(n = 0; n < LIST_ENV.size(); n++){
