@@ -24,10 +24,10 @@ def call(body) {
     // jar, war, tar.gz
     def imageType = config.imageType
     def nameImageType = "app"
-    def nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
+    def nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image"
     if ( imageType == "mountebank" ) {
         nameImageType = "mb"
-        nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image-buildconfig"
+        nameBuildconfig = "${appScope}-${appName}-build-${nameImageType}-image"
         appName = appName + "-mountebank"
     }
     // application, mountebank
