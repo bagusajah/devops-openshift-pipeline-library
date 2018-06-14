@@ -107,7 +107,6 @@ def call(body) {
                 }
             }
         }
-
     } else {
         // Deploy PVC
         if ( applicationType != 'mountebank' && forceDeployList[7] == "true" ) {
@@ -123,17 +122,6 @@ def call(body) {
         }
         
         if ( responseDeploy == "success" || forceDeployList[7] == "false" ) {
-            // Deploy NETWORK POLICY
-            if ( applicationType != 'mountebank' && forceDeployList[6] == "true" ) {
-                sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                responseDeploy = applyResourceYaml {
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                    namespaceEnv = namespace_env
-                    kind = "networkpolicy"
-                    app_name = appName
-                }
-            }
             // Deploy AUTOSCALING
             if ( applicationType != 'mountebank' && forceDeployList[8] == "true" ) {
                 echo "WAITING"
@@ -144,6 +132,32 @@ def call(body) {
                 //     app_name = appName
                 // }
             }
+
+            // Deploy NETWORK POLICY
+            if ( applicationType != 'mountebank' && forceDeployList[6] == "true" ) {
+                sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                responseDeploy = applyResourceYaml {
+                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                    namespaceEnv = namespace_env
+                    kind = "networkpolicy"
+                    app_name = appName
+                }
+            } else if ( applicationType != 'mountebank' && forceDeployList[6] == "false" ) {
+                responseGetNetworkPolicy = ""
+                container(name: 'jnlp'){
+                    responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
+                }
+                if ( !responseGetNetworkPolicy.contains(appName) ) {
+                    responseDeploy = applyResourceYaml {
+                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                        namespaceEnv = namespace_env
+                        kind = "networkpolicy"
+                        app_name = appName
+                    }
+                }
+            }
+
             // Deploy ROUTE
             echo "start route"
             routeType = "route"
@@ -163,6 +177,29 @@ def call(body) {
                     namespaceEnv = namespace_env
                     kind = "route"
                     app_name = appName
+                }
+            } else if ( applicationType != 'mountebank' && forceDeployList[9] == "false" ) {
+                responseGetRoute = ""
+                container(name: 'jnlp'){
+                    responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
+                }
+                if ( !responseGetRoute.contains(appName) ) {
+                    if ( routeTLSEnable == "true" ) {
+                        routeType = "route-tls"
+                    }
+                    certList = acnGetCertificate{
+                        appScope = app_scope
+                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+                    }
+                    sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+                    sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+                    sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+                    responseDeploy = applyResourceYaml {
+                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                        namespaceEnv = namespace_env
+                        kind = "route"
+                        app_name = appName
+                    }
                 }
             } else if ( applicationType == 'mountebank' ) {
                 if ( namespace_env.contains("dev") ) {
@@ -185,8 +222,8 @@ def call(body) {
                     }
                 }
             }
-        }
-    }
+        } // Condition do only PVC not fail or not deploy PVC
+    } // Condition [dev, qa, performance], [staging, production]
         
     def rollingUpdateSurge = replicaNum.toInteger() * 2
     def rollingUpdateUnavailable = 0
