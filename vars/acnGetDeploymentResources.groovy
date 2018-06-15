@@ -150,10 +150,15 @@ def call(body) {
             } else if ( applicationType != 'mountebank' && forceDeployList[6] == "false" ) {
                 responseGetNetworkPolicy = ""
                 container(name: 'jnlp'){
-                    responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
+                    try {
+                        responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep openshift-demo |awk \'{print \$1}\'", returnStdout: true
+                        echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
+                    }
+                    catch(Exception e) {
+                        responseGetNetworkPolicy = "test"
+                    }
                 }
                 echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
-                echo "responseGetNetworkPolicy.contains(appName) ${responseGetNetworkPolicy}.contains(appName)"
                 // if ( !responseGetNetworkPolicy.contains(appName) ) {
                 //     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 //     echo "FALSE"
