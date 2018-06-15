@@ -151,8 +151,14 @@ def call(body) {
                 responseGetNetworkPolicy = ""
                 container(name: 'jnlp'){
                     try {
-                        responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep openshift-demo |awk \'{print \$1}\'", returnStdout: true
+                        responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
+                        responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
                         echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
+                        echo "responseGetNetworkPolicyLength ${responseGetNetworkPolicyLength}"
+                        responseGetNetworkPolicywde = sh script: "oc get networkpolicy -l appName=wde -n ${namespace_env} |grep wde |awk \'{print \$1}\'", returnStdout: true
+                        responseGetNetworkPolicywdeLength = responseGetNetworkPolicywde.length()
+                        echo "responseGetNetworkPolicywde ${responseGetNetworkPolicywde}"
+                        echo "responseGetNetworkPolicywdeLength ${responseGetNetworkPolicywdeLength}"
                     }
                     catch(Exception e) {
                         responseGetNetworkPolicy = "test"
