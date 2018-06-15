@@ -149,33 +149,20 @@ def call(body) {
                 }
             } else if ( applicationType != 'mountebank' && forceDeployList[6] == "false" ) {
                 responseGetNetworkPolicy = ""
+                responseGetNetworkPolicyLength = ""
                 container(name: 'jnlp'){
-                    try {
-                        responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
-                        responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
-                        echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
-                        echo "responseGetNetworkPolicyLength ${responseGetNetworkPolicyLength}"
-                        responseGetNetworkPolicywde = sh script: "oc get networkpolicy -l appName=wde -n ${namespace_env} |grep wde |awk \'{print \$1}\'", returnStdout: true
-                        responseGetNetworkPolicywdeLength = responseGetNetworkPolicywde.length()
-                        echo "responseGetNetworkPolicywde ${responseGetNetworkPolicywde}"
-                        echo "responseGetNetworkPolicywdeLength ${responseGetNetworkPolicywdeLength}"
-                    }
-                    catch(Exception e) {
-                        responseGetNetworkPolicy = "test"
+                    responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
+                    responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
+                }
+                if ( responseGetNetworkPolicyLength.toInteger() > 0 ) {
+                    sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                    responseDeploy = applyResourceYaml {
+                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                        namespaceEnv = namespace_env
+                        kind = "networkpolicy"
+                        app_name = appName
                     }
                 }
-                echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
-                // if ( !responseGetNetworkPolicy.contains(appName) ) {
-                //     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                //     echo "FALSE"
-                //     sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                //     responseDeploy = applyResourceYaml {
-                //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                //         namespaceEnv = namespace_env
-                //         kind = "networkpolicy"
-                //         app_name = appName
-                //     }
-                // }
             }
 
             // Deploy ROUTE
