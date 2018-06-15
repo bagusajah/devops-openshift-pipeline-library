@@ -288,11 +288,11 @@ items:
 
     echo 'using resources:\n' + yaml
 
-    // applyResourceNonYaml {
-    //     artifact_data = yaml
-    //     namespaceEnv = namespace_env
-    //     application  = applicationType
-    // }
+    applyResourceNonYaml {
+        artifact_data = yaml
+        namespaceEnv = namespace_env
+        application  = applicationType
+    }
     
 } // End Main Method
 
