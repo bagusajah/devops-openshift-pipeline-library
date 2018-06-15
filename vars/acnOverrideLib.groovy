@@ -39,4 +39,5 @@ def call(body) {
         }
     }
 
+    return "replaced"
 } // End Function
