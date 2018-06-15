@@ -152,19 +152,18 @@ def call(body) {
                 container(name: 'jnlp'){
                     responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
                 }
-                echo "FALSE"
-                sh "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
-                if ( !responseGetNetworkPolicy.contains(appName) ) {
-                    sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                    echo "FALSE"
-                    sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                    responseDeploy = applyResourceYaml {
-                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                        namespaceEnv = namespace_env
-                        kind = "networkpolicy"
-                        app_name = appName
-                    }
-                }
+                echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
+                // if ( !responseGetNetworkPolicy.contains(appName) ) {
+                //     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                //     echo "FALSE"
+                //     sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                //     responseDeploy = applyResourceYaml {
+                //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                //         namespaceEnv = namespace_env
+                //         kind = "networkpolicy"
+                //         app_name = appName
+                //     }
+                // }
             }
 
             // Deploy ROUTE
@@ -276,11 +275,11 @@ items:
 
     echo 'using resources:\n' + yaml
 
-    applyResourceNonYaml {
-        artifact_data = yaml
-        namespaceEnv = namespace_env
-        application  = applicationType
-    }
+    // applyResourceNonYaml {
+    //     artifact_data = yaml
+    //     namespaceEnv = namespace_env
+    //     application  = applicationType
+    // }
     
 } // End Main Method
 
