@@ -152,6 +152,8 @@ def call(body) {
                 container(name: 'jnlp'){
                     responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
                 }
+                echo "FALSE"
+                sh "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
                 if ( !responseGetNetworkPolicy.contains(appName) ) {
                     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                     echo "FALSE"
