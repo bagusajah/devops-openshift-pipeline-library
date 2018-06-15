@@ -153,6 +153,7 @@ def call(body) {
                     responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
                 }
                 echo "responseGetNetworkPolicy ${responseGetNetworkPolicy}"
+                echo "responseGetNetworkPolicy.contains(appName) ${responseGetNetworkPolicy}.contains(appName)"
                 // if ( !responseGetNetworkPolicy.contains(appName) ) {
                 //     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 //     echo "FALSE"
