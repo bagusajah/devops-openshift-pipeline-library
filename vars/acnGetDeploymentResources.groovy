@@ -154,15 +154,16 @@ def call(body) {
                     responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
                     responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
                 }
-                if ( responseGetNetworkPolicyLength.toInteger() > 0 ) {
-                    sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                    responseDeploy = applyResourceYaml {
-                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                        namespaceEnv = namespace_env
-                        kind = "networkpolicy"
-                        app_name = appName
-                    }
-                }
+                echo "responseGetNetworkPolicyLength ${responseGetNetworkPolicyLength}"
+                // if ( responseGetNetworkPolicyLength.toInteger() == 0 ) {
+                //     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                //     responseDeploy = applyResourceYaml {
+                //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                //         namespaceEnv = namespace_env
+                //         kind = "networkpolicy"
+                //         app_name = appName
+                //     }
+                // }
             }
 
             // Deploy ROUTE
