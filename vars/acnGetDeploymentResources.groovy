@@ -78,6 +78,7 @@ def call(body) {
                 }
             }
 
+            // ------------------------------------------------ waiting ------------------------------------------------
             // Check autoscaling existing
             // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
             // if ( !responseGetNetworkPolicy.contains(appName) ) {
@@ -88,6 +89,7 @@ def call(body) {
             //         app_name = appName
             //     }
             // }
+            // ------------------------------------------------ waiting ------------------------------------------------
 
             // Check route existing
             routeType = "route"
@@ -124,18 +126,21 @@ def call(body) {
         if ( responseDeploy == "success" || forceDeployList[7] == "false" ) {
             // Deploy AUTOSCALING
             if ( applicationType != 'mountebank' && forceDeployList[8] == "true" ) {
-                echo "WAITING"
+                // ------------------------------------------------ waiting ------------------------------------------------
                 // responseDeploy = applyResourceYaml {
                 //     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/autoscaling.yaml"
                 //     namespaceEnv = namespace_env
                 //     kind = "WAITNG"
                 //     app_name = appName
                 // }
+                // ------------------------------------------------ waiting ------------------------------------------------
             }
 
             // Deploy NETWORK POLICY
             if ( applicationType != 'mountebank' && forceDeployList[6] == "true" ) {
                 sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                echo "TRUE"
+                sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                 responseDeploy = applyResourceYaml {
                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                     namespaceEnv = namespace_env
@@ -149,6 +154,8 @@ def call(body) {
                 }
                 if ( !responseGetNetworkPolicy.contains(appName) ) {
                     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                    echo "FALSE"
+                    sh "cat ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                     responseDeploy = applyResourceYaml {
                         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
                         namespaceEnv = namespace_env
@@ -159,69 +166,69 @@ def call(body) {
             }
 
             // Deploy ROUTE
-            echo "start route"
-            routeType = "route"
-            if ( applicationType != 'mountebank' && forceDeployList[9] == "true" ) {
-                if ( routeTLSEnable == "true" ) {
-                    routeType = "route-tls"
-                }
-                certList = acnGetCertificate{
-                    appScope = app_scope
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                }
-                sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                responseDeploy = applyResourceYaml {
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                    namespaceEnv = namespace_env
-                    kind = "route"
-                    app_name = appName
-                }
-            } else if ( applicationType != 'mountebank' && forceDeployList[9] == "false" ) {
-                responseGetRoute = ""
-                container(name: 'jnlp'){
-                    responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
-                }
-                if ( !responseGetRoute.contains(appName) ) {
-                    if ( routeTLSEnable == "true" ) {
-                        routeType = "route-tls"
-                    }
-                    certList = acnGetCertificate{
-                        appScope = app_scope
-                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                    }
-                    sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                    sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                    sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                    responseDeploy = applyResourceYaml {
-                        pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                        namespaceEnv = namespace_env
-                        kind = "route"
-                        app_name = appName
-                    }
-                }
-            } else if ( applicationType == 'mountebank' ) {
-                if ( namespace_env.contains("dev") ) {
-                    sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                    sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                    sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                    container(name: 'jnlp'){
-                        responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
-                        if ( !responseGetRoute.contains(appName) ) {
-                            echo "Route ${appName} is not existing"
-                            responseDeploy = applyResourceYaml {
-                                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
-                                namespaceEnv = namespace_env
-                                kind = "route"
-                                app_name = appName
-                            }
-                        } else {
-                            echo "Route ${appName} is existing"
-                        }
-                    }
-                }
-            }
+            // echo "start route"
+            // routeType = "route"
+            // if ( applicationType != 'mountebank' && forceDeployList[9] == "true" ) {
+            //     if ( routeTLSEnable == "true" ) {
+            //         routeType = "route-tls"
+            //     }
+            //     certList = acnGetCertificate{
+            //         appScope = app_scope
+            //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //     }
+            //     sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //     sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //     sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //     responseDeploy = applyResourceYaml {
+            //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //         namespaceEnv = namespace_env
+            //         kind = "route"
+            //         app_name = appName
+            //     }
+            // } else if ( applicationType != 'mountebank' && forceDeployList[9] == "false" ) {
+            //     responseGetRoute = ""
+            //     container(name: 'jnlp'){
+            //         responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
+            //     }
+            //     if ( !responseGetRoute.contains(appName) ) {
+            //         if ( routeTLSEnable == "true" ) {
+            //             routeType = "route-tls"
+            //         }
+            //         certList = acnGetCertificate{
+            //             appScope = app_scope
+            //             pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //         }
+            //         sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //         sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //         sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
+            //         responseDeploy = applyResourceYaml {
+            //             pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+            //             namespaceEnv = namespace_env
+            //             kind = "route"
+            //             app_name = appName
+            //         }
+            //     }
+            // } else if ( applicationType == 'mountebank' ) {
+            //     if ( namespace_env.contains("dev") ) {
+            //         sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            //         sh "sed -i \"s~'#MB_ROUTE_HOSTNAME#'~${domainName}~g\" pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            //         sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            //         container(name: 'jnlp'){
+            //             responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env}", returnStdout: true
+            //             if ( !responseGetRoute.contains(appName) ) {
+            //                 echo "Route ${appName} is not existing"
+            //                 responseDeploy = applyResourceYaml {
+            //                     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/route.yaml"
+            //                     namespaceEnv = namespace_env
+            //                     kind = "route"
+            //                     app_name = appName
+            //                 }
+            //             } else {
+            //                 echo "Route ${appName} is existing"
+            //             }
+            //         }
+            //     }
+            // }
         } // Condition do only PVC not fail or not deploy PVC
     } // Condition [dev, qa, performance], [staging, production]
         
