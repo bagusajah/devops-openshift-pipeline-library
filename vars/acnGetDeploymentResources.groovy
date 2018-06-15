@@ -155,15 +155,16 @@ def call(body) {
                     responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
                 }
                 echo "responseGetNetworkPolicyLength ${responseGetNetworkPolicyLength}"
-                // if ( responseGetNetworkPolicyLength.toInteger() == 0 ) {
-                //     sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                //     responseDeploy = applyResourceYaml {
-                //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-                //         namespaceEnv = namespace_env
-                //         kind = "networkpolicy"
-                //         app_name = appName
-                //     }
-                // }
+                if ( responseGetNetworkPolicyLength.toInteger() == 0 ) {
+                    echo "TEST"
+                    // sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                    // responseDeploy = applyResourceYaml {
+                    //     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+                    //     namespaceEnv = namespace_env
+                    //     kind = "networkpolicy"
+                    //     app_name = appName
+                    // }
+                }
             }
 
             // Deploy ROUTE
