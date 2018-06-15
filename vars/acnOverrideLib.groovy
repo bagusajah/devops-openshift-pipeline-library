@@ -36,6 +36,4 @@ def call(body) {
         }
     }
 
-  	return domainName
-
 } // End Function
