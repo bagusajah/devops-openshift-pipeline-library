@@ -13,8 +13,8 @@ def call(body) {
     def urlWebhook = config.urlWebhook
     def envName = config.envName
     def stageCurrent = config.stageCurrent
+    echo "appName ${config.appName}"
     def appName = config.appName
-    echo "appName ${appName}"
 
     String jsonAppnameTopic = "\"title\": \"Application Name\""
     String jsonAppnameValue = "\"subtitle\": \"${appName}\""
