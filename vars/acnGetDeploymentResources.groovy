@@ -46,28 +46,28 @@ def call(body) {
     }
 
     if ( envName == "staging" || envName == "production" ) {
+        // ------------------------------------------------ waiting discuss about default PVC ------------------------------------------------
         // Check PVC existing
-        responseGetPVC = ""
-        responseGetPVCLength = ""
-        container(name: 'jnlp'){
-            responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
-            responseGetPVCLength = responseGetPVC.length()
-        }
-        echo "responseGetPVCLength ${responseGetPVCLength}"
-        if ( responseGetPVCLength.toInteger() == 0 ) {
-            sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
-            sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
-            responseDeploy = applyResourceYaml {
-                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
-                namespaceEnv = namespace_env
-                kind = "pvc"
-                app_name = appName
-            }
-            if ( responseDeploy == "error" ) {
-                error "Pipeline failure stage: DEPLOY PVC"
-            } 
-
-        } else {
+        // responseGetPVC = ""
+        // responseGetPVCLength = ""
+        // container(name: 'jnlp'){
+        //     responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
+        //     responseGetPVCLength = responseGetPVC.length()
+        // }
+        // echo "responseGetPVCLength ${responseGetPVCLength}"
+        // if ( responseGetPVCLength.toInteger() == 0 ) {
+            // sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
+            // sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
+            // responseDeploy = applyResourceYaml {
+            //     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
+            //     namespaceEnv = namespace_env
+            //     kind = "pvc"
+            //     app_name = appName
+            // }
+            // if ( responseDeploy == "error" ) {
+            //     error "Pipeline failure stage: DEPLOY PVC"
+            // } 
+        // } else {
             // Check network policy existing
             responseGetNetworkPolicy = ""
             responseGetNetworkPolicyLength = ""
@@ -123,7 +123,8 @@ def call(body) {
                     app_name = appName
                 }
             }
-        }
+        // }
+        // ------------------------------------------------ waiting discuss about default PVC ------------------------------------------------
     } else {
         // Deploy PVC
         if ( applicationType != 'mountebank' && forceDeployList[7] == "true" ) {
