@@ -5,7 +5,7 @@ def call(Map parameters = [:], body) {
     def defaultLabel = buildId('mountebank')
     def label = parameters.get('label', defaultLabel)
 
-    def mountebankImage = parameters.get('mountebankImage', 'vulcanhub/mountebank:v1.1.0')
+    def mountebankImage = parameters.get('mountebankImage', 'vulcanhub/mountebank:v1.0.1')
     def jnlpImage = 'docker.io/openshift/jenkins-agent-maven-35-centos7:v3.10'
 
     podTemplate(
