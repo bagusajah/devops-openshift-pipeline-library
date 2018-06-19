@@ -284,8 +284,8 @@ def call(body) {
         sh "sed -i \"s~'#MOUNTEBANK_UNAVAILABLE#'~${rollingUpdateUnavailable}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/deploymentconfig-replace.yaml"
     }
 
-    sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/service-replace.yaml"
-    sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/service.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/mountebank/service-replace.yaml"
+    sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/${applicationType}/service-replace.yaml"
+    sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/${applicationType}/service.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/${applicationType}/service-replace.yaml"
 
     def list = """
 ---
