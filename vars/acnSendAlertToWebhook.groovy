@@ -14,6 +14,7 @@ def call(body) {
     def envName = config.envName
     def stageCurrent = config.stageCurrent
     def appName = config.appName
+    echo "appName ${appName}"
 
     String jsonAppnameTopic = "\"title\": \"Application Name\""
     String jsonAppnameValue = "\"subtitle\": \"${appName}\""
