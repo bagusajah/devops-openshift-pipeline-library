@@ -116,6 +116,10 @@ def call(body) {
                 }
                 sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
                 sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+                certList = acnGetCertificate{
+                    appScope = app_scope
+                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+                }
                 sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
                 sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
                 sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
@@ -197,12 +201,12 @@ def call(body) {
                 if ( routeTLSEnable == "true" ) {
                     routeType = "route-tls"
                 }
-                certList = acnGetCertificate{
-                    appScope = app_scope
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml"
-                }
                 sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
                 sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+                certList = acnGetCertificate{
+                    appScope = app_scope
+                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+                }
                 sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
                 sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
                 sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
