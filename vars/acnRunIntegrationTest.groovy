@@ -219,16 +219,16 @@ def call(body) {
               sh "cp -rf ${directory}/robot/${GIT_INTEGRATION_TEST_NAME}/results/${environmentForWorkspace}/* ${directory}/robot/results/${environmentForWorkspace}_smoke/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"
             } // End directory pull git
           } // End loop git more than 1
-          sh "cd ${directory}/robot/results/${environmentForWorkspace} && /bin/zip -r \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
-          def bucket = ""
-          if ( environmentForWorkspace == "dev" ) {
-            bucket = global_vars['TMT_TEST_RESULT_URL_DEV']
-          } else if ( environmentForWorkspace == "qa" ) {
-            bucket = global_vars['TMT_TEST_RESULT_URL_QA']
-          } else if ( environmentForWorkspace == "performance" ) {
-            bucket = global_vars['TMT_TEST_RESULT_URL_PERFORMANCE']
-          }
         } // End condition git equal 1 or more than 1
+        sh "cd ${directory}/robot/results/${environmentForWorkspace} && /bin/zip -r \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip\" \"${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}/\""
+        def bucket = ""
+        if ( environmentForWorkspace == "dev" ) {
+          bucket = global_vars['TMT_TEST_RESULT_URL_DEV']
+        } else if ( environmentForWorkspace == "qa" ) {
+          bucket = global_vars['TMT_TEST_RESULT_URL_QA']
+        } else if ( environmentForWorkspace == "performance" ) {
+          bucket = global_vars['TMT_TEST_RESULT_URL_PERFORMANCE']
+        }
         dir("${directory}/robot/results/${environmentForWorkspace}"){
           withAWS(credentials:'openshift-s3-credential') {
             s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
