@@ -228,14 +228,14 @@ def call(body) {
           } else if ( environmentForWorkspace == "performance" ) {
             bucket = global_vars['TMT_TEST_RESULT_URL_PERFORMANCE']
           }
-          dir("${directory}/robot/results/${environmentForWorkspace}"){
-            withAWS(credentials:'openshift-s3-credential') {
-              s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
-            }
-          } // End upload zip file to S3
-          sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
-          sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
         } // End condition git equal 1 or more than 1
+        dir("${directory}/robot/results/${environmentForWorkspace}"){
+          withAWS(credentials:'openshift-s3-credential') {
+            s3Upload bucket: bucket, file: "${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip", path: "performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}.zip"
+          }
+        } // End upload zip file to S3
+        sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/performance-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
+        sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
       } // End container jmeter
     } // End condition robot or jmeter
   } // End Condition global_vars['GIT_INTEGRATION_TEST_LIST_COUNT']
