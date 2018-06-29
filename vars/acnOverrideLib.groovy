@@ -12,9 +12,6 @@ def call(body) {
     def libVersionExpect = config.libVersionExpect
     def fileLibPath = config.fileLibPath
 
-    echo "libName ${libName}"
-    echo "libVersionExpect ${libVersionExpect}"
-    echo "fileLibPath ${fileLibPath}"
     if ( libName == "mod-wsgi" ) {
         result_no_specific_version = ""
         result_specific_version = ""

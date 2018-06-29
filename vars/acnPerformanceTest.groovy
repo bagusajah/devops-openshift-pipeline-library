@@ -8,10 +8,7 @@ def call(body){
   body.delegate = config
   body()
 
-  def app_version = config.app_version
-  def rerun_condition_action = config.rerun_condition_action
   def app_url_type_service = config.app_url_type_service
-  def conditionForGetVersion = config.conditionForGetVersion
   def git_performance_repo_url = config.git_performance_repo_url
   def tmt_test_result_url_performance = config.tmt_test_result_url_performance
   def tmt_url = config.tmt_url
@@ -19,13 +16,6 @@ def call(body){
   def authorizationTMTId = config.authorizationTMTId
   def jobTMTId = config.jobTMTId
   def directory = config.directory
-
-  if ( rerun_condition_action == conditionForGetVersion ){
-    def result = restGetVersionApplicationURL{
-      url = app_url_type_service
-    }
-    app_version = result.build.version + "-retest"
-  }
 
   dir("${directory}/performance_test") {
     git credentialsId: 'bitbucket-credential', url: git_performance_repo_url
