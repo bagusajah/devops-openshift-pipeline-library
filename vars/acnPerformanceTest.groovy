@@ -8,7 +8,6 @@ def call(body){
   body.delegate = config
   body()
 
-  def app_url_type_service = config.app_url_type_service
   def git_performance_repo_url = config.git_performance_repo_url
   def tmt_test_result_url_performance = config.tmt_test_result_url_performance
   def tmt_url = config.tmt_url
