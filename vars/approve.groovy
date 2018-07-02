@@ -18,9 +18,9 @@ def call(body) {
         try {
             input message: proceedMessage, ok: 'Approve'
             action = "approve"
+            return true
         }
         catch(org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-            action = "abort_or_nothing"
             cause = e.causes.get(0)
             actor = cause.getUser().toString()
         }
@@ -30,7 +30,7 @@ def call(body) {
             // if no action --> go on
             if ( actor == "SYSTEM" || action == "approve" ) {
                 return true
-            } else if ( actor != "SYSTEM" && actor == "abort_or_nothing" ) {
+            } else if ( actor != "SYSTEM" ) {
                 return false
             }
         }
