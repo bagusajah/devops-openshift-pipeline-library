@@ -29,7 +29,7 @@ def call(body) {
       appName = GLOBAL_VARS['APP_NAME']
     }
     error "No git to execute"
-  } else {
+  } else if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() > 0 ) {
     if ( rerun_condition_action == conditionForGetVersion ){
       def result = restGetVersionApplicationURL{
         url = app_url_type_service
