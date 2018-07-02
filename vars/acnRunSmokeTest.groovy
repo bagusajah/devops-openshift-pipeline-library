@@ -26,10 +26,10 @@ def call(body) {
   if ( global_vars['GIT_INTEGRATION_TEST_LIST_COUNT'].toInteger() == 0 ) {
     currentBuild.result = 'UNSTABLE'
     acnSendAlertToWebhook {
-      urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
+      urlWebhook = global_vars['GCHAT_NOTIFIER_WEBHOOK']
       envName = environmentForWorkspace
       stageCurrent = "FAIL step Run Integration Test Because no git to execute"
-      appName = GLOBAL_VARS['APP_NAME']
+      appName = global_vars['APP_NAME']
     }
     error "No git to execute"
   } else {
@@ -128,10 +128,10 @@ def call(body) {
             sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
             sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
             acnSendAlertToWebhook {
-              urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
+              urlWebhook = global_vars['GCHAT_NOTIFIER_WEBHOOK']
               envName = environmentForWorkspace
               stageCurrent = "FAIL step Run Smoke Test"
-              appName = GLOBAL_VARS['APP_NAME']
+              appName = global_vars['APP_NAME']
             }
             error "Pipeline aborted due to ${env.JOB_NAME} run system integration test ${env.BUILD_NUMBER} is FAILURE"
           } // End Condition RobotPublisher is Fail

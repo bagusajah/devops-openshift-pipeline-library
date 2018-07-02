@@ -171,7 +171,7 @@ def call(body) {
           acnSendAlertToWebhook {
             urlWebhook = global_vars['GCHAT_NOTIFIER_WEBHOOK']
             envName = environmentForWorkspace
-            stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
+            stageCurrent = "UNSTABLE step Run Integration Test, threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
             appName = global_vars['APP_NAME']
           }
           error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
@@ -179,7 +179,7 @@ def call(body) {
           acnSendAlertToWebhook {
             urlWebhook = global_vars['GCHAT_NOTIFIER_WEBHOOK']
             envName = environmentForWorkspace
-            stageCurrent = "FAILURE Because result threshold less than ${global_vars['ROBOT_PASS_THRESHOLD']}"
+            stageCurrent = "FAILURE step Run Integration Test, threshold less than ${global_vars['ROBOT_PASS_THRESHOLD']}"
             appName = global_vars['APP_NAME']
           }
           error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is FAILURE"
