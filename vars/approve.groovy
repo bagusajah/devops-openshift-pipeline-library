@@ -30,7 +30,7 @@ def call(body) {
             // if no action --> go on
             if ( actor == "SYSTEM" || action == "approve" ) {
                 return true
-            } else if ( actor != "SYSTEM" && actor = "abort_or_nothing" ) {
+            } else if ( actor != "SYSTEM" && actor == "abort_or_nothing" ) {
                 return false
             }
         }
