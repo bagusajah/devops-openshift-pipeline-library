@@ -174,7 +174,7 @@ def call(body) {
       }
       finally {
         sh "echo currentBuild.result ${currentBuild.result}"
-        if( currentBuild.result == 'UNSTABLE' ){
+        if( currentBuild.result == "UNSTABLE" ){
           acnSendAlertToWebhook {
             urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
             envName = environmentForWorkspace
@@ -182,7 +182,7 @@ def call(body) {
             appName = GLOBAL_VARS['APP_NAME']
           }
           error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
-        } else if(currentBuild.result == 'FAILURE'){
+        } else if( currentBuild.result == "FAILURE" ){
           acnSendAlertToWebhook {
             urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
             envName = environmentForWorkspace
