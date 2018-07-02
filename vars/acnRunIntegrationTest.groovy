@@ -173,6 +173,7 @@ def call(body) {
         sh "echo currentBuild.result ${currentBuild.result}"
       }
       finally {
+        sh "echo currentBuild.result ${currentBuild.result}"
         if( currentBuild.result == 'UNSTABLE' ){
           acnSendAlertToWebhook {
             urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
