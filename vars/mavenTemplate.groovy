@@ -61,9 +61,24 @@ def call(Map parameters = [:], body) {
             secretVolume(secretName: 'jenkins-maven-settings', mountPath: '/root/.m2'),
             persistentVolumeClaim(claimName: 'jenkins-mvn-local-repo', mountPath: '/root/.mvnrepository'),
             persistentVolumeClaim(claimName: 'pvc-configuration-data', mountPath: '/app-configs'),
-            configMapVolume(configMapName: 'global-domain-configmap', mountPath: '/domains'),
             configMapVolume(configMapName: 'global-countrycode-configmap', mountPath: '/country-code'),
+            
+            // ---------------------------------------- available only openshift on AWS ----------------------------------------
+            configMapVolume(configMapName: 'global-domain-configmap', mountPath: '/domains'),
             secretVolume(secretName: 'global-certificate-secret', mountPath: '/certs')
+            // ---------------------------------------- available only openshift on AWS ----------------------------------------
+
+            // ---------------------------------------- waiting openshift on PBI ----------------------------------------
+            // --------- partner ---------
+            // configMapVolume(configMapName: 'partner-domain-configmap', mountPath: '/partner-domains'),
+            // secretVolume(secretName: 'partner-certificate-secret', mountPath: '/partner-certs'),
+            // --------- public ---------
+            // configMapVolume(configMapName: 'public-domain-configmap', mountPath: '/public-domains'),
+            // secretVolume(secretName: 'public-certificate-secret', mountPath: '/public-certs'),
+            // --------- private ---------
+            // configMapVolume(configMapName: 'private-domain-configmap', mountPath: '/private-domains'),
+            // secretVolume(secretName: 'private-certificate-secret', mountPath: '/private-certs')
+            // ---------------------------------------- waiting openshift on PBI ----------------------------------------
         ]
     ) 
     {

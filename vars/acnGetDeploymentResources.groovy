@@ -20,7 +20,6 @@ def call(body) {
     def forceDeployList = config.forceDeployList
     def directory = config.directoryWorkspace
     def versionOpenshift = config.versionOpenshift
-    def networkPolicy = config.networkPolicy
     def runwayName = config.runwayName ?: "OPENSHIFT"
     def namespace_env = config.namespace_env
     def gitHashApplication = config.gitHashApplication
@@ -33,6 +32,7 @@ def call(body) {
     def imageName = config.imageName
     def replicaNum = config.replicaNum
     def countryCode = config.country_code
+    def router_sharding = config.routerSharding
     def pathFileRoute = ""
     def responseDeploy = ""
     def routeType = ""
@@ -43,6 +43,7 @@ def call(body) {
     def domainName = acnGetDomainName{
         appScope = app_scope
         domainNamePrefix = route_hostname
+        routerSharding = router_sharding
     }
 
     if ( envName == "staging" || envName == "production" ) {
@@ -96,6 +97,7 @@ def call(body) {
             sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
             certList = acnGetCertificate{
                 appScope = app_scope
+                routerSharding = router_sharding
                 pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
             }
             sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"

@@ -13,7 +13,7 @@ def call(body){
   def replica_num_mountebank = config.replicaNumMountebank
   def route_hostname = config.routeHostname
   def route_hostname_mountebank = config.routeHostnameMountebank
-  def network_policy = config.networkPolicy
+  def router_sharding = config.routerSharding
   def app_scope = config.appScope
   def route_tls_enable = config.routeTLSEnable
   def openshiftVersion = config.openshift_version 
@@ -37,7 +37,7 @@ def call(body){
       envName = LIST_ENV[0]
       replicaNum = replica_num
       routeHostname = route_hostname
-      networkPolicy = network_policy
+      routerSharding = router_sharding
       namespace_env = namespace_dev
       gitHashApplication = buildDetailList[2]
       gitSourceBranch = buildDetailList[5]
@@ -57,7 +57,7 @@ def call(body){
         envName = LIST_ENV[0]
         replicaNum = replica_num_mountebank
         routeHostname = route_hostname_mountebank
-        networkPolicy = network_policy
+        routerSharding = router_sharding
         namespace_env = namespace_dev
         gitHashApplication = buildDetailList[2]
         gitSourceBranch = buildDetailList[5]
