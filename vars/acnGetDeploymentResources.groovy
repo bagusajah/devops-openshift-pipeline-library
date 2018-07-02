@@ -46,92 +46,68 @@ def call(body) {
     }
 
     if ( envName == "staging" || envName == "production" ) {
-        // ------------------------------------------------ waiting discuss about default PVC ------------------------------------------------
-        // Check PVC existing
-        // responseGetPVC = ""
-        // responseGetPVCLength = ""
-        // container(name: 'jnlp'){
-        //     responseGetPVC = sh script: "oc get persistentvolumeclaim -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
-        //     responseGetPVCLength = responseGetPVC.length()
-        // }
-        // echo "responseGetPVCLength ${responseGetPVCLength}"
-        // if ( responseGetPVCLength.toInteger() == 0 ) {
-            // sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
-            // sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
-            // responseDeploy = applyResourceYaml {
-            //     pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/pvc-replace.yaml"
-            //     namespaceEnv = namespace_env
-            //     kind = "pvc"
-            //     app_name = appName
-            // }
-            // if ( responseDeploy == "error" ) {
-            //     error "Pipeline failure stage: DEPLOY PVC"
-            // } 
-        // } else {
-            // Check network policy existing
-            responseGetNetworkPolicy = ""
-            responseGetNetworkPolicyLength = ""
-            container(name: 'jnlp'){
-                responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
-                responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
+        // Check network policy existing
+        responseGetNetworkPolicy = ""
+        responseGetNetworkPolicyLength = ""
+        container(name: 'jnlp'){
+            responseGetNetworkPolicy = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
+            responseGetNetworkPolicyLength = responseGetNetworkPolicy.length()
+        }
+        echo "responseGetNetworkPolicyLength ${responseGetNetworkPolicyLength}"
+        if ( responseGetNetworkPolicyLength.toInteger() == 0 ) {
+            sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
+            sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
+            sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
+            responseDeploy = applyResourceYaml {
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
+                namespaceEnv = namespace_env
+                kind = "networkpolicy"
+                app_name = appName
             }
-            echo "responseGetNetworkPolicyLength ${responseGetNetworkPolicyLength}"
-            if ( responseGetNetworkPolicyLength.toInteger() == 0 ) {
-                sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
-                sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
-                sh "sed -i \"s~'#ENV_NAME#'~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
-                responseDeploy = applyResourceYaml {
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy-replace.yaml"
-                    namespaceEnv = namespace_env
-                    kind = "networkpolicy"
-                    app_name = appName
-                }
-            }
+        }
 
-            // ------------------------------------------------ waiting ------------------------------------------------
-            // Check autoscaling existing
-            // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
-            // if ( !responseGetNetworkPolicy.contains(appName) ) {
-            //     responseDeploy = applyResourceYaml {
-            //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
-            //         namespaceEnv = namespace_env
-            //         kind = "networkpolicy"
-            //         app_name = appName
-            //     }
-            // }
-            // ------------------------------------------------ waiting ------------------------------------------------
-
-            // Check route existing
-            routeType = "route"
-            responseGetRoute = ""
-            responseGetRouteLength = ""
-            container(name: 'jnlp'){
-                responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
-                responseGetRouteLength = responseGetRoute.length()
-            }
-            echo "responseGetRouteLength ${responseGetRouteLength}"
-            if ( responseGetRouteLength.toInteger() == 0 ) {
-                if ( routeTLSEnable == "true" ) {
-                    routeType = "route-tls"
-                }
-                sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                certList = acnGetCertificate{
-                    appScope = app_scope
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                }
-                sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                responseDeploy = applyResourceYaml {
-                    pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
-                    namespaceEnv = namespace_env
-                    kind = "route"
-                    app_name = appName
-                }
-            }
+        // ------------------------------------------------ waiting ------------------------------------------------
+        // Check autoscaling existing
+        // responseGetAutoscale = sh script: "oc get networkpolicy -l appName=${appName} -n ${namespace_env}", returnStdout: true
+        // if ( !responseGetNetworkPolicy.contains(appName) ) {
+        //     responseDeploy = applyResourceYaml {
+        //         pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/networkpolicy.yaml"
+        //         namespaceEnv = namespace_env
+        //         kind = "networkpolicy"
+        //         app_name = appName
+        //     }
         // }
-        // ------------------------------------------------ waiting discuss about default PVC ------------------------------------------------
+        // ------------------------------------------------ waiting ------------------------------------------------
+
+        // Check route existing
+        routeType = "route"
+        responseGetRoute = ""
+        responseGetRouteLength = ""
+        container(name: 'jnlp'){
+            responseGetRoute = sh script: "oc get route -l appName=${appName} -n ${namespace_env} |grep ${appName} |awk \'{print \$1}\'", returnStdout: true
+            responseGetRouteLength = responseGetRoute.length()
+        }
+        echo "responseGetRouteLength ${responseGetRouteLength}"
+        if ( responseGetRouteLength.toInteger() == 0 ) {
+            if ( routeTLSEnable == "true" ) {
+                routeType = "route-tls"
+            }
+            sh "rm -rf ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+            sh "cp ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}.yaml ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+            certList = acnGetCertificate{
+                appScope = app_scope
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+            }
+            sh "sed -i \"s~'#COUNTRY_CODE#'~${countryCode}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+            sh "sed -i \"s~#ENV_NAME#~${envName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+            sh "sed -i \"s~'#ROUTE_HOSTNAME#'~${domainName}~g\" ${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+            responseDeploy = applyResourceYaml {
+                pathFile = "${directory}/pipeline/${platformType}/${versionOpenshift}/application/${routeType}-replace.yaml"
+                namespaceEnv = namespace_env
+                kind = "route"
+                app_name = appName
+            }
+        }
     } else {
         // Deploy PVC
         if ( applicationType != 'mountebank' && forceDeployList[7] == "true" ) {
