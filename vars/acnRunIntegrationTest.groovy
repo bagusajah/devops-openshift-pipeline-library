@@ -154,40 +154,37 @@ def call(body) {
       }
       sh "echo BUCKET S3 result ${environmentForWorkspace} is https://s3.console.aws.amazon.com/s3/buckets/${bucket}/robot-result/${global_vars['APP_NAME']}/${env.BUILD_NUMBER}/?region=ap-southeast-1&tab=overview"
       sh "curl -k -H \"Authorization: ${authorizationTMTId}\" ${global_vars['TMT_URL']}/remote/execute/${jobTMTId}?buildno=${env.BUILD_NUMBER}"
-      try {
-        step([
-          $class : 'RobotPublisher', 
-          outputPath : "${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}",
-          passThreshold : global_vars['INTEGRATE_TEST_PASS_THRESHOLD'].toInteger(),
-          unstableThreshold: global_vars['INTEGRATE_TEST_UNSTABLE_THRESHOLD'].toInteger(), 
-          otherFiles : "*.png",
-          outputFileName: "output.xml", 
-          disableArchiveOutput: false, 
-          reportFileName: "report.html", 
-          logFileName: "log.html",
-          onlyCritical: false,
-          enableCache: false
-        ])
-      }
-      catch(Exception e) {
-        if( currentBuild.result == 'UNSTABLE' ){
-          acnSendAlertToWebhook {
-            urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
-            envName = environmentForWorkspace
-            stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
-            appName = GLOBAL_VARS['APP_NAME']
-          }
-          error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
-        } else if(currentBuild.result == 'FAILURE'){
-          acnSendAlertToWebhook {
-            urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
-            envName = environmentForWorkspace
-            stageCurrent = "FAILURE Because result threshold less than ${global_vars['ROBOT_PASS_THRESHOLD']}"
-            appName = GLOBAL_VARS['APP_NAME']
-          }
-          error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is FAILURE"
-        } // End Condition RobotPublisher
-      }
+      step([
+        $class : 'RobotPublisher', 
+        outputPath : "${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}",
+        passThreshold : global_vars['INTEGRATE_TEST_PASS_THRESHOLD'].toInteger(),
+        unstableThreshold: global_vars['INTEGRATE_TEST_UNSTABLE_THRESHOLD'].toInteger(), 
+        otherFiles : "*.png",
+        outputFileName: "output.xml", 
+        disableArchiveOutput: false, 
+        reportFileName: "report.html", 
+        logFileName: "log.html",
+        onlyCritical: false,
+        enableCache: false
+      ])
+      sh "echo currentBuild.result ${currentBuild.result}"
+      if( currentBuild.result == 'UNSTABLE' ){
+        acnSendAlertToWebhook {
+          urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
+          envName = environmentForWorkspace
+          stageCurrent = "UNSTABLE Because result threshold less than ${global_vars['ROBOT_UNSTABLE_THRESHOLD']}"
+          appName = GLOBAL_VARS['APP_NAME']
+        }
+        error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is Unstable"
+      } else if(currentBuild.result == 'FAILURE'){
+        acnSendAlertToWebhook {
+          urlWebhook = GLOBAL_VARS['GCHAT_NOTIFIER_WEBHOOK']
+          envName = environmentForWorkspace
+          stageCurrent = "FAILURE Because result threshold less than ${global_vars['ROBOT_PASS_THRESHOLD']}"
+          appName = GLOBAL_VARS['APP_NAME']
+        }
+        error "Pipeline aborted due to ${env.JOB_NAME} run test ${env.BUILD_NUMBER} is FAILURE"
+      } // End Condition RobotPublisher
     } else if ( test_tools == "jmeter" ) {
       container(name: 'jmeter'){
         dir("${directory}/robot/results/${environmentForWorkspace}/${global_vars['APP_NAME']}-${app_version}-build-${env.BUILD_NUMBER}"){
