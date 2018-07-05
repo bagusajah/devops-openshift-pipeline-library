@@ -5,7 +5,7 @@ def call(Map parameters = [:], body) {
     def defaultLabel = buildId('python36')
     def label = parameters.get('label', defaultLabel)
 
-    def python36Image = parameters.get('python36Image', 'vulcanhub/python36-builder-poc:v1.0.0')
+    def python36Image = parameters.get('python36Image', 'vulcanhub/python36-builder:v1.0.0')
     def robotImage = parameters.get('robotImage', 'vulcanhub/robot:v1.1.0')
     def jmeterImage = parameters.get('jmeterImage', 'vulcanhub/jmeter:v1.0.0')
     def jnlpImage = 'docker.io/openshift/jenkins-agent-maven-35-centos7:v3.10'
