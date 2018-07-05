@@ -13,6 +13,9 @@ def call(body) {
   def countryCode = config.country_code
   def openshiftVersionFolder = config.openshiftVersion
   def envName = config.envName
+  def directory = config.directory
+
+  echo "countryCode ${countryCode}"
 
   def GLOBAL_VARS = ""
   def appScope = ""
@@ -25,12 +28,12 @@ def call(body) {
 
   dir("${directory}/s3-pull-artifact") {
     withAWS(credentials:'openshift-s3-credential') {
-      s3Download bucket: 'openshift-distributed-artifacts', file: "${fileName}.tar.gz", path: "${runwayName}/${appName}/${fileName}.tar.gz"
+      s3Download bucket: 'openshift-distributed-artifacts', file: "${fileName}.tar.gz", path: "OPENSHIFT/${appName}/${fileName}.tar.gz"
     }
     sh "tar -zxvf ${fileName}.tar.gz -C ${directory}/s3-pull-artifact"
     sh "rm -rf ${fileName}.tar.gz"
     script{
-      GLOBAL_VARS = readProperties  file:"${directory}/s3-pull-artifact/pipeline/variables.properties"
+      GLOBAL_VARS = readProperties  file:"${directory}/s3-pull-artifact/${fileName}/pipeline/variables.properties"
       namespace_cicd = "${GLOBAL_VARS['APP_SCOPE']}-cicd"
       namespace_dev = "${GLOBAL_VARS['APP_SCOPE']}-${GLOBAL_VARS['APP_SVC_GROUP']}-dev"
       namespace_qa = "${GLOBAL_VARS['APP_SCOPE']}-${GLOBAL_VARS['APP_SVC_GROUP']}-qa"
@@ -49,7 +52,7 @@ def call(body) {
     sh "sed -i \"s~#DOCKER_REGISTRY_SERVICE_IP#~${dockerRegistry}~g\" ${directory}/s3-pull-artifact/${fileName}/pipeline/openshift-artifacts/${openshiftVersionFolder}/buildconfigs/pull-image-buildconfig.yaml"
     sh "tar -zcvf ${fileName}.tar.gz ${fileName}/"
     withAWS(credentials:'openshift-s3-credential') {
-      s3Upload bucket: 'openshift-distributed-artifacts', file: "${fileName}.tar.gz", path: "${runwayName}/${appName}/${fileName}.tar.gz"
+      s3Upload bucket: 'openshift-distributed-artifacts', file: "${fileName}.tar.gz", path: "OPENSHIFT/${appName}/${fileName}.tar.gz"
     }
   }
 
